@@ -55,6 +55,7 @@ import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber(modid = MinsEnchantments.MODID, bus = Bus.FORGE)
@@ -70,7 +71,10 @@ public class EventHandlerForge
 	public static final String POSEIDONS_GRACE_TARGET = "PoseidonsGraceTarget";
 	public static final String WAVES_PROTECTION = "WavesProtection";
 	public static final String RECOCHET = "Recochet";
+	public static final String RECOCHET_BOUNCE = "RecochetBounce";
 	public static final String WALLBREAK = "Wallbreak";
+	public static final String SNIPE = "Snipe";
+	public static final String SNIPE_LVL = "SnipeLvL";
 	public static final String AUTO_SHIELDING = "AutoShielding";
 	
 	public static final Map<Class<? extends Entity>, Object> ENTITY_MAP = new HashMap<>();
@@ -146,7 +150,15 @@ public class EventHandlerForge
 				float f3 = Mth.sqrt(living.getRandom().nextFloat()) * radius;
 				
 	            List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3));
+	            List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3));
+	            projList.removeIf((proj) -> proj.getOwner() != null && proj.getOwner() == living);
+	            projList.forEach((entity) ->
+	            {
+	            	Vec3 vec = EnchantmentUtil.fromToVector(living.position(), entity.position(), level * EnchantmentConfig.barrierPushPowerPerLevel.get());
+	            	entity.setDeltaMovement(vec.x, entity.getDeltaMovement().y, vec.z);
+	            });
 	            list.removeIf((entity) -> entity == living);
+	            list.removeIf((entity) -> entity instanceof Player && EnchantmentConfig.disableBarrierPushingPlayer.get());
 	            list.forEach((entity) ->
 	            {
 	            	Vec3 vec = EnchantmentUtil.fromToVector(living.position(), entity.position(), level * EnchantmentConfig.barrierPushPowerPerLevel.get());
@@ -371,6 +383,8 @@ public class EventHandlerForge
 					{
 						int level = stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get());
 						EnchantmentUtil.setTickrate(proj, 20 + (level * EnchantmentConfig.snipeProjectileSpeedPerLevel.get()));
+						proj.getPersistentData().putBoolean(SNIPE, true);
+						proj.getPersistentData().putInt(SNIPE_LVL, level);
 					}
 				}
 			}
@@ -418,6 +432,16 @@ public class EventHandlerForge
 		if(event.getSource().getDirectEntity() != null)
 		{
 			Entity entity = event.getSource().getDirectEntity();
+			
+			if(entity instanceof Projectile proj)
+			{
+				if(proj.getPersistentData().contains(SNIPE))
+				{
+					int level = proj.getPersistentData().getInt(SNIPE_LVL);
+					event.setAmount(event.getAmount() + (level * EnchantmentConfig.snipeAdditionalDamagePerLevel.get()));
+				}
+			}
+			
 			if(entity instanceof ThrownTrident trident)
 			{
 				if(trident.getOwner() != null)
@@ -442,7 +466,9 @@ public class EventHandlerForge
 		                    
 		                    if(trident.level().getBlockState(BlockPos.containing(x, event.getEntity().getY() - 1, z)).liquid())
 		                    {
-								ThrownTrident summonedTrident = new ThrownTrident(trident.level(), (LivingEntity) trident.getOwner(), ItemStack.of(trident.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM)));
+								ThrownTrident summonedTrident = (ThrownTrident) trident.getType().create(trident.level());
+								summonedTrident.setOwner(trident.getOwner());
+								ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, summonedTrident, ItemStack.of(trident.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM)), "f_37555_");
 								summonedTrident.setPos(x, event.getEntity().getY() - 1, z);
 								summonedTrident.setDeltaMovement(0, 0.35, 0);
 								summonedTrident.setNoGravity(true);
@@ -477,7 +503,7 @@ public class EventHandlerForge
 		
 		if(proj.getPersistentData().contains(RECOCHET) && event.getRayTraceResult().getType() == HitResult.Type.BLOCK)
 		{
-		    int bounce = 0;
+		    int bounce = proj.getPersistentData().getInt(RECOCHET_BOUNCE);
 		    double motionx = proj.getDeltaMovement().x;
 		    double motiony = proj.getDeltaMovement().y;
 		    double motionz = proj.getDeltaMovement().z;
@@ -487,35 +513,35 @@ public class EventHandlerForge
 			if (direction == Direction.EAST) 
 			{
 				motionx = -motionx;
-				bounce += 1;
+			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
 			else if (direction == Direction.SOUTH) 
 			{
 				motionz = -motionz;
-				bounce += 1;
+			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
 			else if (direction == Direction.WEST) 
 			{
 				motionx = -motionx;
-				bounce += 1;
+			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
 			else if (direction == Direction.NORTH)
 			{
 				motionz = -motionz;
-				bounce += 1;
+			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
 			else if (direction == Direction.UP)
 			{
 				motiony = -motiony;
-				bounce += 1;
+			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
 			else if (direction == Direction.DOWN)
 			{
 				motiony = -motiony;
-				bounce += 1;
+			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
 			
-			if(bounce < 5) 
+			if(bounce < EnchantmentConfig.recochetMaxBounce.get()) 
 			{
 				proj.setDeltaMovement(motionx, motiony, motionz);
 			}

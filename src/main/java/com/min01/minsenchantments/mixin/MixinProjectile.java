@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.misc.EventHandlerForge;
 
 import net.minecraft.world.entity.projectile.Projectile;
@@ -20,7 +21,12 @@ public class MixinProjectile
 		{
 			if(Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.WALLBREAK) || Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.RECOCHET))
 			{
-				ci.cancel();
+
+			    int bounce = Projectile.class.cast(this).getPersistentData().getInt(EventHandlerForge.RECOCHET_BOUNCE);
+			    if(bounce < EnchantmentConfig.recochetMaxBounce.get())
+			    {
+					ci.cancel();
+			    }
 			}
 		}
     }

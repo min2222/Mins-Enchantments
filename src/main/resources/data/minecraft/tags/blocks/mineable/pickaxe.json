@@ -1,0 +1,7 @@
+{
+	"replace": false,
+	"values": [
+		"minsenchantments:ocean_enchanting_table",
+		"minsenchantments:nether_enchanting_table"
+	]
+}

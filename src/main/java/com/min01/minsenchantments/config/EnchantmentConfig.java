@@ -88,6 +88,8 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> recochetMinCost;
 	public static ConfigValue<Integer> recochetMaxCost;
 	
+	public static ConfigValue<Integer> recochetMaxBounce;
+	
 	public static ConfigValue<Integer> climbMinCost;
 	public static ConfigValue<Integer> climbMaxCost;
 	
@@ -111,6 +113,7 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> snipeMaxCost;
 	
 	public static ConfigValue<Integer> snipeProjectileSpeedPerLevel;
+	public static ConfigValue<Float> snipeAdditionalDamagePerLevel;
 	
 	public static ConfigValue<Integer> magnetMinCost;
 	public static ConfigValue<Integer> magnetMaxCost;
@@ -127,6 +130,8 @@ public class EnchantmentConfig
 	
 	public static ConfigValue<Float> barrierRadiusPerLevel;
 	public static ConfigValue<Float> barrierPushPowerPerLevel;
+	
+	public static ForgeConfigSpec.BooleanValue disableBarrierPushingPlayer;
 	
 	//tables
 	
@@ -228,10 +233,12 @@ public class EnchantmentConfig
     	EnchantmentConfig.recochetMinCost = config.comment("minimum enchantability for recochet enchantment").define("recochetMinCost", 25);
     	EnchantmentConfig.recochetMaxCost = config.comment("maximum enchantability for recochet enchantment").define("recochetMaxCost", 50);
     	
+    	EnchantmentConfig.recochetMaxBounce = config.comment("maximum bouncing count for recochet enchantment").define("recochetMaxBounce", 5);
+    	
     	EnchantmentConfig.climbMinCost = config.comment("minimum enchantability for climb enchantment").define("climbMinCost", 1);
     	EnchantmentConfig.climbMaxCost = config.comment("maximum enchantability for climb enchantment").define("climbMaxCost", 11);
     	
-    	EnchantmentConfig.climbSpeedPerLevel = config.comment("climb speed for each level of climb enchantment").define("climbSpeedPerLevel", 0.013D);
+    	EnchantmentConfig.climbSpeedPerLevel = config.comment("climb speed for each level of climb enchantment").define("climbSpeedPerLevel", 1.5D);
     	
     	EnchantmentConfig.criticalStrikeMinCost = config.comment("minimum enchantability for critical strike enchantment").define("criticalStrikeMinCost", 1);
     	EnchantmentConfig.criticalStrikeMaxCost = config.comment("maximum enchantability for critical strike enchantment").define("criticalStrikeMaxCost", 11);
@@ -251,6 +258,7 @@ public class EnchantmentConfig
     	EnchantmentConfig.snipeMaxCost = config.comment("maximum enchantability for snipe enchantment").define("snipeMaxCost", 11);
     	
     	EnchantmentConfig.snipeProjectileSpeedPerLevel = config.comment("speed of projectile for each level of snipe enchantment").define("snipeProjectileSpeedPerLevel", 10);
+    	EnchantmentConfig.snipeAdditionalDamagePerLevel = config.comment("additional damage for each level of snipe enchantment").define("snipeAdditionalDamagePerLevel", 1F);
     	
     	EnchantmentConfig.magnetMinCost = config.comment("minimum enchantability for magnet enchantment").define("magnetMinCost", 1);
     	EnchantmentConfig.magnetMaxCost = config.comment("maximum enchantability for magnet enchantment").define("magnetMaxCost", 11);
@@ -268,13 +276,15 @@ public class EnchantmentConfig
     	EnchantmentConfig.barrierPushPowerPerLevel = config.comment("pushing power for each level of barrier enchantment").define("barrierPushPowerPerLevel", 0.01F);
     	EnchantmentConfig.barrierRadiusPerLevel = config.comment("pushing radius for each level of barrier enchantment").define("barrierRadiusPerLevel", 3.0F);
     	
+    	EnchantmentConfig.disableBarrierPushingPlayer = config.comment("disable players pushed by barrier enchantment").define("disableBarrierPushingPlayer", true);
+    	
         config.pop();
         
     	config.push("Table Settings");
         config.pop();
         
     	config.push("Extra Settings");
-    	EnchantmentConfig.noEnchantCap = config.comment("you can combine any enchantment in anvil").define("noEnchantCap", false);
+    	EnchantmentConfig.noEnchantCap = config.comment("you can combine any enchantment in anvil").define("noEnchantCap", true);
     	EnchantmentConfig.disenchanting = config.comment("you can disenchanting with vanilla book").define("disenchanting", true);
     	EnchantmentConfig.noIncreasingRepairCost = config.comment("remove repair cost increasing").define("noIncreasingRepairCost", true);
         config.pop();

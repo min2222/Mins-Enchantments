@@ -38,7 +38,7 @@ public class MixinPlayer
 	}
 	
 	@Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/entity/player/CriticalHitEvent;getDamageModifier()F"), remap = false)
-	private float attack(CriticalHitEvent event) 
+	private float getDamageModifier(CriticalHitEvent event) 
 	{
 		if(Player.class.cast(this).getMainHandItem().getEnchantmentLevel(CustomEnchantments.CRITICAL_STRIKE.get()) > 0)
 		{

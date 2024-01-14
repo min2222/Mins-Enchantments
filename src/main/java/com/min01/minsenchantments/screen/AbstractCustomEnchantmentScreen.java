@@ -94,7 +94,7 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 		{
 			Lighting.setupForEntityInInventory();
 			p_282430_.pose().pushPose();
-			p_282430_.pose().translate((float)i + 33.0F, (float)j + 10, 100.0F);
+			p_282430_.pose().translate((float)i + 33.0F, (float)j, 100.0F);
 			p_282430_.pose().scale(40.0F, 40.0F, 40.0F);
 			this.renderCustom(p_282430_.pose(), p_282530_, p_282430_.bufferSource());
 			p_282430_.flush();

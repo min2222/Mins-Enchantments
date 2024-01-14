@@ -71,6 +71,7 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 			float f5 = this.getActiveRotation(0.0F);
 			VertexConsumer vertexconsumer1 = multibuffersource$buffersource.getBuffer(RenderType.entitySolid(SHELL_TEXTURE));
 			stack.pushPose();
+			stack.translate(0, 0.8, 0);
 			stack.mulPose((new Quaternionf()).rotationY(f5 * ((float)Math.PI / 180F)));
 			this.shell.render(stack, vertexconsumer1, 15728880, OverlayTexture.NO_OVERLAY);
 			stack.popPose();
@@ -81,6 +82,7 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 			float f2 = Mth.sin(f * 0.1F) / 2.0F + 0.5F;
 			f2 = f2 * f2 + f2;
 			stack.pushPose();
+			stack.translate(0, 0.25, 0);
 			stack.translate(0, (double)(0.1F + f2 * 0.2F), 0);
 			Vector3f vector3f = new Vector3f(0.5F, 1.0F, 0.5F);
 			stack.mulPose((new Quaternionf()).rotationAxis(f1 * ((float)Math.PI / 180F), vector3f));
@@ -88,6 +90,7 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 			stack.popPose();
 			
 			stack.pushPose();
+			stack.translate(0, 0.25, 0);
 			stack.translate(0D, (double)(0.1F + f2 * 0.2F), 0D);
 			stack.scale(0.5F, 0.5F, 0.5F);
 			stack.scale(1.3333334F, 1.3333334F, 1.3333334F);

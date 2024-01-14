@@ -117,8 +117,8 @@ public class EnchantmentUtil
 	
 	public static Vec3 fromToVector(Vec3 from, Vec3 to, float speed)
 	{
-		Vec3 motion = new Vec3(to.x - from.x, to.y - from.y, to.z - from.z).scale(speed).normalize();
-		return motion;
+		Vec3 motion = new Vec3(to.x - from.x, to.y - from.y, to.z - from.z).normalize();
+		return motion.scale(speed);
 	}
 	
 	public static void speedupEntity(LivingEntity entity, float factor)

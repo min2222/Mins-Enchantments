@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "SPS",
+        "PPP"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:wither_skeleton_skull"
+        },
+        "S": {
+            "item": "minecraft:gold_block"
+        },
+        "P": {
+            "item": "minecraft:nether_bricks"
+        }
+    },
+    "result": {
+        "item": "minsenchantments:nether_enchanting_table",
+        "count": 1
+    }
+}

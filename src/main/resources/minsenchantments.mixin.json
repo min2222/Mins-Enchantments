@@ -1,0 +1,26 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "com.min01.minsenchantments.mixin",
+	"plugin": "com.min01.minsenchantments.mixin.EnchantmentMixinConfigPlugin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"MixinEnchantment",
+		"AbstractArrowInvoker",
+		"MixinEnchantmentMenu",
+		"MixinPlayer",
+		"MixinLivingEntity",
+		"MixinProjectile",
+		"entitytimer.MixinServerLevelEntityTimer"
+	],
+	"client": [
+		"entitytimer.MixinLevelRendererEntityTimer",
+		"entitytimer.MixinClientLevelEntityTimer",
+		"entitytimer.MixinMinecraftEntityTimer"
+	],
+	"server": [],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"refmap": "minsenchantments.mixin-refmap.json"
+}

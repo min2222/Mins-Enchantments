@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "SPS",
+        "PPP"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:conduit"
+        },
+        "S": {
+            "item": "minecraft:sea_lantern"
+        },
+        "P": {
+            "item": "minecraft:prismarine_bricks"
+        }
+    },
+    "result": {
+        "item": "minsenchantments:ocean_enchanting_table",
+        "count": 1
+    }
+}

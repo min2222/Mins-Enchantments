@@ -28,7 +28,9 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> sharpWavesMinCost;
 	public static ConfigValue<Integer> sharpWavesMaxCost;
 
-	public static ConfigValue<Float> sharpWavesDistanceDivider;
+	public static ConfigValue<Float> sharpWavesMaxDamagePerLevel;
+	public static ConfigValue<Float> sharpWavesDistancePerLevel;
+	public static ConfigValue<Float> sharpWavesDamagePerLevel;
 	
 	public static ConfigValue<Integer> tideMinCost;
 	public static ConfigValue<Integer> tideMaxCost;
@@ -46,6 +48,13 @@ public class EnchantmentConfig
 	
 	public static ConfigValue<Float> wavesProtectionSpeedPerLevel;
 	public static ConfigValue<Integer> wavesProtectionDurationPerLevel;
+	
+	public static ConfigValue<Integer> lordoftheseaMinCost;
+	public static ConfigValue<Integer> lordoftheseaMaxCost;
+	
+	public static ConfigValue<Float> lordoftheseaRadiusPerLevel;
+	public static ConfigValue<Float> lordoftheseaAnimalsDamagePerLevel;
+	public static ConfigValue<Integer> lordoftheseaMaxAnimalsAmountPerLevel;
 	
 	public static ConfigValue<Integer> mermaidsCurseMinCost;
 	public static ConfigValue<Integer> mermaidsCurseMaxCost;
@@ -133,6 +142,20 @@ public class EnchantmentConfig
 	
 	public static ForgeConfigSpec.BooleanValue disableBarrierPushingPlayer;
 	
+	public static ConfigValue<Integer> skillfulMinCost;
+	public static ConfigValue<Integer> skillfulMaxCost;
+	
+	public static ConfigValue<Float> skillfulMaxDamagePerLevel;
+	public static ConfigValue<Float> skillfulDurabilityPerLevel;
+	public static ConfigValue<Float> skillfulDamagePerLevel;
+	
+	public static ConfigValue<Integer> cellDivisionMinCost;
+	public static ConfigValue<Integer> cellDivisionMaxCost;
+
+	public static ConfigValue<Float> cellDivisionScalePerSplit;
+	public static ConfigValue<Integer> cellDivisionMaxSplitPerLevel;
+	public static ConfigValue<Integer> cellDivisionSplitAmountPerLevel;
+	
 	//tables
 	
 	//ocean
@@ -179,7 +202,9 @@ public class EnchantmentConfig
     	EnchantmentConfig.sharpWavesMinCost = config.comment("minimum enchantability for sharp waves enchantment").define("sharpWavesMinCost", 1);
     	EnchantmentConfig.sharpWavesMaxCost = config.comment("maximum enchantability for sharp waves enchantment").define("sharpWavesMaxCost", 11);
     	
-    	EnchantmentConfig.sharpWavesDistanceDivider = config.comment("distance divide value depending on enchantment level. higher value will decrease damage. caculation : distance divide enchantment level multiplied with defined value").define("sharpWavesDistanceDivider", 10.0F);
+    	EnchantmentConfig.sharpWavesMaxDamagePerLevel = config.comment("maximum additional damage for each level of sharp waves enchantment").define("sharpWavesMaxDamagePerLevel", 5.0F);
+    	EnchantmentConfig.sharpWavesDistancePerLevel = config.comment("minimum distance required to increase damage for each level of sharp waves enchantment").define("sharpWavesDistancePerLevel", 200.0F);
+    	EnchantmentConfig.sharpWavesDamagePerLevel = config.comment("additional damage amount when enough distance traveled for each level of sharp waves enchantment").define("sharpWavesDamagePerDistanceAndLevel", 2.0F);
     	
     	EnchantmentConfig.tideMinCost = config.comment("minimum enchantability for tide enchantment").define("tideMinCost", 1);
     	EnchantmentConfig.tideMaxCost = config.comment("maximum enchantability for tide enchantment").define("tideMaxCost", 11);
@@ -197,6 +222,13 @@ public class EnchantmentConfig
     	
     	EnchantmentConfig.wavesProtectionSpeedPerLevel = config.comment("effect speed for each level of wave's protection enchantment").define("wavesProtectionSpeedPerLevel", 0.1F);
     	EnchantmentConfig.wavesProtectionDurationPerLevel = config.comment("effect duration for each level of wave's protection enchantment").define("wavesProtectionDurationPerLevel", 1);
+    	
+    	EnchantmentConfig.lordoftheseaMinCost = config.comment("minimum enchantability for lord of the sea enchantment").define("lordoftheseaMinCost", 1);
+    	EnchantmentConfig.lordoftheseaMaxCost = config.comment("maximum enchantability for lord of the sea enchantment").define("lordoftheseaMaxCost", 11);
+    	
+    	EnchantmentConfig.lordoftheseaRadiusPerLevel = config.comment("effect radius for each level of lord of the sea enchantment").define("lordoftheseaRadiusPerLevel", 2F);
+    	EnchantmentConfig.lordoftheseaAnimalsDamagePerLevel = config.comment("attack damage of animals for each level of lord of the sea enchantment").define("lordoftheseaAnimalsDamagePerLevel", 1F);
+    	EnchantmentConfig.lordoftheseaMaxAnimalsAmountPerLevel = config.comment("maximum value of animals that affected for each level of lord of the sea enchantment").define("lordoftheseaMaxAnimalsAmountPerLevel", 2);
     	
     	EnchantmentConfig.mermaidsCurseMinCost = config.comment("minimum enchantability for curse of mermaid enchantment").define("mermaidsCurseMinCost", 1);
     	EnchantmentConfig.mermaidsCurseMaxCost = config.comment("maximum enchantability for curse of mermaid enchantment").define("mermaidsCurseMaxCost", 11);
@@ -274,9 +306,23 @@ public class EnchantmentConfig
     	EnchantmentConfig.barrierMaxCost = config.comment("maximum enchantability for barrier enchantment").define("barrierMaxCost", 11);
     	
     	EnchantmentConfig.barrierPushPowerPerLevel = config.comment("pushing power for each level of barrier enchantment").define("barrierPushPowerPerLevel", 0.01F);
-    	EnchantmentConfig.barrierRadiusPerLevel = config.comment("pushing radius for each level of barrier enchantment").define("barrierRadiusPerLevel", 3.0F);
+    	EnchantmentConfig.barrierRadiusPerLevel = config.comment("pushing radius for each level of barrier enchantment").define("barrierRadiusPerLevel", 2.0F);
     	
     	EnchantmentConfig.disableBarrierPushingPlayer = config.comment("disable players pushed by barrier enchantment").define("disableBarrierPushingPlayer", true);
+    	
+    	EnchantmentConfig.skillfulMinCost = config.comment("minimum enchantability for skillful enchantment").define("skillfulMinCost", 1);
+    	EnchantmentConfig.skillfulMaxCost = config.comment("maximum enchantability for skillful enchantment").define("skillfulMaxCost", 11);
+
+    	EnchantmentConfig.skillfulMaxDamagePerLevel = config.comment("maximum additional damage for each level of skillful enchantment").define("skillfulMaxDamagePerLevel", 3.0F);
+    	EnchantmentConfig.skillfulDurabilityPerLevel = config.comment("minimum durability required to increase damage for each level of skillful enchantment").define("skillfulDurabilityPerLevel", 900.0F);
+    	EnchantmentConfig.skillfulDamagePerLevel = config.comment("additional damage when enough durability used for each level of skillful enchantment").define("skillfulDamagePerLevel", 2.0F);
+    	
+    	EnchantmentConfig.cellDivisionMinCost = config.comment("minimum enchantability for cell division enchantment").define("cellDivisionMinCost", 1);
+    	EnchantmentConfig.cellDivisionMaxCost = config.comment("maximum enchantability for cell division enchantment").define("cellDivisionMaxCost", 11);
+
+    	EnchantmentConfig.cellDivisionScalePerSplit = config.comment("scale decrease amount for each split of cell division enchantment").define("cellDivisionScalePerSplit", 0.1F);
+    	EnchantmentConfig.cellDivisionMaxSplitPerLevel = config.comment("maximum split amount for each level of cell division enchantment").define("cellDivisionMaxSplitPerLevel", 1);
+    	EnchantmentConfig.cellDivisionSplitAmountPerLevel = config.comment("amount for additional projectile of each split for each level of cell division enchantment").define("cellDivisionSplitAmountPerLevel", 2);
     	
         config.pop();
         

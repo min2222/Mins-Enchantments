@@ -1,11 +1,17 @@
 package com.min01.minsenchantments.misc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.config.EnchantmentConfig;
+import com.min01.minsenchantments.event.RenderEntityEvent;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,6 +23,21 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientEventHandlerForge 
 {
 	public static final Minecraft MC = Minecraft.getInstance();
+	public static final Map<Projectile, Float> SCALE_MAP = new HashMap<>();
+	
+    @SubscribeEvent
+    public static void onRenderEntity(RenderEntityEvent.Pre<? extends Projectile> event) 
+    {
+    	if(event.getEntity() instanceof Projectile proj)
+    	{
+    		PoseStack stack = event.getPoseStack();
+    		if(SCALE_MAP.containsKey(proj))
+    		{
+    			float scale = SCALE_MAP.get(proj);
+        		stack.scale(scale, scale, scale);
+    		}
+    	}
+    }
 	
     @SubscribeEvent
     public static void onRenderFog(ViewportEvent.RenderFog event) 

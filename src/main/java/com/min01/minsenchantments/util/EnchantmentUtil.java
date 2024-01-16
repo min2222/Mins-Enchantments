@@ -8,6 +8,7 @@ import com.min01.minsenchantments.misc.EntityTimer;
 import com.min01.minsenchantments.network.EnchantmentNetwork;
 import com.min01.minsenchantments.network.EntityTimerSyncPacket;
 
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -123,9 +124,15 @@ public class EnchantmentUtil
 	
 	public static void speedupEntity(LivingEntity entity, float factor)
 	{
-		if(entity.zza > 0)
+		entity.setDeltaMovement(entity.getDeltaMovement().multiply(factor + 1, 1, factor + 1));
+		if(entity instanceof ServerPlayer player)
 		{
-			entity.setDeltaMovement(entity.getDeltaMovement().multiply(factor, 1, factor));
+			player.connection.send(new ClientboundSetEntityMotionPacket(entity));
 		}
+	}
+	
+	public static double getAttackReachSqr(Entity attacker, Entity target)
+	{
+		return (double)(attacker.getBbWidth() * 2.0F * attacker.getBbWidth() * 2.0F + target.getBbWidth());
 	}
 }

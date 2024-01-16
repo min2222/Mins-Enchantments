@@ -11,9 +11,11 @@
 		"MixinPlayer",
 		"MixinLivingEntity",
 		"MixinProjectile",
+		"MixinEnchantmentHelper",
 		"entitytimer.MixinServerLevelEntityTimer"
 	],
 	"client": [
+		"MixinEntityRenderDispatcher",
 		"entitytimer.MixinLevelRendererEntityTimer",
 		"entitytimer.MixinClientLevelEntityTimer",
 		"entitytimer.MixinMinecraftEntityTimer"

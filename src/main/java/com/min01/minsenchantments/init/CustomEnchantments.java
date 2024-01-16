@@ -7,15 +7,18 @@ import com.min01.minsenchantments.enchantment.nether.EnchantmentAutoSmelt.Enchan
 import com.min01.minsenchantments.enchantment.nether.EnchantmentLavaWalker;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentAutoShielding;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentBarrier;
+import com.min01.minsenchantments.enchantment.normal.EnchantmentCellDivision;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentClimb;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentCriticalStrike;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentLeech;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentMagnet;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentRecochet;
+import com.min01.minsenchantments.enchantment.normal.EnchantmentSkillful;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentSnipe;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentWallbreak;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentAbyssCurse;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentFloatingCurse;
+import com.min01.minsenchantments.enchantment.ocean.EnchantmentLordOfTheSea;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentMermaidCurse;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentMermaidsBlessing;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentPoseidonsGrace;
@@ -52,6 +55,7 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> TIDE = ENCHANTMENTS.register("tide", () -> new EnchantmentTide());
 	public static final RegistryObject<Enchantment> POSEIDONS_GRACE = ENCHANTMENTS.register("poseidons_grace", () -> new EnchantmentPoseidonsGrace());
 	public static final RegistryObject<Enchantment> WAVES_PROTECTION = ENCHANTMENTS.register("waves_protection", () -> new EnchantmentWavesProtection());
+	public static final RegistryObject<Enchantment> LORD_OF_THE_SEA = ENCHANTMENTS.register("lord_of_the_sea", () -> new EnchantmentLordOfTheSea());
 	
 	//nether
 	public static final RegistryObject<Enchantment> LAVA_WALKER = ENCHANTMENTS.register("lava_walker", () -> new EnchantmentLavaWalker());
@@ -71,6 +75,8 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> MAGNET = ENCHANTMENTS.register("magnet", () -> new EnchantmentMagnet());
 	public static final RegistryObject<Enchantment> AUTO_SHIELDING = ENCHANTMENTS.register("auto_shielding", () -> new EnchantmentAutoShielding());
 	public static final RegistryObject<Enchantment> BARRIER = ENCHANTMENTS.register("barrier", () -> new EnchantmentBarrier());
+	public static final RegistryObject<Enchantment> SKILLFUL = ENCHANTMENTS.register("skillful", () -> new EnchantmentSkillful());
+	public static final RegistryObject<Enchantment> CELL_DIVISION = ENCHANTMENTS.register("cell_division", () -> new EnchantmentCellDivision());
 	
 	//curse
 	public static final RegistryObject<Enchantment> CURSE_OF_MERMAID = ENCHANTMENTS.register("curse_of_mermaid", () -> new EnchantmentMermaidCurse());

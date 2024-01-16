@@ -3,11 +3,14 @@ package com.min01.minsenchantments.misc;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.mixin.AbstractArrowInvoker;
+import com.min01.minsenchantments.network.CellScaleSyncPacket;
+import com.min01.minsenchantments.network.EnchantmentNetwork;
 import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import net.minecraft.core.BlockPos;
@@ -26,6 +29,7 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -37,6 +41,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
@@ -64,19 +69,26 @@ public class EventHandlerForge
 	public static final String WATER_BOLT = "WaterBolt";
 	public static final String SHARP_WAVES = "SharpWaves";
 	public static final String SHARP_WAVES_LVL = "SharpWavesLvl";
+	public static final String SHARP_WAVES_DMG = "SharpWavesDmg";
 	public static final String TIDE = "Tide";
 	public static final String POSEIDONS_GRACE = "PoseidonsGrace";
 	public static final String POSEIDONS_GRACE_ITEM = "PoseidonsGraceItem";
 	public static final String POSEIDONS_GRACE_SUMMONED = "PoseidonsGraceSummoned";
 	public static final String POSEIDONS_GRACE_TARGET = "PoseidonsGraceTarget";
 	public static final String WAVES_PROTECTION = "WavesProtection";
+	public static final String LORD_OF_THE_SEA = "LordOfTheSea";
+	public static final String LORD_OF_THE_SEA_DMG = "LordOfTheSeaDmg";
 	public static final String RECOCHET = "Recochet";
 	public static final String RECOCHET_BOUNCE = "RecochetBounce";
 	public static final String WALLBREAK = "Wallbreak";
 	public static final String SNIPE = "Snipe";
 	public static final String SNIPE_LVL = "SnipeLvL";
 	public static final String AUTO_SHIELDING = "AutoShielding";
-	
+	public static final String CELL_DIVISION = "CellDivision";
+	public static final String CELL_DIVISION_LVL = "CellDivisionLvl";
+	public static final String CELL_DIVISION_NUMBER = "CellDivisionNumber";
+	public static final String CELL_DIVISION_SCALE = "CellDivisionScale";
+
 	public static final Map<Class<? extends Entity>, Object> ENTITY_MAP = new HashMap<>();
 	
 	@SubscribeEvent
@@ -135,6 +147,36 @@ public class EventHandlerForge
 	public static void onLivingTick(LivingTickEvent event)
 	{
 		LivingEntity living = event.getEntity();
+		
+		if(living.level() instanceof ServerLevel level)
+		{
+			if(living.getPersistentData().contains(LORD_OF_THE_SEA) && living instanceof WaterAnimal waterAnimal)
+			{
+				UUID ownerUUID = waterAnimal.getPersistentData().getUUID(LORD_OF_THE_SEA);
+				float damage = waterAnimal.getPersistentData().getFloat(LORD_OF_THE_SEA_DMG);
+				Entity owner = level.getEntity(ownerUUID);
+				if(owner != null && waterAnimal.getTarget() != null)
+				{
+					Entity target = waterAnimal.getTarget();
+					waterAnimal.getLookControl().setLookAt(target, 30.0F, 30.0F);
+					double distance = waterAnimal.getPerceivedTargetDistanceSquareForMeleeAttack((LivingEntity) target);
+					if(distance <= EnchantmentUtil.getAttackReachSqr(waterAnimal, target))
+					{
+						target.hurt(owner.damageSources().mobAttack((LivingEntity) owner), damage);
+					}
+					else
+					{
+						waterAnimal.getNavigation().moveTo(target, waterAnimal.getAttributeBaseValue(Attributes.MOVEMENT_SPEED));
+					}
+				}
+				
+				if(owner == null || waterAnimal.getTarget() == null)
+				{
+					waterAnimal.getPersistentData().remove(LORD_OF_THE_SEA);
+					waterAnimal.getPersistentData().remove(LORD_OF_THE_SEA_DMG);
+				}
+			}
+		}
 		
 		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.BARRIER.get(), living) > 0)
 		{
@@ -319,7 +361,7 @@ public class EventHandlerForge
 				}
 				else
 				{
-					player.getPersistentData().putFloat(TIDE, 1);
+					player.getPersistentData().putFloat(TIDE, 0);
 				}
 			}
 			
@@ -330,10 +372,10 @@ public class EventHandlerForge
 				if(wave > 0)
 				{
 					player.getPersistentData().putFloat(WAVES_PROTECTION, wave - 1);
-					if(player.isInWater() && player.isSwimming())
-					{	
+					if(player.isInWater() && player.isSwimming() && wave <= 95)
+					{
 						//FIXME not working
-						EnchantmentUtil.speedupEntity(player, 1 + (level * EnchantmentConfig.wavesProtectionSpeedPerLevel.get()));
+						EnchantmentUtil.speedupEntity(player, level * EnchantmentConfig.wavesProtectionSpeedPerLevel.get());
 					}
 				}
 			}
@@ -386,6 +428,18 @@ public class EventHandlerForge
 						proj.getPersistentData().putBoolean(SNIPE, true);
 						proj.getPersistentData().putInt(SNIPE_LVL, level);
 					}
+					
+					if(stack.getEnchantmentLevel(CustomEnchantments.CELL_DIVISION.get()) > 0)
+					{
+						if(proj.getPersistentData().getInt(CELL_DIVISION_NUMBER) <= 0)
+						{
+							int level = stack.getEnchantmentLevel(CustomEnchantments.CELL_DIVISION.get());
+							proj.getPersistentData().putBoolean(CELL_DIVISION, true);
+							proj.getPersistentData().putInt(CELL_DIVISION_LVL, level);
+							proj.getPersistentData().putInt(CELL_DIVISION_NUMBER, 0);
+							proj.getPersistentData().putFloat(CELL_DIVISION_SCALE, 1.0F);
+						}
+					}
 				}
 			}
 		}
@@ -402,6 +456,7 @@ public class EventHandlerForge
 					{
 						trident.getPersistentData().put(SHARP_WAVES, NbtUtils.writeBlockPos(trident.blockPosition()));
 						trident.getPersistentData().putInt(SHARP_WAVES_LVL, stack.getEnchantmentLevel(CustomEnchantments.SHARP_WAVES.get()));
+						trident.getPersistentData().putFloat(SHARP_WAVES_DMG, 0);
 					}
 					
 					if(stack.getEnchantmentLevel(CustomEnchantments.POSEIDONS_GRACE.get()) > 0)
@@ -419,13 +474,33 @@ public class EventHandlerForge
 	public static void onLivingDamage(LivingDamageEvent event)
 	{
 		LivingEntity living = event.getEntity();
-		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.WAVES_PROTECTION.get(), living) > 0)
+		
+		if(event.getSource().getEntity() != null)
 		{
-			int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.WAVES_PROTECTION.get(), living);
-			float wave = living.getPersistentData().getFloat(WAVES_PROTECTION);
-			if(living.isInWater() && wave <= 0)
+			Entity entity = event.getSource().getEntity();
+			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.LORD_OF_THE_SEA.get(), living) > 0 && entity instanceof LivingEntity source && living.isInWater())
 			{
-				living.getPersistentData().putFloat(WAVES_PROTECTION, level * (EnchantmentConfig.wavesProtectionDurationPerLevel.get() * 20));
+				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.LORD_OF_THE_SEA.get(), living);
+				List<WaterAnimal> list = living.level().getEntitiesOfClass(WaterAnimal.class, living.getBoundingBox().inflate(level * EnchantmentConfig.lordoftheseaRadiusPerLevel.get()));
+				if(list.size() <= level * EnchantmentConfig.lordoftheseaMaxAnimalsAmountPerLevel.get())
+				{
+					list.forEach((waterAnimal) ->
+					{
+						waterAnimal.getPersistentData().putUUID(LORD_OF_THE_SEA, living.getUUID());
+						waterAnimal.getPersistentData().putFloat(LORD_OF_THE_SEA_DMG, level * EnchantmentConfig.lordoftheseaAnimalsDamagePerLevel.get());
+						waterAnimal.setTarget(source);
+					});
+				}
+			}
+			
+			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.WAVES_PROTECTION.get(), living) > 0)
+			{
+				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.WAVES_PROTECTION.get(), living);
+				float wave = living.getPersistentData().getFloat(WAVES_PROTECTION);
+				if(living.isInWater() && wave <= 0)
+				{
+					living.getPersistentData().putFloat(WAVES_PROTECTION, level * (EnchantmentConfig.wavesProtectionDurationPerLevel.get() * 20));
+				}
 			}
 		}
 		
@@ -447,12 +522,24 @@ public class EventHandlerForge
 				if(trident.getOwner() != null)
 				{
 					Entity owner = trident.getOwner();
-					if(trident.getPersistentData().contains(SHARP_WAVES))
+					if(trident.getPersistentData().contains(SHARP_WAVES) && owner.isInWater())
 					{
 						BlockPos pos = NbtUtils.readBlockPos(trident.getPersistentData().getCompound(SHARP_WAVES));
 						double distance = trident.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
 						int level = trident.getPersistentData().getInt(SHARP_WAVES_LVL);
-						event.setAmount((float) (event.getAmount() + (distance / (level * EnchantmentConfig.sharpWavesDistanceDivider.get()))));
+						float damage = trident.getPersistentData().getFloat(SHARP_WAVES_DMG);
+						if(distance % (EnchantmentConfig.sharpWavesDistancePerLevel.get() / level) == 0)
+						{
+							if(damage <= level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
+							{
+								trident.getPersistentData().putFloat(SHARP_WAVES_DMG, damage + (level * EnchantmentConfig.sharpWavesDamagePerLevel.get()));
+							}
+							if(damage > level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
+							{
+								trident.getPersistentData().putFloat(SHARP_WAVES_DMG, level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get());
+							}
+						}
+						event.setAmount(event.getAmount() + damage);
 					}
 					
 					if(trident.getPersistentData().contains(POSEIDONS_GRACE) && !trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
@@ -498,6 +585,39 @@ public class EventHandlerForge
 			if(trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
 			{
 				trident.discard();
+			}
+		}
+		
+		if(proj.getPersistentData().contains(CELL_DIVISION) || proj.getPersistentData().contains(CELL_DIVISION_NUMBER))
+		{
+			int level = proj.getPersistentData().getInt(CELL_DIVISION_LVL);
+			int number = proj.getPersistentData().getInt(CELL_DIVISION_NUMBER);
+			float scale = proj.getPersistentData().getFloat(CELL_DIVISION_SCALE);
+			//float maxNumber = level * EnchantmentConfig.cellDivisionMaxSplitPerLevel.get();
+			//TODO
+			if(number < 3)
+			{
+				for(int i = 0; i < level * EnchantmentConfig.cellDivisionSplitAmountPerLevel.get(); i++)
+				{
+					Projectile cell = (Projectile) proj.getType().create(proj.level());
+					cell.setOwner(proj.getOwner());
+					cell.getPersistentData().putInt(CELL_DIVISION_LVL, level);
+					cell.getPersistentData().putInt(CELL_DIVISION_NUMBER, number + 1);
+					cell.getPersistentData().putFloat(CELL_DIVISION_SCALE, scale - EnchantmentConfig.cellDivisionScalePerSplit.get());
+					cell.setPos(proj.position().add(0, 0.5, 0));
+					Level world = proj.level();
+					cell.setDeltaMovement(world.random.nextGaussian() * 0.2D, 0.4D, world.random.nextGaussian() * 0.2D);
+					world.addFreshEntity(cell);
+					if(!world.isClientSide)
+					{
+						EnchantmentNetwork.sendToAll(new CellScaleSyncPacket(cell.getId(), cell.getPersistentData().getFloat(CELL_DIVISION_SCALE)));
+					}
+				}
+			}
+			
+			if(event.getRayTraceResult().getType() == HitResult.Type.BLOCK)
+			{
+				proj.discard();
 			}
 		}
 		

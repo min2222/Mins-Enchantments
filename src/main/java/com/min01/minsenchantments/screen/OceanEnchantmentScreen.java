@@ -108,4 +108,10 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 	{
 		return (this.activeRotation + p_59198_) * -0.0375F;
 	}
+	
+	@Override
+	public String getTransltateStringForRequiredItem(boolean one) 
+	{
+		return one ? "container.enchant.prismarine_crystals.one" : "container.enchant.prismarine_crystals.many";
+	}
 }

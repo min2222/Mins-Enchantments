@@ -32,7 +32,7 @@ public class OceanEnchantmentMenu extends AbstractCustomEnchantmentMenu
 	@Override
 	public boolean is(ItemStack stack)
 	{
-		return stack.getItem() == Items.PUFFERFISH;
+		return stack.getItem() == Items.PRISMARINE_CRYSTALS;
 	}
 
 	@Override

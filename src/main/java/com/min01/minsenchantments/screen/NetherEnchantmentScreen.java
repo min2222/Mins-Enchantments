@@ -34,4 +34,10 @@ public class NetherEnchantmentScreen extends AbstractCustomEnchantmentScreen<Net
 	{
 		return this.isActive ? new ResourceLocation(MinsEnchantments.MODID, "textures/gui/nether_enchanting_table_active.png") : new ResourceLocation(MinsEnchantments.MODID, "textures/gui/nether_enchanting_table.png");
 	}
+	
+	@Override
+	public String getTransltateStringForRequiredItem(boolean one)
+	{
+		return one ? "container.enchant.blaze_powder.one" : "container.enchant.blaze_powder.many";
+	}
 }

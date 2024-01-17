@@ -43,6 +43,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -54,6 +55,7 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
@@ -83,6 +85,7 @@ public class EventHandlerForge
 	public static final String WALLBREAK = "Wallbreak";
 	public static final String SNIPE = "Snipe";
 	public static final String SNIPE_LVL = "SnipeLvL";
+	public static final String SNIPE_TICK = "SnipeTick";
 	public static final String AUTO_SHIELDING = "AutoShielding";
 	public static final String CELL_DIVISION = "CellDivision";
 	public static final String CELL_DIVISION_LVL = "CellDivisionLvl";
@@ -90,6 +93,47 @@ public class EventHandlerForge
 	public static final String CELL_DIVISION_SCALE = "CellDivisionScale";
 
 	public static final Map<Class<? extends Entity>, Object> ENTITY_MAP = new HashMap<>();
+	
+	@SubscribeEvent
+	public static void onLivingEntityStartUseItem(LivingEntityUseItemEvent.Start event)
+	{
+		LivingEntity living = event.getEntity();
+		ItemStack stack = event.getItem();
+		if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
+		{
+			living.getPersistentData().putInt(SNIPE_TICK, stack.getUseDuration());
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onLivingEntityStopUseItem(LivingEntityUseItemEvent.Stop event)
+	{
+		LivingEntity living = event.getEntity();
+		ItemStack stack = event.getItem();
+		if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
+		{
+			living.getPersistentData().putInt(SNIPE_TICK, stack.getUseDuration());
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onLivingEntityUseItem(LivingEntityUseItemEvent.Tick event)
+	{
+		LivingEntity living = event.getEntity();
+		ItemStack stack = event.getItem();
+		if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get());
+			int speed = (int) (level * EnchantmentConfig.snipeChargeSpeedPerLevel.get());
+			int tick = living.getPersistentData().getInt(SNIPE_TICK);
+			if(living.tickCount % speed * 20 == 0)
+			{
+				living.getPersistentData().putInt(SNIPE_TICK, tick - 1);
+			}
+			
+			event.setDuration(tick);
+		}
+	}
 	
 	@SubscribeEvent
 	public static void onLivingAttack(LivingAttackEvent event)
@@ -106,6 +150,13 @@ public class EventHandlerForge
 				{
 					attacker.heal(level * EnchantmentConfig.leechHealAmountPerLevel.get());
 				}
+			}
+			
+			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.FLAME_THORN.get(), living) > 0)
+			{
+				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.FLAME_THORN.get(), living);
+				source.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
+				source.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);
 			}
 		}
 		
@@ -174,6 +225,20 @@ public class EventHandlerForge
 				{
 					waterAnimal.getPersistentData().remove(LORD_OF_THE_SEA);
 					waterAnimal.getPersistentData().remove(LORD_OF_THE_SEA_DMG);
+				}
+			}
+		}
+		
+		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.DRY.get(), living) > 0)
+		{
+			if(living.isShiftKeyDown())
+			{
+				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.DRY.get(), living);
+				int radius = level * EnchantmentConfig.dryRadiusPerLevel.get();
+				
+				if(EnchantmentUtil.removeWaterBreadthFirstSearch(living.level(), living.blockPosition(), radius))
+				{
+					living.level().levelEvent(2001, living.blockPosition(), Block.getId(Blocks.WATER.defaultBlockState()));
 				}
 			}
 		}
@@ -250,22 +315,28 @@ public class EventHandlerForge
 			{
 				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CLIMB.get(), living);
 				double climbSpeed = level * EnchantmentConfig.climbSpeedPerLevel.get();
-				if(living.zza > 0.0F && living.getDeltaMovement().y < climbSpeed)
-				{
-					living.setDeltaMovement(living.getDeltaMovement().x, climbSpeed, living.getDeltaMovement().z);
-					living.fallDistance = 0.0F;
-				}
+			    if (living.isShiftKeyDown())
+			    {
+			    	living.setDeltaMovement(living.getDeltaMovement().x, 0.0, living.getDeltaMovement().z);
+			    }
+			    else
+			    {
+					living.setDeltaMovement(living.getDeltaMovement().x, 0.05 + (living.getDeltaMovement().y + climbSpeed), living.getDeltaMovement().z);
+			    }
+				living.fallDistance = 0.0F;
 			}
 		}
 		
 		if(living.getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(CustomEnchantments.LAVA_WALKER.get()) > 0)
 		{
-	        BlockPos pos = living.blockPosition();
-	        if (living.level().getBlockState(pos).getBlock() == Blocks.LAVA) 
+
+			BlockPos pos = BlockPos.containing(living.getX(), Mth.floor(living.getBoundingBox().minY), living.getZ());
+	        if(living.level().getBlockState(pos).getBlock() == Blocks.LAVA) 
 	        {
-	            if (living.getDeltaMovement().y < 0) 
+	            if(living.getDeltaMovement().y < 0) 
 	            {
-	                living.setPos(living.position().add(0, -living.getDeltaMovement().y, 0));
+	            	living.setDeltaMovement(living.getDeltaMovement().x, 0, living.getDeltaMovement().z);
+	            	living.setPos(living.position().add(0, -living.getDeltaMovement().y, 0));
 	            }
 	            living.fallDistance = 0.0F;
 	            living.setOnGround(true);
@@ -613,6 +684,11 @@ public class EventHandlerForge
 						EnchantmentNetwork.sendToAll(new CellScaleSyncPacket(cell.getId(), cell.getPersistentData().getFloat(CELL_DIVISION_SCALE)));
 					}
 				}
+			}
+			
+			if(proj instanceof AbstractArrow arrow)
+			{
+				arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
 			}
 			
 			if(event.getRayTraceResult().getType() == HitResult.Type.BLOCK)

@@ -12,6 +12,8 @@ public class EnchantmentConfig
 {
     private static ForgeConfigSpec.Builder BUILDER;
     public static ForgeConfigSpec CONFIG;
+    
+    //blessment
 
     //enchantment
     
@@ -89,6 +91,17 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> autoSmeltMinCost;
 	public static ConfigValue<Integer> autoSmeltMaxCost;
 	
+	public static ConfigValue<Integer> flameThornMinCost;
+	public static ConfigValue<Integer> flameThornMaxCost;	
+	
+	public static ConfigValue<Float> flameThornDamagePerLevel;
+	public static ConfigValue<Integer> flameThornFireDurationPerLevel;
+	
+	public static ConfigValue<Integer> dryMinCost;
+	public static ConfigValue<Integer> dryMaxCost;
+	
+	public static ConfigValue<Integer> dryRadiusPerLevel;
+	
 	//end
 	
 	//sculk
@@ -123,6 +136,7 @@ public class EnchantmentConfig
 	
 	public static ConfigValue<Integer> snipeProjectileSpeedPerLevel;
 	public static ConfigValue<Float> snipeAdditionalDamagePerLevel;
+	public static ConfigValue<Float> snipeChargeSpeedPerLevel;
 	
 	public static ConfigValue<Integer> magnetMinCost;
 	public static ConfigValue<Integer> magnetMaxCost;
@@ -157,6 +171,8 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> cellDivisionSplitAmountPerLevel;
 	
 	//tables
+	
+	//blessment
 	
 	//ocean
 	
@@ -262,6 +278,17 @@ public class EnchantmentConfig
     	EnchantmentConfig.autoSmeltMinCost = config.comment("minimum enchantability for auto smelt enchantment").define("autoSmeltMinCost", 25);
     	EnchantmentConfig.autoSmeltMaxCost = config.comment("maximum enchantability for auto smelt enchantment").define("autoSmeltMaxCost", 50);
     	
+    	EnchantmentConfig.flameThornMinCost = config.comment("minimum enchantability for flame thorn enchantment").define("flameThornMinCost", 1);
+    	EnchantmentConfig.flameThornMaxCost = config.comment("maximum enchantability for flame thorn enchantment").define("flameThornMaxCost", 11);
+    	
+    	EnchantmentConfig.flameThornDamagePerLevel = config.comment("thorn damage for each level of flame thorn enchantment").define("flameThornDamagePerLevel", 1.5F);
+    	EnchantmentConfig.flameThornFireDurationPerLevel = config.comment("fire duration for each level of flame thorn enchantment").define("flameThornFireDurationPerLevel", 1);
+    	
+    	EnchantmentConfig.dryMinCost = config.comment("minimum enchantability for dry enchantment").define("dryMinCost", 1);
+    	EnchantmentConfig.dryMaxCost = config.comment("maximum enchantability for dry enchantment").define("dryMaxCost", 11);
+    	
+    	EnchantmentConfig.dryRadiusPerLevel = config.comment("absorb radius for each level of dry enchantment").define("dryRadiusPerLevel", 5);
+    	
     	EnchantmentConfig.recochetMinCost = config.comment("minimum enchantability for recochet enchantment").define("recochetMinCost", 25);
     	EnchantmentConfig.recochetMaxCost = config.comment("maximum enchantability for recochet enchantment").define("recochetMaxCost", 50);
     	
@@ -270,7 +297,7 @@ public class EnchantmentConfig
     	EnchantmentConfig.climbMinCost = config.comment("minimum enchantability for climb enchantment").define("climbMinCost", 1);
     	EnchantmentConfig.climbMaxCost = config.comment("maximum enchantability for climb enchantment").define("climbMaxCost", 11);
     	
-    	EnchantmentConfig.climbSpeedPerLevel = config.comment("climb speed for each level of climb enchantment").define("climbSpeedPerLevel", 1.5D);
+    	EnchantmentConfig.climbSpeedPerLevel = config.comment("climb speed for each level of climb enchantment").define("climbSpeedPerLevel", 1D);
     	
     	EnchantmentConfig.criticalStrikeMinCost = config.comment("minimum enchantability for critical strike enchantment").define("criticalStrikeMinCost", 1);
     	EnchantmentConfig.criticalStrikeMaxCost = config.comment("maximum enchantability for critical strike enchantment").define("criticalStrikeMaxCost", 11);
@@ -290,7 +317,8 @@ public class EnchantmentConfig
     	EnchantmentConfig.snipeMaxCost = config.comment("maximum enchantability for snipe enchantment").define("snipeMaxCost", 11);
     	
     	EnchantmentConfig.snipeProjectileSpeedPerLevel = config.comment("speed of projectile for each level of snipe enchantment").define("snipeProjectileSpeedPerLevel", 10);
-    	EnchantmentConfig.snipeAdditionalDamagePerLevel = config.comment("additional damage for each level of snipe enchantment").define("snipeAdditionalDamagePerLevel", 1F);
+    	EnchantmentConfig.snipeAdditionalDamagePerLevel = config.comment("additional damage for each level of snipe enchantment").define("snipeAdditionalDamagePerLevel", 2F);
+    	EnchantmentConfig.snipeChargeSpeedPerLevel = config.comment("decrease amount of charge speed for each level of snipe enchantment").define("snipeAdditionalDamagePerLevel", 1F);
     	
     	EnchantmentConfig.magnetMinCost = config.comment("minimum enchantability for magnet enchantment").define("magnetMinCost", 1);
     	EnchantmentConfig.magnetMaxCost = config.comment("maximum enchantability for magnet enchantment").define("magnetMaxCost", 11);

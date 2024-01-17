@@ -186,11 +186,11 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 						MutableComponent mutablecomponent;
 						if (i1 == 1) 
 						{
-							mutablecomponent = Component.translatable("container.enchant.lapis.one");
+							mutablecomponent = Component.translatable(this.getTransltateStringForRequiredItem(true));
 						} 
 						else
 						{
-							mutablecomponent = Component.translatable("container.enchant.lapis.many", i1);
+							mutablecomponent = Component.translatable(this.getTransltateStringForRequiredItem(false), i1);
 						}
 
 						list.add(mutablecomponent.withStyle(i >= i1 ? ChatFormatting.GRAY : ChatFormatting.RED));
@@ -293,5 +293,10 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 	public void renderCustom(PoseStack stack, float partialTick, MultiBufferSource.BufferSource multibuffersource$buffersource)
 	{
 		
+	}
+	
+	public String getTransltateStringForRequiredItem(boolean one)
+	{
+		return one ? "container.enchant.lapis.one" : "container.enchant.lapis.many";
 	}
 }

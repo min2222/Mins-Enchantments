@@ -1,7 +1,6 @@
 package com.min01.minsenchantments.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -15,23 +14,18 @@ import net.minecraftforge.event.entity.player.CriticalHitEvent;
 @Mixin(Player.class)
 public class MixinPlayer 
 {
-	@Unique
-	private boolean isCrit;
-	
 	@ModifyVariable(method = "attack", at = @At("STORE"), ordinal = 2)
 	private boolean attack(boolean flag2) 
 	{
 		if(Player.class.cast(this).getMainHandItem().getEnchantmentLevel(CustomEnchantments.CRITICAL_STRIKE.get()) > 0)
 		{
-			int level = Player.class.cast(this).getMainHandItem().getEnchantmentLevel(CustomEnchantments.CRITICAL_STRIKE.get());
-			if(Math.random() <= (level * EnchantmentConfig.criticalStrikeChancePerLevel.get()) / 100)
+			if(this.isCrit())
 			{
-				this.isCrit = true;
 				return true;
 			}
 			else
 			{
-				this.isCrit = false;
+				return flag2;
 			}
 		}
 		return flag2;
@@ -42,8 +36,28 @@ public class MixinPlayer
 	{
 		if(Player.class.cast(this).getMainHandItem().getEnchantmentLevel(CustomEnchantments.CRITICAL_STRIKE.get()) > 0)
 		{
-			return this.isCrit ? 1.5F : 1F;
+			if(this.isCrit())
+			{
+				return 1.5F;
+			}
+			else
+			{
+				if(event != null)
+				{
+					return event.getDamageModifier();
+				}
+				else
+				{
+					return 1F;
+				}
+			}
 		}
 		return event.getDamageModifier();
+	}
+	
+	private boolean isCrit()
+	{
+		int level = Player.class.cast(this).getMainHandItem().getEnchantmentLevel(CustomEnchantments.CRITICAL_STRIKE.get());
+		return Math.random() <= (level * EnchantmentConfig.criticalStrikeChancePerLevel.get()) / 100;
 	}
 }

@@ -8,6 +8,8 @@ import com.min01.minsenchantments.misc.EntityTimer;
 import com.min01.minsenchantments.network.EnchantmentNetwork;
 import com.min01.minsenchantments.network.EntityTimerSyncPacket;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -16,6 +18,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.NetworkDirection;
@@ -134,5 +143,61 @@ public class EnchantmentUtil
 	public static double getAttackReachSqr(Entity attacker, Entity target)
 	{
 		return (double)(attacker.getBbWidth() * 2.0F * attacker.getBbWidth() * 2.0F + target.getBbWidth());
+	}
+	
+	public static boolean removeWaterBreadthFirstSearch(Level p_56808_, BlockPos p_56809_, int radius)
+	{
+		BlockState spongeState = p_56808_.getBlockState(p_56809_);
+		return BlockPos.breadthFirstTraversal(p_56809_, radius, 65, (p_277519_, p_277492_) -> 
+		{
+			for(Direction direction : Direction.values())
+			{
+				p_277492_.accept(p_277519_.relative(direction));
+			}
+		},
+		(p_279054_) -> 
+		{
+			if (p_279054_.equals(p_56809_)) 
+			{
+				return true;
+			} 
+			else 
+			{
+				BlockState blockstate = p_56808_.getBlockState(p_279054_);
+				FluidState fluidstate = p_56808_.getFluidState(p_279054_);
+				if (!spongeState.canBeHydrated(p_56808_, p_56809_, fluidstate, p_279054_))
+				{
+					return false;
+				} 
+				else 
+				{
+					Block block = blockstate.getBlock();
+					if (block instanceof BucketPickup)
+					{
+						BucketPickup bucketpickup = (BucketPickup)block;
+						if (!bucketpickup.pickupBlock(p_56808_, p_279054_, blockstate).isEmpty())
+						{
+							return true;
+						}
+					}
+
+					if (blockstate.getBlock() instanceof LiquidBlock)
+					{
+						p_56808_.setBlock(p_279054_, Blocks.AIR.defaultBlockState(), 3);
+					} 
+					else 
+					{
+						if (!blockstate.is(Blocks.KELP) && !blockstate.is(Blocks.KELP_PLANT) && !blockstate.is(Blocks.SEAGRASS) && !blockstate.is(Blocks.TALL_SEAGRASS)) {
+							return false;
+						}
+
+						BlockEntity blockentity = blockstate.hasBlockEntity() ? p_56808_.getBlockEntity(p_279054_) : null;
+						Block.dropResources(blockstate, p_56808_, p_279054_, blockentity);
+						p_56808_.setBlock(p_279054_, Blocks.AIR.defaultBlockState(), 3);
+					}
+					return true;
+				}
+			}
+		}) > 1;
 	}
 }

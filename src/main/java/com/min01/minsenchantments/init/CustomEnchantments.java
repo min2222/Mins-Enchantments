@@ -4,6 +4,8 @@ import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.enchantment.curse.EnchantmentOvergravity;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentAutoSmelt;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentAutoSmelt.EnchantmentAutoSmeltModifier;
+import com.min01.minsenchantments.enchantment.nether.EnchantmentDry;
+import com.min01.minsenchantments.enchantment.nether.EnchantmentFlameThorn;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentLavaWalker;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentAutoShielding;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentBarrier;
@@ -60,6 +62,8 @@ public class CustomEnchantments
 	//nether
 	public static final RegistryObject<Enchantment> LAVA_WALKER = ENCHANTMENTS.register("lava_walker", () -> new EnchantmentLavaWalker());
 	public static final RegistryObject<Enchantment> AUTO_SMELT = ENCHANTMENTS.register("auto_smelt", () -> new EnchantmentAutoSmelt());
+	public static final RegistryObject<Enchantment> FLAME_THORN = ENCHANTMENTS.register("flame_thorn", () -> new EnchantmentFlameThorn());
+	public static final RegistryObject<Enchantment> DRY = ENCHANTMENTS.register("dry", () -> new EnchantmentDry());
 	
 	//end
 	

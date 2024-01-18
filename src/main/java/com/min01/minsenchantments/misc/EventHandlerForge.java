@@ -729,8 +729,47 @@ public class EventHandlerForge
 			if(proj.getOwner() != null)
 			{
 				Entity entity = proj.getOwner();
+				
 				if(entity instanceof LivingEntity living)
 				{
+					ItemStack stack = living.getItemInHand(living.getUsedItemHand());
+					
+					if(proj instanceof ThrownTrident trident)
+					{
+						if(living.getPersistentData().contains(SHARP_WAVES))
+						{
+							int level = living.getPersistentData().getInt(SHARP_WAVES_LVL);
+							trident.getPersistentData().put(SHARP_WAVES, NbtUtils.writeBlockPos(trident.blockPosition()));
+							trident.getPersistentData().putInt(SHARP_WAVES_LVL, level);
+							trident.getPersistentData().putFloat(SHARP_WAVES_DMG, 0);
+							
+							living.getPersistentData().remove(SHARP_WAVES);
+							living.getPersistentData().remove(SHARP_WAVES_LVL);
+						}
+						else if(stack.getEnchantmentLevel(CustomEnchantments.SHARP_WAVES.get()) > 0)
+						{
+							int level = stack.getEnchantmentLevel(CustomEnchantments.SHARP_WAVES.get());
+							trident.getPersistentData().put(SHARP_WAVES, NbtUtils.writeBlockPos(trident.blockPosition()));
+							trident.getPersistentData().putInt(SHARP_WAVES_LVL, level);
+							trident.getPersistentData().putFloat(SHARP_WAVES_DMG, 0);
+						}
+						
+						if(living.getPersistentData().contains(POSEIDONS_GRACE))
+						{
+							ItemStack tridentItem = ItemStack.of(living.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM));
+							trident.getPersistentData().putBoolean(POSEIDONS_GRACE, true);
+							trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, tridentItem.save(tridentItem.getTag()));
+							
+							living.getPersistentData().remove(POSEIDONS_GRACE);
+							living.getPersistentData().remove(POSEIDONS_GRACE_ITEM);
+						}
+						else if(stack.getEnchantmentLevel(CustomEnchantments.POSEIDONS_GRACE.get()) > 0)
+						{
+							trident.getPersistentData().putBoolean(POSEIDONS_GRACE, true);
+							trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(stack.getTag()));
+						}
+					}
+					
 					if(living.getPersistentData().contains(MINER))
 					{
 						int level = living.getPersistentData().getInt(MINER_LVL);
@@ -740,17 +779,31 @@ public class EventHandlerForge
 						living.getPersistentData().remove(MINER);
 						living.getPersistentData().remove(MINER_LVL);
 					}
-					
+					else if(stack.getEnchantmentLevel(CustomEnchantments.MINER.get()) > 0)
+					{
+						int level = stack.getEnchantmentLevel(CustomEnchantments.MINER.get());
+						proj.getPersistentData().putBoolean(MINER, true);
+						proj.getPersistentData().putInt(MINER_LVL, level);
+					}
+
 					if(living.getPersistentData().contains(RECOCHET))
 					{
 						proj.getPersistentData().putBoolean(RECOCHET, true);
 						living.getPersistentData().remove(RECOCHET);
+					}
+					else if(stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get()) > 0)
+					{
+						proj.getPersistentData().putBoolean(RECOCHET, true);
 					}
 					
 					if(living.getPersistentData().contains(WALLBREAK))
 					{
 						proj.getPersistentData().putBoolean(WALLBREAK, true);
 						living.getPersistentData().remove(WALLBREAK);
+					}
+					else if(stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get()) > 0)
+					{
+						proj.getPersistentData().putBoolean(WALLBREAK, true);
 					}
 					
 					if(living.getPersistentData().contains(SNIPE))
@@ -762,6 +815,13 @@ public class EventHandlerForge
 						
 						living.getPersistentData().remove(SNIPE);
 						living.getPersistentData().remove(SNIPE_LVL);
+					}
+					else if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
+					{
+						int level = stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get());
+						EnchantmentUtil.setTickrate(proj, 20 + (level * EnchantmentConfig.snipeProjectileSpeedPerLevel.get()));
+						proj.getPersistentData().putBoolean(SNIPE, true);
+						proj.getPersistentData().putInt(SNIPE_LVL, level);
 					}
 					
 					if(living.getPersistentData().contains(CELL_DIVISION))
@@ -778,6 +838,17 @@ public class EventHandlerForge
 							living.getPersistentData().remove(CELL_DIVISION_LVL);
 						}
 					}
+					else if(stack.getEnchantmentLevel(CustomEnchantments.CELL_DIVISION.get()) > 0)
+					{
+						if(proj.getPersistentData().getInt(CELL_DIVISION_NUMBER) <= 0)
+						{
+							int level = stack.getEnchantmentLevel(CustomEnchantments.CELL_DIVISION.get());
+							proj.getPersistentData().putBoolean(CELL_DIVISION, true);
+							proj.getPersistentData().putInt(CELL_DIVISION_LVL, level);
+							proj.getPersistentData().putInt(CELL_DIVISION_NUMBER, 0);
+							proj.getPersistentData().putFloat(CELL_DIVISION_SCALE, 1.0F);
+						}
+					}
 					
 					if(living.getPersistentData().contains(WATER_JET))
 					{
@@ -788,35 +859,13 @@ public class EventHandlerForge
 							living.getPersistentData().remove(WATER_JET);
 						}
 					}
-				}
-			}
-		}
-		
-		if(event.getEntity() instanceof ThrownTrident trident)
-		{
-			if(trident.getOwner() != null)
-			{
-				Entity entity = trident.getOwner();
-				if(entity instanceof LivingEntity living)
-				{
-					if(living.getPersistentData().contains(SHARP_WAVES))
+					else if(stack.getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0)
 					{
-						trident.getPersistentData().put(SHARP_WAVES, NbtUtils.writeBlockPos(trident.blockPosition()));
-						trident.getPersistentData().putInt(SHARP_WAVES_LVL, living.getPersistentData().getInt(SHARP_WAVES_LVL));
-						trident.getPersistentData().putFloat(SHARP_WAVES_DMG, 0);
-						
-						living.getPersistentData().remove(SHARP_WAVES);
-						living.getPersistentData().remove(SHARP_WAVES_LVL);
-					}
-					
-					if(living.getPersistentData().contains(POSEIDONS_GRACE))
-					{
-						ItemStack stack = ItemStack.of(living.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM));
-						trident.getPersistentData().putBoolean(POSEIDONS_GRACE, true);
-						trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(stack.getTag()));
-						
-						living.getPersistentData().remove(POSEIDONS_GRACE);
-						living.getPersistentData().remove(POSEIDONS_GRACE_ITEM);
+						if(living.isEyeInFluidType(ForgeMod.WATER_TYPE.get()))
+						{
+							proj.setNoGravity(true);
+							proj.getPersistentData().putBoolean(WATER_JET, true);
+						}
 					}
 				}
 			}

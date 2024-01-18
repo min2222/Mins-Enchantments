@@ -12,6 +12,7 @@
 		"MixinLivingEntity",
 		"MixinProjectile",
 		"MixinEnchantmentHelper",
+		"MixinItemStack",
 		"entitytimer.MixinServerLevelEntityTimer"
 	],
 	"client": [

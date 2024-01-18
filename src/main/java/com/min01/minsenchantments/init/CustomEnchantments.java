@@ -2,11 +2,15 @@ package com.min01.minsenchantments.init;
 
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.enchantment.curse.EnchantmentOvergravity;
+import com.min01.minsenchantments.enchantment.curse.EnchantmentUndeadCurse;
+import com.min01.minsenchantments.enchantment.end.EnchantmentEndermanCurse;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentAutoSmelt;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentAutoSmelt.EnchantmentAutoSmeltModifier;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentDry;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentFlameThorn;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentLavaWalker;
+import com.min01.minsenchantments.enchantment.normal.EnchantmentAccelerate;
+import com.min01.minsenchantments.enchantment.normal.EnchantmentArmorCrack;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentAutoShielding;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentBarrier;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentCellDivision;
@@ -14,23 +18,31 @@ import com.min01.minsenchantments.enchantment.normal.EnchantmentClimb;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentCriticalStrike;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentLeech;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentMagnet;
+import com.min01.minsenchantments.enchantment.normal.EnchantmentMiner;
+import com.min01.minsenchantments.enchantment.normal.EnchantmentQuickdraw;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentRecochet;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentSkillful;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentSnipe;
+import com.min01.minsenchantments.enchantment.normal.EnchantmentTakeoff;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentWallbreak;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentAbyssCurse;
+import com.min01.minsenchantments.enchantment.ocean.EnchantmentAquaticAura;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentFloatingCurse;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentLordOfTheSea;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentMermaidCurse;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentMermaidsBlessing;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentPoseidonsGrace;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentRusty;
+import com.min01.minsenchantments.enchantment.ocean.EnchantmentSailing;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentSharpWaves;
+import com.min01.minsenchantments.enchantment.ocean.EnchantmentSinkingCurse;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentTide;
+import com.min01.minsenchantments.enchantment.ocean.EnchantmentWaterJet;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentWaterbolt;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentWavesProtection;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -47,6 +59,7 @@ public class CustomEnchantments
 	
 	public static final EnchantmentCategory PROJECTILE_WEAPON = EnchantmentCategory.create("PROJECTILE_WEAPON", (item) -> item instanceof ProjectileWeaponItem);
 	public static final EnchantmentCategory SHIELD = EnchantmentCategory.create("SHIELD", (item) -> item instanceof ShieldItem);
+	public static final EnchantmentCategory ELYTRA = EnchantmentCategory.create("ELYTRA", (item) -> item instanceof ElytraItem);
 	
 	public static final RegistryObject<Codec<EnchantmentAutoSmeltModifier>> AUTO_SMELT_LOOT_MODIFIER = LOOT_MODIFIERS.register("auto_smelt", EnchantmentAutoSmeltModifier.CODEC);
 	
@@ -58,6 +71,9 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> POSEIDONS_GRACE = ENCHANTMENTS.register("poseidons_grace", () -> new EnchantmentPoseidonsGrace());
 	public static final RegistryObject<Enchantment> WAVES_PROTECTION = ENCHANTMENTS.register("waves_protection", () -> new EnchantmentWavesProtection());
 	public static final RegistryObject<Enchantment> LORD_OF_THE_SEA = ENCHANTMENTS.register("lord_of_the_sea", () -> new EnchantmentLordOfTheSea());
+	public static final RegistryObject<Enchantment> SAILING = ENCHANTMENTS.register("sailing", () -> new EnchantmentSailing());
+	public static final RegistryObject<Enchantment> WATER_JET = ENCHANTMENTS.register("water_jet", () -> new EnchantmentWaterJet());
+	public static final RegistryObject<Enchantment> AQUATIC_AURA = ENCHANTMENTS.register("aquatic_aura", () -> new EnchantmentAquaticAura());
 	
 	//nether
 	public static final RegistryObject<Enchantment> LAVA_WALKER = ENCHANTMENTS.register("lava_walker", () -> new EnchantmentLavaWalker());
@@ -81,6 +97,11 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> BARRIER = ENCHANTMENTS.register("barrier", () -> new EnchantmentBarrier());
 	public static final RegistryObject<Enchantment> SKILLFUL = ENCHANTMENTS.register("skillful", () -> new EnchantmentSkillful());
 	public static final RegistryObject<Enchantment> CELL_DIVISION = ENCHANTMENTS.register("cell_division", () -> new EnchantmentCellDivision());
+	public static final RegistryObject<Enchantment> QUICKDRAW = ENCHANTMENTS.register("quickdraw", () -> new EnchantmentQuickdraw());
+	public static final RegistryObject<Enchantment> TAKEOFF = ENCHANTMENTS.register("takeoff", () -> new EnchantmentTakeoff());
+	public static final RegistryObject<Enchantment> ARMOR_CRACK = ENCHANTMENTS.register("armor_crack", () -> new EnchantmentArmorCrack());
+	public static final RegistryObject<Enchantment> ACCELERATE = ENCHANTMENTS.register("accelerate", () -> new EnchantmentAccelerate());
+	public static final RegistryObject<Enchantment> MINER = ENCHANTMENTS.register("miner", () -> new EnchantmentMiner());
 	
 	//curse
 	public static final RegistryObject<Enchantment> CURSE_OF_MERMAID = ENCHANTMENTS.register("curse_of_mermaid", () -> new EnchantmentMermaidCurse());
@@ -88,4 +109,7 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> CURSE_OF_ABYSS = ENCHANTMENTS.register("curse_of_abyss", () -> new EnchantmentAbyssCurse());
 	public static final RegistryObject<Enchantment> RUSTY = ENCHANTMENTS.register("rusty", () -> new EnchantmentRusty());
 	public static final RegistryObject<Enchantment> OVERGRAVITY = ENCHANTMENTS.register("overgravity", () -> new EnchantmentOvergravity());
+	public static final RegistryObject<Enchantment> CURSE_OF_UNDEAD = ENCHANTMENTS.register("curse_of_undead", () -> new EnchantmentUndeadCurse());
+	public static final RegistryObject<Enchantment> CURSE_OF_ENDERMAN = ENCHANTMENTS.register("curse_of_enderman", () -> new EnchantmentEndermanCurse());
+	public static final RegistryObject<Enchantment> CURSE_OF_SINKING = ENCHANTMENTS.register("curse_of_sinking", () -> new EnchantmentSinkingCurse());
 }

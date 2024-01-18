@@ -31,7 +31,7 @@ public class MixinEnchantmentHelper
 				}
 				if(damage > level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
 				{
-					ci.setReturnValue(ci.getReturnValue() + level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
+					ci.setReturnValue(ci.getReturnValue() + (level * EnchantmentConfig.skillfulMaxDamagePerLevel.get()));
 				}
 			}
 		}

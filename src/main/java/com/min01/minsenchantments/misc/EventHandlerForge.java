@@ -1,10 +1,13 @@
 package com.min01.minsenchantments.misc;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
+import com.google.common.collect.Multimap;
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -15,42 +18,56 @@ import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -80,6 +97,7 @@ public class EventHandlerForge
 	public static final String WAVES_PROTECTION = "WavesProtection";
 	public static final String LORD_OF_THE_SEA = "LordOfTheSea";
 	public static final String LORD_OF_THE_SEA_DMG = "LordOfTheSeaDmg";
+	public static final String WATER_JET = "WaterJet";
 	public static final String RECOCHET = "Recochet";
 	public static final String RECOCHET_BOUNCE = "RecochetBounce";
 	public static final String WALLBREAK = "Wallbreak";
@@ -91,28 +109,80 @@ public class EventHandlerForge
 	public static final String CELL_DIVISION_LVL = "CellDivisionLvl";
 	public static final String CELL_DIVISION_NUMBER = "CellDivisionNumber";
 	public static final String CELL_DIVISION_SCALE = "CellDivisionScale";
-
-	public static final Map<Class<? extends Entity>, Object> ENTITY_MAP = new HashMap<>();
+	public static final String ACCELERATE = "Accelerate";
+	public static final String ACCELERATE_ORIGINAL = "AccelerateOriginal";
+	public static final String MINER = "Miner";
+	public static final String MINER_LVL = "MinerLvL";
+	public static final String MINER_COUNT = "MinerCount";
 	
-	@SubscribeEvent
-	public static void onLivingEntityStartUseItem(LivingEntityUseItemEvent.Start event)
-	{
-		LivingEntity living = event.getEntity();
-		ItemStack stack = event.getItem();
-		if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
-		{
-			living.getPersistentData().putInt(SNIPE_TICK, stack.getUseDuration());
-		}
-	}
+	public static final Map<Class<? extends Entity>, Object> ENTITY_MAP = new HashMap<>();
 	
 	@SubscribeEvent
 	public static void onLivingEntityStopUseItem(LivingEntityUseItemEvent.Stop event)
 	{
 		LivingEntity living = event.getEntity();
 		ItemStack stack = event.getItem();
+		
 		if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
 		{
 			living.getPersistentData().putInt(SNIPE_TICK, stack.getUseDuration());
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
+		{
+			living.getPersistentData().putInt(SNIPE_TICK, stack.getUseDuration());
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.SHARP_WAVES.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.SHARP_WAVES.get());
+			living.getPersistentData().putBoolean(SHARP_WAVES, true);
+			living.getPersistentData().putInt(SHARP_WAVES_LVL, level);
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.POSEIDONS_GRACE.get()) > 0)
+		{
+			living.getPersistentData().putBoolean(POSEIDONS_GRACE, true);
+			living.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(stack.getTag()));
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get()) > 0)
+		{
+			living.getPersistentData().putBoolean(RECOCHET, true);
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.WALLBREAK.get()) > 0)
+		{
+			living.getPersistentData().putBoolean(WALLBREAK, true);
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get());
+			living.getPersistentData().putBoolean(SNIPE, true);
+			living.getPersistentData().putInt(SNIPE_LVL, level);
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.CELL_DIVISION.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.CELL_DIVISION.get());
+			living.getPersistentData().putBoolean(CELL_DIVISION, true);
+			living.getPersistentData().putInt(CELL_DIVISION_LVL, level);
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.MINER.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.MINER.get());
+			living.getPersistentData().putBoolean(MINER, true);
+			living.getPersistentData().putInt(MINER_LVL, level);
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0)
+		{
+			if(living.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && living.getProjectile(stack).getOrCreateTag().contains(WATER_JET))
+			{
+				living.getPersistentData().putBoolean(WATER_JET, true);
+			}
 		}
 	}
 	
@@ -158,6 +228,19 @@ public class EventHandlerForge
 				source.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
 				source.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);
 			}
+			
+			if(attacker.getMainHandItem().getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)
+			{
+				ItemStack stack = attacker.getMainHandItem();
+				int level = stack.getEnchantmentLevel(CustomEnchantments.ACCELERATE.get());
+				if(stack.getTag().contains(ACCELERATE))
+				{
+					float speed = stack.getTag().getFloat(ACCELERATE);
+					//float original = stack.getTag().getFloat(ACCELERATE_ORIGINAL);
+					//TODO max speed implementation
+					stack.getTag().putFloat(ACCELERATE, speed + (level * EnchantmentConfig.accelerateSpeedPerLevel.get()));
+				}
+			}
 		}
 		
 		if(living.getItemBySlot(EquipmentSlot.OFFHAND).getItem() instanceof ShieldItem)
@@ -195,6 +278,137 @@ public class EventHandlerForge
 	}
 	
 	@SubscribeEvent
+	public static void onPlayerTick(PlayerTickEvent event)
+	{
+		Player player = event.player;
+		
+		if(player.getItemBySlot(EquipmentSlot.CHEST).getEnchantmentLevel(CustomEnchantments.TAKEOFF.get()) > 0)
+		{
+			if(player.getItemBySlot(EquipmentSlot.CHEST).canElytraFly(player))
+			{
+				if(player.getDeltaMovement().y > 0)
+				{
+					player.startFallFlying();
+				}
+			}
+		}
+		
+		if(player.getMainHandItem().getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)
+		{
+			if(player.getMainHandItem().getOrCreateTag().contains(ACCELERATE))
+			{
+				float speed = player.getMainHandItem().getOrCreateTag().getFloat(ACCELERATE);
+				if(speed + player.getMainHandItem().getOrCreateTag().getFloat(ACCELERATE_ORIGINAL) > player.getMainHandItem().getOrCreateTag().getFloat(ACCELERATE_ORIGINAL))
+				{
+					player.getMainHandItem().getOrCreateTag().putFloat(ACCELERATE, speed - 0.002F);
+				}
+			}
+			else
+			{
+				player.getMainHandItem().getOrCreateTag().putFloat(ACCELERATE, 0);
+				Multimap<Attribute, AttributeModifier> map = player.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND);
+				for(Entry<Attribute, AttributeModifier> entry : map.entries())
+				{
+					if(entry.getKey() == Attributes.ATTACK_SPEED)
+					{
+						player.getMainHandItem().getOrCreateTag().putFloat(ACCELERATE_ORIGINAL, (float) (entry.getValue().getAmount()));
+					}
+				}
+			}
+		}
+		
+		if(player.isUsingItem())
+		{
+			ItemStack stack = player.getItemInHand(player.getUsedItemHand());
+			if(stack.getEnchantmentLevel(CustomEnchantments.QUICKDRAW.get()) > 0)
+			{
+				int level = stack.getEnchantmentLevel(CustomEnchantments.QUICKDRAW.get());
+				
+   				for(int i = 0; i < level; i++) 
+				{
+					Method m = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "m_21329_");
+					try 
+					{
+						m.invoke(player);
+					}
+					catch (Exception e) 
+					{
+						
+					}
+				}
+			}
+		}
+		
+		if(player.isInWater())
+		{
+			for(int i = 0; i < player.getInventory().getContainerSize(); i++)
+			{
+				ItemStack itemstack = player.getInventory().getItem(i);
+				if(itemstack.getEnchantmentLevel(CustomEnchantments.RUSTY.get()) > 0)
+				{
+					int level = itemstack.getEnchantmentLevel(CustomEnchantments.RUSTY.get());
+					if(player.tickCount % ((EnchantmentConfig.rustyDecreaseIntervalPerLevel.get() * 20) / level) == 0 && (itemstack.getDamageValue() > 1 || !itemstack.isDamaged()))
+					{
+						itemstack.hurtAndBreak(level, player, (t) -> 
+						{
+							
+						});
+					}
+				}
+				
+			}
+		}
+		
+		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.TIDE.get(), player) > 0)
+		{
+			int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.TIDE.get(), player);
+			float tide = player.getPersistentData().getFloat(TIDE);
+			double swimSpeed = player.getAttributeBaseValue(ForgeMod.SWIM_SPEED.get());
+			float maxSpeed = (float) (swimSpeed + (level * EnchantmentConfig.tideMaxSpeedPerLevel.get()));
+			float speed = (level * EnchantmentConfig.tideSpeedPerLevel.get()) / 20;
+			if(player.isInWater() && player.isSwimming())
+			{
+				if(swimSpeed + tide < maxSpeed)
+				{
+					player.getPersistentData().putFloat(TIDE, tide + speed);
+				}
+				Vec3 lookPos = player.position().add(EnchantmentUtil.getLookPos(player.getXRot(), player.getYRot(), 0, 0.001F));
+				Vec3 motion = EnchantmentUtil.fromToVector(player.position(), lookPos, (float) (swimSpeed + tide));
+				player.setDeltaMovement(motion.x, player.getDeltaMovement().y, motion.z);
+				if(player instanceof ServerPlayer serverPlayer)
+				{
+					serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
+				}
+			}
+			else
+			{
+				player.getPersistentData().putFloat(TIDE, 0);
+			}
+		}
+		
+		if(player.getPersistentData().contains(WAVES_PROTECTION))
+		{
+			int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.WAVES_PROTECTION.get(), player);
+			float wave = player.getPersistentData().getFloat(WAVES_PROTECTION);
+			if(wave > 0)
+			{
+				player.getPersistentData().putFloat(WAVES_PROTECTION, wave - 1);
+				if(player.isInWater() && player.isSwimming())
+				{
+					Vec3 lookPos = player.position().add(EnchantmentUtil.getLookPos(player.getXRot(), player.getYRot(), 0, 0.1F));
+					Vec3 motion = EnchantmentUtil.fromToVector(player.position(), lookPos, level * EnchantmentConfig.wavesProtectionSpeedPerLevel.get());
+					player.setDeltaMovement(motion.x, player.getDeltaMovement().y, motion.z);
+					if(player instanceof ServerPlayer serverPlayer)
+					{
+						serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
+					}
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	@SubscribeEvent
 	public static void onLivingTick(LivingTickEvent event)
 	{
 		LivingEntity living = event.getEntity();
@@ -225,6 +439,99 @@ public class EventHandlerForge
 				{
 					waterAnimal.getPersistentData().remove(LORD_OF_THE_SEA);
 					waterAnimal.getPersistentData().remove(LORD_OF_THE_SEA_DMG);
+				}
+			}
+		}
+		
+		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CURSE_OF_UNDEAD.get(), living) > 0)
+		{
+			int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CURSE_OF_UNDEAD.get(), living);
+			if (living.level().isDay() && !living.level().isClientSide)
+			{
+				float f = living.getLightLevelDependentMagicValue();
+				BlockPos blockpos = BlockPos.containing(living.getX(), living.getEyeY(), living.getZ());
+				boolean flag = living.isInWaterRainOrBubble() || living.isInPowderSnow || living.wasInPowderSnow;
+				if (f > 0.5F && living.level().random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && !flag && living.level().canSeeSky(blockpos)) 
+				{
+					living.setSecondsOnFire(level * (EnchantmentConfig.undeadCurseFireDurationPerLevel.get() * 20));
+				}
+			}
+		}
+		
+		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CURSE_OF_ENDERMAN.get(), living) > 0)
+		{
+			int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CURSE_OF_ENDERMAN.get(), living);
+			if(living.isInWater())
+			{
+				living.hurt(living.damageSources().drown(), level * EnchantmentConfig.endermanCurseDamagePerLevel.get());
+			}
+		}
+		
+		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CURSE_OF_SINKING.get(), living) > 0)
+		{
+			if(living.isInWater())
+			{
+				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CURSE_OF_SINKING.get(), living);
+				living.setDeltaMovement(living.getDeltaMovement().subtract(0, level * EnchantmentConfig.sinkingCurseSpeedPerLevel.get(), 0));
+			}
+		}
+		
+		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.AQUATIC_AURA.get(), living) > 0)
+		{
+			int enchantLevel = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.AQUATIC_AURA.get(), living);
+			List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(enchantLevel * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
+			List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(enchantLevel * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
+			list.removeIf((entity) -> entity == living);
+			projList.removeIf((proj) -> (proj.getOwner() != null && proj.getOwner() == living) || proj instanceof ThrownTrident);
+			
+			list.forEach((entity) -> 
+			{
+				//FIXME not working
+				ObfuscationReflectionHelper.setPrivateValue(Entity.class, entity, true, "f_19798_");
+			});
+			
+			projList.forEach((proj) -> 
+			{
+				if(proj instanceof AbstractArrow arrow)
+				{
+					float waterInertia = ((AbstractArrowInvoker)arrow).Invoke_getWaterInertia();
+					arrow.setDeltaMovement(arrow.getDeltaMovement().scale(waterInertia));
+				}
+				else
+				{
+					proj.setDeltaMovement(proj.getDeltaMovement().scale(0.6F));
+				}
+				
+				if(proj.getDeltaMovement() != Vec3.ZERO && !proj.onGround())
+				{
+					Vec3 vec3 = proj.getDeltaMovement();
+					double d5 = vec3.x;
+					double d6 = vec3.y;
+					double d1 = vec3.z;
+			         
+					double d7 = proj.getX() + d5;
+					double d2 = proj.getY() + d6;
+					double d3 = proj.getZ() + d1;
+			         
+		            for(int j = 0; j < 4; ++j) 
+		            {
+		                proj.level().addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
+		            }
+				}
+			});
+		}
+		
+		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.SAILING.get(), living) > 0)
+		{
+			int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.SAILING.get(), living);
+			if(living.isPassenger())
+			{
+				Entity entity = living.getVehicle();
+				if(living.zza > 0)
+				{
+					Vec3 lookPos = entity.position().add(EnchantmentUtil.getLookPos(entity.getXRot(), entity.getYRot(), 0, 0.001F));
+					Vec3 motion = EnchantmentUtil.fromToVector(entity.position(), lookPos, level * EnchantmentConfig.sailingSpeedPerLevel.get());
+					entity.setDeltaMovement(motion.x, entity.getDeltaMovement().y, motion.z);
 				}
 			}
 		}
@@ -315,7 +622,7 @@ public class EventHandlerForge
 			{
 				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CLIMB.get(), living);
 				double climbSpeed = level * EnchantmentConfig.climbSpeedPerLevel.get();
-			    if (living.isShiftKeyDown())
+			    if(living.isShiftKeyDown())
 			    {
 			    	living.setDeltaMovement(living.getDeltaMovement().x, 0.0, living.getDeltaMovement().z);
 			    }
@@ -329,7 +636,6 @@ public class EventHandlerForge
 		
 		if(living.getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(CustomEnchantments.LAVA_WALKER.get()) > 0)
 		{
-
 			BlockPos pos = BlockPos.containing(living.getX(), Mth.floor(living.getBoundingBox().minY), living.getZ());
 	        if(living.level().getBlockState(pos).getBlock() == Blocks.LAVA) 
 	        {
@@ -395,62 +701,6 @@ public class EventHandlerForge
 				}
 			}
 		}
-		
-		if(living instanceof Player player)
-		{
-			if(player.isInWater())
-			{
-				for(int i = 0; i < player.getInventory().getContainerSize(); i++)
-				{
-					ItemStack itemstack = player.getInventory().getItem(i);
-					if(itemstack.getEnchantmentLevel(CustomEnchantments.RUSTY.get()) > 0)
-					{
-						int level = itemstack.getEnchantmentLevel(CustomEnchantments.RUSTY.get());
-						if(player.tickCount % ((EnchantmentConfig.rustyDecreaseIntervalPerLevel.get() * 20) / level) == 0 && (itemstack.getDamageValue() > 1 || !itemstack.isDamaged()))
-						{
-							itemstack.hurtAndBreak(level, player, (t) -> 
-							{
-								
-							});
-						}
-					}
-					
-				}
-			}
-			
-			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.TIDE.get(), player) > 0)
-			{
-				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.TIDE.get(), player);
-				float tide = player.getPersistentData().getFloat(TIDE);
-				if(player.isInWater() && player.isSwimming())
-				{
-					if(tide < 1 + (level * EnchantmentConfig.tideMaxSpeedPerLevel.get()))
-					{
-						player.getPersistentData().putFloat(TIDE, tide + ((level * EnchantmentConfig.tideSpeedPerLevel.get()) / 20));
-						EnchantmentUtil.speedupEntity(player, tide);
-					}
-				}
-				else
-				{
-					player.getPersistentData().putFloat(TIDE, 0);
-				}
-			}
-			
-			if(player.getPersistentData().contains(WAVES_PROTECTION))
-			{
-				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.WAVES_PROTECTION.get(), player);
-				float wave = player.getPersistentData().getFloat(WAVES_PROTECTION);
-				if(wave > 0)
-				{
-					player.getPersistentData().putFloat(WAVES_PROTECTION, wave - 1);
-					if(player.isInWater() && player.isSwimming() && wave <= 95)
-					{
-						//FIXME not working
-						EnchantmentUtil.speedupEntity(player, level * EnchantmentConfig.wavesProtectionSpeedPerLevel.get());
-					}
-				}
-			}
-		}
 	}
 	
 	@SubscribeEvent
@@ -481,34 +731,61 @@ public class EventHandlerForge
 				Entity entity = proj.getOwner();
 				if(entity instanceof LivingEntity living)
 				{
-					ItemStack stack = living.getItemInHand(living.getUsedItemHand());
-					if(stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get()) > 0)
+					if(living.getPersistentData().contains(MINER))
+					{
+						int level = living.getPersistentData().getInt(MINER_LVL);
+						proj.getPersistentData().putBoolean(MINER, true);
+						proj.getPersistentData().putInt(MINER_LVL, level);
+						
+						living.getPersistentData().remove(MINER);
+						living.getPersistentData().remove(MINER_LVL);
+					}
+					
+					if(living.getPersistentData().contains(RECOCHET))
 					{
 						proj.getPersistentData().putBoolean(RECOCHET, true);
+						living.getPersistentData().remove(RECOCHET);
 					}
 					
-					if(stack.getEnchantmentLevel(CustomEnchantments.WALLBREAK.get()) > 0)
+					if(living.getPersistentData().contains(WALLBREAK))
 					{
 						proj.getPersistentData().putBoolean(WALLBREAK, true);
+						living.getPersistentData().remove(WALLBREAK);
 					}
 					
-					if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
+					if(living.getPersistentData().contains(SNIPE))
 					{
-						int level = stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get());
+						int level = living.getPersistentData().getInt(SNIPE_LVL);
 						EnchantmentUtil.setTickrate(proj, 20 + (level * EnchantmentConfig.snipeProjectileSpeedPerLevel.get()));
 						proj.getPersistentData().putBoolean(SNIPE, true);
 						proj.getPersistentData().putInt(SNIPE_LVL, level);
+						
+						living.getPersistentData().remove(SNIPE);
+						living.getPersistentData().remove(SNIPE_LVL);
 					}
 					
-					if(stack.getEnchantmentLevel(CustomEnchantments.CELL_DIVISION.get()) > 0)
+					if(living.getPersistentData().contains(CELL_DIVISION))
 					{
 						if(proj.getPersistentData().getInt(CELL_DIVISION_NUMBER) <= 0)
 						{
-							int level = stack.getEnchantmentLevel(CustomEnchantments.CELL_DIVISION.get());
+							int level = living.getPersistentData().getInt(CELL_DIVISION_LVL);
 							proj.getPersistentData().putBoolean(CELL_DIVISION, true);
 							proj.getPersistentData().putInt(CELL_DIVISION_LVL, level);
 							proj.getPersistentData().putInt(CELL_DIVISION_NUMBER, 0);
 							proj.getPersistentData().putFloat(CELL_DIVISION_SCALE, 1.0F);
+							
+							living.getPersistentData().remove(CELL_DIVISION);
+							living.getPersistentData().remove(CELL_DIVISION_LVL);
+						}
+					}
+					
+					if(living.getPersistentData().contains(WATER_JET))
+					{
+						if(living.isEyeInFluidType(ForgeMod.WATER_TYPE.get()))
+						{
+							proj.setNoGravity(true);
+							proj.getPersistentData().putBoolean(WATER_JET, true);
+							living.getPersistentData().remove(WATER_JET);
 						}
 					}
 				}
@@ -522,18 +799,24 @@ public class EventHandlerForge
 				Entity entity = trident.getOwner();
 				if(entity instanceof LivingEntity living)
 				{
-					ItemStack stack = living.getItemInHand(living.getUsedItemHand());
-					if(stack.getEnchantmentLevel(CustomEnchantments.SHARP_WAVES.get()) > 0)
+					if(living.getPersistentData().contains(SHARP_WAVES))
 					{
 						trident.getPersistentData().put(SHARP_WAVES, NbtUtils.writeBlockPos(trident.blockPosition()));
-						trident.getPersistentData().putInt(SHARP_WAVES_LVL, stack.getEnchantmentLevel(CustomEnchantments.SHARP_WAVES.get()));
+						trident.getPersistentData().putInt(SHARP_WAVES_LVL, living.getPersistentData().getInt(SHARP_WAVES_LVL));
 						trident.getPersistentData().putFloat(SHARP_WAVES_DMG, 0);
+						
+						living.getPersistentData().remove(SHARP_WAVES);
+						living.getPersistentData().remove(SHARP_WAVES_LVL);
 					}
 					
-					if(stack.getEnchantmentLevel(CustomEnchantments.POSEIDONS_GRACE.get()) > 0)
+					if(living.getPersistentData().contains(POSEIDONS_GRACE))
 					{
+						ItemStack stack = ItemStack.of(living.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM));
 						trident.getPersistentData().putBoolean(POSEIDONS_GRACE, true);
-						trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(new CompoundTag()));
+						trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(stack.getTag()));
+						
+						living.getPersistentData().remove(POSEIDONS_GRACE);
+						living.getPersistentData().remove(POSEIDONS_GRACE_ITEM);
 					}
 				}
 			}
@@ -545,6 +828,7 @@ public class EventHandlerForge
 	public static void onLivingDamage(LivingDamageEvent event)
 	{
 		LivingEntity living = event.getEntity();
+		ItemStack stack = living.getMainHandItem();
 		
 		if(event.getSource().getEntity() != null)
 		{
@@ -572,6 +856,14 @@ public class EventHandlerForge
 				{
 					living.getPersistentData().putFloat(WAVES_PROTECTION, level * (EnchantmentConfig.wavesProtectionDurationPerLevel.get() * 20));
 				}
+			}
+			
+			if(stack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get()) > 0)
+			{
+				int level = stack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get());
+				double armorPoint = living.getAttributeBaseValue(Attributes.ARMOR);
+				float damage = (float) ((armorPoint * (level * EnchantmentConfig.armorCrackDamagePerLevel.get())) / 100);
+				event.setAmount(event.getAmount() + damage);
 			}
 		}
 		
@@ -625,8 +917,8 @@ public class EventHandlerForge
 		                    if(trident.level().getBlockState(BlockPos.containing(x, event.getEntity().getY() - 1, z)).liquid())
 		                    {
 								ThrownTrident summonedTrident = (ThrownTrident) trident.getType().create(trident.level());
-								summonedTrident.setOwner(trident.getOwner());
 								ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, summonedTrident, ItemStack.of(trident.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM)), "f_37555_");
+								summonedTrident.setOwner(trident.getOwner());
 								summonedTrident.setPos(x, event.getEntity().getY() - 1, z);
 								summonedTrident.setDeltaMovement(0, 0.35, 0);
 								summonedTrident.setNoGravity(true);
@@ -651,6 +943,8 @@ public class EventHandlerForge
 	public static void onProjectileImpact(ProjectileImpactEvent event)
 	{
 		Projectile proj = event.getProjectile();
+		Entity owner = proj.getOwner();
+		
 		if(proj instanceof ThrownTrident trident)
 		{
 			if(trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
@@ -659,41 +953,127 @@ public class EventHandlerForge
 			}
 		}
 		
-		if(proj.getPersistentData().contains(CELL_DIVISION) || proj.getPersistentData().contains(CELL_DIVISION_NUMBER))
+		if(owner != null)
 		{
-			int level = proj.getPersistentData().getInt(CELL_DIVISION_LVL);
-			int number = proj.getPersistentData().getInt(CELL_DIVISION_NUMBER);
-			float scale = proj.getPersistentData().getFloat(CELL_DIVISION_SCALE);
-			//float maxNumber = level * EnchantmentConfig.cellDivisionMaxSplitPerLevel.get();
-			//TODO
-			if(number < 3)
+			if(proj instanceof ThrownPotion thrownPotion)
 			{
-				for(int i = 0; i < level * EnchantmentConfig.cellDivisionSplitAmountPerLevel.get(); i++)
+				Potion potion = PotionUtils.getPotion(thrownPotion.getItem());
+				List<MobEffectInstance> list = PotionUtils.getMobEffects(thrownPotion.getItem());
+				boolean flag = potion == Potions.WATER && list.isEmpty();
+				List<Player> players = thrownPotion.level().getEntitiesOfClass(Player.class, thrownPotion.getBoundingBox().inflate(1.5));
+				players.forEach((player) ->
 				{
-					Projectile cell = (Projectile) proj.getType().create(proj.level());
-					cell.setOwner(proj.getOwner());
-					cell.getPersistentData().putInt(CELL_DIVISION_LVL, level);
-					cell.getPersistentData().putInt(CELL_DIVISION_NUMBER, number + 1);
-					cell.getPersistentData().putFloat(CELL_DIVISION_SCALE, scale - EnchantmentConfig.cellDivisionScalePerSplit.get());
-					cell.setPos(proj.position().add(0, 0.5, 0));
-					Level world = proj.level();
-					cell.setDeltaMovement(world.random.nextGaussian() * 0.2D, 0.4D, world.random.nextGaussian() * 0.2D);
-					world.addFreshEntity(cell);
-					if(!world.isClientSide)
+					for(InteractionHand hand : InteractionHand.values())
 					{
-						EnchantmentNetwork.sendToAll(new CellScaleSyncPacket(cell.getId(), cell.getPersistentData().getFloat(CELL_DIVISION_SCALE)));
+						if(player.getItemInHand(hand).getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0)
+						{
+							ItemStack stack = player.getItemInHand(hand);
+							if(stack.getItem() instanceof CrossbowItem crossbow)
+							{
+								if(flag)
+								{
+									CrossbowItem.setCharged(stack, true);
+									EnchantmentUtil.addChargedProjectile(stack, new ItemStack(Items.ARROW));
+								}
+							}
+						}
+					}
+				});
+			}
+			
+			if(proj.getPersistentData().contains(WATER_JET))
+			{
+				if(proj instanceof AbstractArrow arrow)
+				{
+					arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
+				}
+			}
+			
+			if(proj.getPersistentData().contains(MINER))
+			{
+				int level = proj.getPersistentData().getInt(MINER_LVL);
+				int count = proj.getPersistentData().getInt(MINER_COUNT);
+				
+				if(count < level * EnchantmentConfig.minerMaxBlockPerLevel.get() && event.getRayTraceResult().getType() == HitResult.Type.BLOCK)
+				{
+					BlockPos pos = ((BlockHitResult) event.getRayTraceResult()).getBlockPos();
+					BlockState state = proj.level().getBlockState(pos);
+					if(state.getDestroySpeed(proj.level(), pos) > -1.0F)
+					{
+						if(proj.level().destroyBlock(pos, true, owner))
+						{	
+							proj.getPersistentData().putInt(MINER_COUNT, count + 1);
+						}
 					}
 				}
 			}
 			
-			if(proj instanceof AbstractArrow arrow)
+			if(proj.getPersistentData().contains(CELL_DIVISION) || proj.getPersistentData().contains(CELL_DIVISION_NUMBER))
 			{
-				arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
-			}
-			
-			if(event.getRayTraceResult().getType() == HitResult.Type.BLOCK)
-			{
-				proj.discard();
+				int level = proj.getPersistentData().getInt(CELL_DIVISION_LVL);
+				int number = proj.getPersistentData().getInt(CELL_DIVISION_NUMBER);
+				float scale = proj.getPersistentData().getFloat(CELL_DIVISION_SCALE);
+				//TODO
+				//float maxNumber = level * EnchantmentConfig.cellDivisionMaxSplitPerLevel.get();
+				if(number < 3)
+				{
+					for(int i = 0; i < (level * EnchantmentConfig.cellDivisionSplitAmountPerLevel.get()) + 1; i++)
+					{
+						Projectile cell = (Projectile) proj.getType().create(proj.level());
+						cell.setOwner(owner);
+						cell.getPersistentData().putInt(CELL_DIVISION_LVL, level);
+						cell.getPersistentData().putInt(CELL_DIVISION_NUMBER, number + 1);
+						cell.getPersistentData().putFloat(CELL_DIVISION_SCALE, scale - EnchantmentConfig.cellDivisionScalePerSplit.get());
+						cell.setPos(proj.position().add(0, 0.5, 0));
+						if(proj instanceof AbstractArrow arrow && cell instanceof AbstractArrow cellArrow)
+						{
+							cellArrow.setBaseDamage(arrow.getBaseDamage());
+							cellArrow.setKnockback(arrow.getKnockback());
+							cellArrow.setPierceLevel(arrow.getPierceLevel());
+							if(arrow.isOnFire())
+							{
+								cellArrow.setSecondsOnFire(100);
+							}
+						}
+						Level world = proj.level();
+						cell.setDeltaMovement(world.random.nextGaussian() * 0.2D, 0.4D, world.random.nextGaussian() * 0.2D);
+						world.addFreshEntity(cell);
+						if(!world.isClientSide)
+						{
+							EnchantmentNetwork.sendToAll(new CellScaleSyncPacket(cell.getId(), cell.getPersistentData().getFloat(CELL_DIVISION_SCALE)));
+						}
+					}
+				}
+				
+				if(proj instanceof AbstractArrow arrow)
+				{
+					if(proj instanceof ThrownTrident)
+					{
+						if(number > 0)
+						{
+							arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
+						}
+					}
+					else
+					{
+						arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
+					}
+				}
+				
+				if(event.getRayTraceResult().getType() == HitResult.Type.BLOCK)
+				{
+					if(proj instanceof ThrownTrident)
+					{
+						if(number > 0)
+						{
+							proj.discard();
+						}
+					}
+					else
+					{
+						proj.discard();
+					}
+				}
 			}
 		}
 		
@@ -706,32 +1086,32 @@ public class EventHandlerForge
 
 			Direction direction = ((BlockHitResult) event.getRayTraceResult()).getDirection();
 			
-			if (direction == Direction.EAST) 
+			if(direction == Direction.EAST) 
 			{
 				motionx = -motionx;
 			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
-			else if (direction == Direction.SOUTH) 
+			else if(direction == Direction.SOUTH) 
 			{
 				motionz = -motionz;
 			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
-			else if (direction == Direction.WEST) 
+			else if(direction == Direction.WEST) 
 			{
 				motionx = -motionx;
 			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
-			else if (direction == Direction.NORTH)
+			else if(direction == Direction.NORTH)
 			{
 				motionz = -motionz;
 			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
-			else if (direction == Direction.UP)
+			else if(direction == Direction.UP)
 			{
 				motiony = -motiony;
 			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
-			else if (direction == Direction.DOWN)
+			else if(direction == Direction.DOWN)
 			{
 				motiony = -motiony;
 			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
@@ -753,7 +1133,7 @@ public class EventHandlerForge
 			{
 				if(entity instanceof AbstractArrow arrow)
 				{
-					if(arrow.getPersistentData().contains(WATER_BOLT) && arrow.isInWater())
+					if((arrow.getPersistentData().contains(WATER_BOLT) || arrow.getPersistentData().contains(WATER_JET)) && arrow.isInWater())
 					{
 						float waterInertia = ((AbstractArrowInvoker) arrow).Invoke_getWaterInertia();
 						arrow.setDeltaMovement(arrow.getDeltaMovement().x / waterInertia, arrow.getDeltaMovement().y / waterInertia, arrow.getDeltaMovement().z / waterInertia);
@@ -788,19 +1168,19 @@ public class EventHandlerForge
     @SubscribeEvent
     public static void onAnvilUpdate(AnvilUpdateEvent event)
     {
+        ItemStack left = event.getLeft();
+		ItemStack right = event.getRight();
+		
     	if(EnchantmentConfig.noIncreasingRepairCost.get())
     	{
     		resetRepairValue(event.getOutput());
     		resetRepairValue(event.getLeft());
     		resetRepairValue(event.getRight());
     	}
-    	if(EnchantmentConfig.disenchanting.get())
-    	{	
-            ItemStack left = event.getLeft();
-    		ItemStack right = event.getRight();
-    		
-            if(left.isEmpty() || right.isEmpty()) { return; }
-            if(Items.BOOK == right.getItem()) 
+		
+		if(!left.isEmpty() || !right.isEmpty())
+		{
+            if(Items.BOOK == right.getItem() && EnchantmentConfig.disenchanting.get()) 
             {
                 boolean isEnchantedBook = false;
                 ListTag enchTags;
@@ -813,6 +1193,7 @@ public class EventHandlerForge
                 {
                     enchTags = left.getEnchantmentTags();
                 }
+                
                 if(!(enchTags.isEmpty() || (isEnchantedBook && enchTags.size() <= 1))) 
                 {
                     ItemStack out = left.copy();
@@ -828,12 +1209,94 @@ public class EventHandlerForge
                     event.setMaterialCost(1);
                 }
             }
-    	}
+            
+            if(EnchantmentConfig.anvilOverlevelBooks.get() || EnchantmentConfig.anvilAlwaysAllowBooks.get())
+            {
+                int cost = 0;
+                Map<Enchantment, Integer> currentEnchants = EnchantmentHelper.getEnchantments(left);
+
+                for(Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(right).entrySet())
+                {
+                    Enchantment ench = entry.getKey();
+                    int level = entry.getValue();
+                    if(null == ench || 0 == level) { continue; }
+                    
+                    if(canApplyEnchant(left, ench)) 
+                    {
+                        int currentLevel = 0;
+                        if(currentEnchants.containsKey(ench))
+                        {
+                            currentLevel = currentEnchants.get(ench);
+                        }
+
+                        if(currentLevel > level) { continue; }
+
+                        int outLevel = (currentLevel == level) ? level + 1 : level;
+                        
+                        if(!EnchantmentConfig.anvilOverlevelBooks.get()) 
+                        {
+                            outLevel = Math.min(outLevel, ench.getMaxLevel());
+                        }
+
+                        if(outLevel > currentLevel) 
+                        {
+                            currentEnchants.put(ench, outLevel);
+                            cost += getApplyCost(ench, outLevel);
+                        }
+                    }
+                    
+                    if(cost > 0)
+                    {
+                        ItemStack out = left.copy();
+                        EnchantmentHelper.setEnchantments(currentEnchants, out);
+                        String name = event.getName();
+                        if(name != null && !name.isEmpty() && name != out.getDisplayName().getString())
+                        {
+                            out.setHoverName(Component.literal(name));
+                            cost++;
+                        }
+                        event.setOutput(out);
+                        event.setCost(cost);
+                    }
+                    else 
+                    {
+                        event.setCanceled(true);
+                    }
+                }
+            }
+		}
     }
     
-	private static void resetRepairValue(ItemStack stack) 
+    public static boolean canApplyEnchant(ItemStack i, Enchantment e)
+    {
+    	if(EnchantmentConfig.anvilAlwaysAllowBooks.get() && i.getMaxStackSize() == 1)
+    	{ 
+    		return true; 
+    	}
+    	 
+        if(Items.ENCHANTED_BOOK == i.getItem()) 
+        { 
+        	return true; 
+        }
+        
+        if(!e.canEnchant(i)) 
+        {
+        	return false;
+        }
+        
+        for(Enchantment enchCompare : EnchantmentHelper.getEnchantments(i).keySet()) 
+        {
+            if(enchCompare != null && enchCompare != e && !enchCompare.isCompatibleWith(e))
+            {
+            	return false;
+            }
+        }
+        return true;
+    }
+    
+	public static void resetRepairValue(ItemStack stack) 
 	{
-		if (!stack.isEmpty() && stack.hasTag())
+		if(!stack.isEmpty() && stack.hasTag())
 		{
 			stack.getTag().remove("RepairCost");
 		}

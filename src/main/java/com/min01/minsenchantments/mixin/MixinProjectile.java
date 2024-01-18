@@ -19,14 +19,28 @@ public class MixinProjectile
     {
 		if(p_37260_.getType() == HitResult.Type.BLOCK)
 		{
-			if(Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.WALLBREAK) || Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.RECOCHET))
+			if(Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.RECOCHET))
 			{
-
 			    int bounce = Projectile.class.cast(this).getPersistentData().getInt(EventHandlerForge.RECOCHET_BOUNCE);
 			    if(bounce < EnchantmentConfig.recochetMaxBounce.get())
 			    {
 					ci.cancel();
 			    }
+			}
+			
+			if(Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.WALLBREAK))
+			{
+				ci.cancel();
+			}
+			
+			if(Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.MINER))
+			{
+				int level = Projectile.class.cast(this).getPersistentData().getInt(EventHandlerForge.MINER_LVL);
+				int count = Projectile.class.cast(this).getPersistentData().getInt(EventHandlerForge.MINER_COUNT);
+				if(count < level * EnchantmentConfig.minerMaxBlockPerLevel.get())
+				{
+					ci.cancel();
+				}
 			}
 		}
     }

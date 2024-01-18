@@ -48,7 +48,6 @@ public abstract class MixinClientLevelEntityTimer extends Level
 			{
 				if(EnchantmentUtil.CLIENT_TIMER_MAP.containsKey(p_104640_.getUUID()))
 				{
-					this.getProfiler().push("tickEntities");
 					int j = EnchantmentUtil.CLIENT_TIMER_MAP.get(p_104640_.getUUID()).advanceTimeEntity(Util.getMillis());
 					for(int k = 0; k < Math.min(10, j); ++k)
 					{
@@ -67,11 +66,9 @@ public abstract class MixinClientLevelEntityTimer extends Level
 							this.tickPassenger(p_104640_, entity);
 						}
 					}	
-					this.getProfiler().pop();
 				}
 				else if(!EnchantmentUtil.CLIENT_TIMER_MAP.containsKey(p_104640_.getUUID()))
 				{
-					this.getProfiler().push("tickEntities");
 					int j = ((IEntityTicker)Minecraft.getInstance()).getAdvanceTime();
 					for(int k = 0; k < Math.min(10, j); ++k)
 					{
@@ -90,12 +87,10 @@ public abstract class MixinClientLevelEntityTimer extends Level
 							this.tickPassenger(p_104640_, entity);
 						}
 					}
-					this.getProfiler().pop();
 				}
 			}
 			else
 			{
-				this.getProfiler().push("tickEntities");
 				int j = ((IEntityTicker)Minecraft.getInstance()).getAdvanceTime();
 				for(int k = 0; k < Math.min(10, j); ++k)
 				{
@@ -114,7 +109,6 @@ public abstract class MixinClientLevelEntityTimer extends Level
 						this.tickPassenger(p_104640_, entity);
 					}
 				}
-				this.getProfiler().pop();
 			}
 		}
 	}

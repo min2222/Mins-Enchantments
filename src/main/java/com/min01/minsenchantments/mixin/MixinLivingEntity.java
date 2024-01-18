@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 
 @Mixin(LivingEntity.class)
-public class MixinLivingEntity 
+public class MixinLivingEntity
 {
 	@Inject(at = @At("HEAD"), method = "stopUsingItem", cancellable = true)
     private void stopUsingItem(CallbackInfo ci)

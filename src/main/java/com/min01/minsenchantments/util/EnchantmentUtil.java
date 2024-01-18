@@ -10,13 +10,16 @@ import com.min01.minsenchantments.network.EntityTimerSyncPacket;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -125,19 +128,18 @@ public class EnchantmentUtil
 		return false;
 	}
 	
+	public static Vec3 getLookPos(float xRot, float yRot, float yPos, double distance)
+	{
+		float f = -Mth.sin(yRot * ((float)Math.PI / 180F)) * Mth.cos(xRot * ((float)Math.PI / 180F));
+		float f1 = -Mth.sin((xRot + yPos) * ((float)Math.PI / 180F));
+		float f2 = Mth.cos(yRot * ((float)Math.PI / 180F)) * Mth.cos(xRot * ((float)Math.PI / 180F));
+		return new Vec3(f, f1, f2).scale(distance);
+	}
+	
 	public static Vec3 fromToVector(Vec3 from, Vec3 to, float speed)
 	{
 		Vec3 motion = new Vec3(to.x - from.x, to.y - from.y, to.z - from.z).normalize();
 		return motion.scale(speed);
-	}
-	
-	public static void speedupEntity(LivingEntity entity, float factor)
-	{
-		entity.setDeltaMovement(entity.getDeltaMovement().multiply(factor + 1, 1, factor + 1));
-		if(entity instanceof ServerPlayer player)
-		{
-			player.connection.send(new ClientboundSetEntityMotionPacket(entity));
-		}
 	}
 	
 	public static double getAttackReachSqr(Entity attacker, Entity target)
@@ -199,5 +201,24 @@ public class EnchantmentUtil
 				}
 			}
 		}) > 1;
+	}
+	
+	public static void addChargedProjectile(ItemStack p_40929_, ItemStack p_40930_)
+	{
+		CompoundTag compoundtag = p_40929_.getOrCreateTag();
+		ListTag listtag;
+		if (compoundtag.contains("ChargedProjectiles", 9))
+		{
+			listtag = compoundtag.getList("ChargedProjectiles", 10);
+		} 
+		else
+		{
+			listtag = new ListTag();
+		}
+
+		CompoundTag compoundtag1 = new CompoundTag();
+		p_40930_.save(compoundtag1);
+		listtag.add(compoundtag1);
+		compoundtag.put("ChargedProjectiles", listtag);
 	}
 }

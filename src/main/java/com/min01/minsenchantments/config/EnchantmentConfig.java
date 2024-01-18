@@ -58,6 +58,20 @@ public class EnchantmentConfig
 	public static ConfigValue<Float> lordoftheseaAnimalsDamagePerLevel;
 	public static ConfigValue<Integer> lordoftheseaMaxAnimalsAmountPerLevel;
 	
+	public static ConfigValue<Integer> sailingMinCost;
+	public static ConfigValue<Integer> sailingMaxCost;
+	
+	public static ConfigValue<Float> sailingSpeedPerLevel;
+	
+	public static ConfigValue<Integer> waterJetMinCost;
+	public static ConfigValue<Integer> waterJetMaxCost;
+	
+	public static ConfigValue<Integer> aquaticAuraMinCost;
+	public static ConfigValue<Integer> aquaticAuraMaxCost;
+	
+	public static ConfigValue<Float> aquaticAuraRadiusPerLevel;
+	
+	//curse
 	public static ConfigValue<Integer> mermaidsCurseMinCost;
 	public static ConfigValue<Integer> mermaidsCurseMaxCost;
 	
@@ -83,6 +97,21 @@ public class EnchantmentConfig
 	
 	public static ConfigValue<Float> overgravityFallDamagePerLevel;
 	public static ConfigValue<Float> overgravityFallSpeedPerLevel;
+	
+	public static ConfigValue<Integer> undeadCurseMinCost;
+	public static ConfigValue<Integer> undeadCurseMaxCost;
+	
+	public static ConfigValue<Integer> undeadCurseFireDurationPerLevel;
+	
+	public static ConfigValue<Integer> endermanCurseMinCost;
+	public static ConfigValue<Integer> endermanCurseMaxCost;
+	
+	public static ConfigValue<Float> endermanCurseDamagePerLevel;
+	
+	public static ConfigValue<Integer> sinkingCurseMinCost;
+	public static ConfigValue<Integer> sinkingCurseMaxCost;
+	
+	public static ConfigValue<Float> sinkingCurseSpeedPerLevel;
 	
 	//nether
 	public static ConfigValue<Integer> lavaWalkerMinCost;
@@ -170,6 +199,28 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> cellDivisionMaxSplitPerLevel;
 	public static ConfigValue<Integer> cellDivisionSplitAmountPerLevel;
 	
+	public static ConfigValue<Integer> quickdrawMinCost;
+	public static ConfigValue<Integer> quickdrawMaxCost;
+	
+	public static ConfigValue<Integer> takeoffMinCost;
+	public static ConfigValue<Integer> takeoffMaxCost;
+	
+	public static ConfigValue<Integer> armorCrackMinCost;
+	public static ConfigValue<Integer> armorCrackMaxCost;
+	
+	public static ConfigValue<Float> armorCrackDamagePerLevel;
+	
+	public static ConfigValue<Integer> accelerateMinCost;
+	public static ConfigValue<Integer> accelerateMaxCost;
+	
+	public static ConfigValue<Float> accelerateMaxSpeedPerLevel;
+	public static ConfigValue<Float> accelerateSpeedPerLevel;
+	
+	public static ConfigValue<Integer> minerMinCost;
+	public static ConfigValue<Integer> minerMaxCost;
+	
+	public static ConfigValue<Integer> minerMaxBlockPerLevel;
+	
 	//tables
 	
 	//blessment
@@ -186,8 +237,10 @@ public class EnchantmentConfig
 	
     //extra
 	public static ForgeConfigSpec.BooleanValue noEnchantCap;
-	public static ForgeConfigSpec.BooleanValue disenchanting;
 	public static ForgeConfigSpec.BooleanValue noIncreasingRepairCost;
+	public static ForgeConfigSpec.BooleanValue anvilOverlevelBooks;
+	public static ForgeConfigSpec.BooleanValue anvilAlwaysAllowBooks;
+	public static ForgeConfigSpec.BooleanValue disenchanting;
     
     public static void loadConfig(ForgeConfigSpec config, String path) 
     {
@@ -225,8 +278,8 @@ public class EnchantmentConfig
     	EnchantmentConfig.tideMinCost = config.comment("minimum enchantability for tide enchantment").define("tideMinCost", 1);
     	EnchantmentConfig.tideMaxCost = config.comment("maximum enchantability for tide enchantment").define("tideMaxCost", 11);
     	
-    	EnchantmentConfig.tideMaxSpeedPerLevel = config.comment("maximum speed for each level of tide enchantment").define("tideMaxSpeedPerLevel", 0.07F);
-    	EnchantmentConfig.tideSpeedPerLevel = config.comment("tide speed for each level of tide enchantment").define("tideSpeedPerLevel", 0.01F);
+    	EnchantmentConfig.tideMaxSpeedPerLevel = config.comment("maximum speed for each level of tide enchantment").define("tideMaxSpeedPerLevel", 0.01F);
+    	EnchantmentConfig.tideSpeedPerLevel = config.comment("tide speed for each level of tide enchantment").define("tideSpeedPerLevel", 0.002F);
     	
     	EnchantmentConfig.poseidonsGraceMinCost = config.comment("minimum enchantability for poseidon's grace enchantment").define("poseidonsGraceMinCost", 1);
     	EnchantmentConfig.poseidonsGraceMaxCost = config.comment("maximum enchantability for poseidon's grace enchantment").define("poseidonsGraceMaxCost", 11);
@@ -245,6 +298,19 @@ public class EnchantmentConfig
     	EnchantmentConfig.lordoftheseaRadiusPerLevel = config.comment("effect radius for each level of lord of the sea enchantment").define("lordoftheseaRadiusPerLevel", 2F);
     	EnchantmentConfig.lordoftheseaAnimalsDamagePerLevel = config.comment("attack damage of animals for each level of lord of the sea enchantment").define("lordoftheseaAnimalsDamagePerLevel", 1F);
     	EnchantmentConfig.lordoftheseaMaxAnimalsAmountPerLevel = config.comment("maximum value of animals that affected for each level of lord of the sea enchantment").define("lordoftheseaMaxAnimalsAmountPerLevel", 2);
+    	
+    	EnchantmentConfig.sailingMinCost = config.comment("minimum enchantability for sailing enchantment").define("sailingMinCost", 1);
+    	EnchantmentConfig.sailingMaxCost = config.comment("maximum enchantability for sailing enchantment").define("sailingMaxCost", 11);
+    	
+    	EnchantmentConfig.sailingSpeedPerLevel = config.comment("additional speed of vehicle for each level of sailing enchantment").define("sailingSpeedPerLevel", 0.1F);
+    	
+    	EnchantmentConfig.waterJetMinCost = config.comment("minimum enchantability for water jet enchantment").define("waterJetMinCost", 25);
+    	EnchantmentConfig.waterJetMaxCost = config.comment("maximum enchantability for water jet enchantment").define("waterJetMaxCost", 50);
+    	
+    	EnchantmentConfig.aquaticAuraMinCost = config.comment("minimum enchantability for aquatic aura enchantment").define("aquaticAuraMinCost", 1);
+    	EnchantmentConfig.aquaticAuraMaxCost = config.comment("maximum enchantability for aquatic aura enchantment").define("aquaticAuraMaxCost", 11);
+    	
+    	EnchantmentConfig.aquaticAuraRadiusPerLevel = config.comment("effect radius for each level of aquatic aura enchantment").define("aquaticAuraRadiusPerLevel", 3.0F);
     	
     	EnchantmentConfig.mermaidsCurseMinCost = config.comment("minimum enchantability for curse of mermaid enchantment").define("mermaidsCurseMinCost", 1);
     	EnchantmentConfig.mermaidsCurseMaxCost = config.comment("maximum enchantability for curse of mermaid enchantment").define("mermaidsCurseMaxCost", 11);
@@ -271,6 +337,21 @@ public class EnchantmentConfig
     	
     	EnchantmentConfig.overgravityFallDamagePerLevel = config.comment("additional fall damage for each level of overgravity enchantment").define("overgravityFallDamagePerLevel", 1.0F);
     	EnchantmentConfig.overgravityFallSpeedPerLevel = config.comment("falling speed for each level of overgravity enchantment").define("overgravityFallSpeedPerLevel", 0.05F);
+    	
+    	EnchantmentConfig.undeadCurseMinCost = config.comment("minimum enchantability for curse of undead enchantment").define("undeadCurseMinCost", 1);
+    	EnchantmentConfig.undeadCurseMaxCost = config.comment("maximum enchantability for curse of undead enchantment").define("undeadCurseMaxCost", 11);
+    	
+    	EnchantmentConfig.undeadCurseFireDurationPerLevel = config.comment("fire duration for each level of curse of undead enchantment").define("undeadCurseFireDurationPerLevel", 5);
+    	
+    	EnchantmentConfig.endermanCurseMinCost = config.comment("minimum enchantability for curse of enderman enchantment").define("endermanCurseMinCost", 1);
+    	EnchantmentConfig.endermanCurseMaxCost = config.comment("maximum enchantability for curse of enderman enchantment").define("endermanCurseMaxCost", 11);
+    	
+    	EnchantmentConfig.endermanCurseDamagePerLevel = config.comment("damage amount for each level of curse of enderman enchantment").define("endermanCurseDamagePerLevel", 0.2F);
+    	
+    	EnchantmentConfig.sinkingCurseMinCost = config.comment("minimum enchantability for curse of sinking enchantment").define("sinkingCurseMinCost", 1);
+    	EnchantmentConfig.sinkingCurseMaxCost = config.comment("maximum enchantability for curse of sinking enchantment").define("sinkingCurseMaxCost", 11);
+    	
+    	EnchantmentConfig.sinkingCurseSpeedPerLevel = config.comment("sinking speed for each level of curse of sinking enchantment").define("sinkingCurseSpeedPerLevel", 0.05F);
 
     	EnchantmentConfig.lavaWalkerMinCost = config.comment("minimum enchantability for lavawalker enchantment").define("lavaWalkerMinCost", 25);
     	EnchantmentConfig.lavaWalkerMaxCost = config.comment("maximum enchantability for lavawalker enchantment").define("lavaWalkerMaxCost", 50);
@@ -317,8 +398,8 @@ public class EnchantmentConfig
     	EnchantmentConfig.snipeMaxCost = config.comment("maximum enchantability for snipe enchantment").define("snipeMaxCost", 11);
     	
     	EnchantmentConfig.snipeProjectileSpeedPerLevel = config.comment("speed of projectile for each level of snipe enchantment").define("snipeProjectileSpeedPerLevel", 10);
-    	EnchantmentConfig.snipeAdditionalDamagePerLevel = config.comment("additional damage for each level of snipe enchantment").define("snipeAdditionalDamagePerLevel", 2F);
-    	EnchantmentConfig.snipeChargeSpeedPerLevel = config.comment("decrease amount of charge speed for each level of snipe enchantment").define("snipeAdditionalDamagePerLevel", 1F);
+    	EnchantmentConfig.snipeAdditionalDamagePerLevel = config.comment("additional damage for each level of snipe enchantment").define("snipeAdditionalDamagePerLevel", 5F);
+    	EnchantmentConfig.snipeChargeSpeedPerLevel = config.comment("decrease amount of charge speed for each level of snipe enchantment").define("snipeChargeSpeedPerLevel", 1F);
     	
     	EnchantmentConfig.magnetMinCost = config.comment("minimum enchantability for magnet enchantment").define("magnetMinCost", 1);
     	EnchantmentConfig.magnetMaxCost = config.comment("maximum enchantability for magnet enchantment").define("magnetMaxCost", 11);
@@ -350,7 +431,29 @@ public class EnchantmentConfig
 
     	EnchantmentConfig.cellDivisionScalePerSplit = config.comment("scale decrease amount for each split of cell division enchantment").define("cellDivisionScalePerSplit", 0.1F);
     	EnchantmentConfig.cellDivisionMaxSplitPerLevel = config.comment("maximum split amount for each level of cell division enchantment").define("cellDivisionMaxSplitPerLevel", 1);
-    	EnchantmentConfig.cellDivisionSplitAmountPerLevel = config.comment("amount for additional projectile of each split for each level of cell division enchantment").define("cellDivisionSplitAmountPerLevel", 2);
+    	EnchantmentConfig.cellDivisionSplitAmountPerLevel = config.comment("amount for additional projectile of each split for each level of cell division enchantment").define("cellDivisionSplitAmountPerLevel", 1);
+
+    	EnchantmentConfig.quickdrawMinCost = config.comment("minimum enchantability for quickdraw enchantment").define("quickdrawMinCost", 1);
+    	EnchantmentConfig.quickdrawMaxCost = config.comment("maximum enchantability for quickdraw enchantment").define("quickdrawMaxCost", 11);
+    	
+    	EnchantmentConfig.takeoffMinCost = config.comment("minimum enchantability for takeoff enchantment").define("takeoffMinCost", 25);
+    	EnchantmentConfig.takeoffMaxCost = config.comment("maximum enchantability for takeoff enchantment").define("takeoffMaxCost", 50);
+    	
+    	EnchantmentConfig.armorCrackMinCost = config.comment("minimum enchantability for armor crack enchantment").define("armorCrackMinCost", 1);
+    	EnchantmentConfig.armorCrackMaxCost = config.comment("maximum enchantability for armor crack enchantment").define("armorCrackMaxCost", 11);
+    	
+    	EnchantmentConfig.armorCrackDamagePerLevel = config.comment("additional damage percentage for each level of armor crack enchantment").define("armorCrackDamagePerLevel", 10.0F);
+    	
+    	EnchantmentConfig.accelerateMinCost = config.comment("minimum enchantability for accelerate enchantment").define("accelerateMinCost", 1);
+    	EnchantmentConfig.accelerateMaxCost = config.comment("maximum enchantability for accelerate enchantment").define("accelerateMaxCost", 11);
+    	
+    	EnchantmentConfig.accelerateMaxSpeedPerLevel = config.comment("maximum attack speed for each level of accelerate enchantment").define("accelerateMaxSpeedPerLevel", 0.1F);
+    	EnchantmentConfig.accelerateSpeedPerLevel = config.comment("attack speed increase amount of each hit for each level of accelerate enchantment").define("accelerateSpeedPerLevel", 0.015F);
+    	
+    	EnchantmentConfig.minerMinCost = config.comment("minimum enchantability for accelerate enchantment").define("minerMinCost", 1);
+    	EnchantmentConfig.minerMaxCost = config.comment("maximum enchantability for accelerate enchantment").define("minerMaxCost", 11);
+    	
+    	EnchantmentConfig.minerMaxBlockPerLevel = config.comment("maximum block break count for each level of miner enchantment").define("minerMaxBlockPerLevel", 1);
     	
         config.pop();
         
@@ -358,9 +461,11 @@ public class EnchantmentConfig
         config.pop();
         
     	config.push("Extra Settings");
-    	EnchantmentConfig.noEnchantCap = config.comment("you can combine any enchantment in anvil").define("noEnchantCap", true);
-    	EnchantmentConfig.disenchanting = config.comment("you can disenchanting with vanilla book").define("disenchanting", true);
-    	EnchantmentConfig.noIncreasingRepairCost = config.comment("remove repair cost increasing").define("noIncreasingRepairCost", true);
+    	EnchantmentConfig.noEnchantCap = config.comment("able to combine any enchantments in anvil").define("noEnchantCap", true);
+    	EnchantmentConfig.noIncreasingRepairCost = config.comment("remove repair cost increasing to prevent too expensive message").define("noIncreasingRepairCost", true);
+    	EnchantmentConfig.anvilOverlevelBooks = config.comment("able to merge enchants to get enchant with higher level").define("anvilOverlevelBooks", true);
+    	EnchantmentConfig.anvilAlwaysAllowBooks = config.comment("able to enchant anything that max stack is 1").define("anvilAlwaysAllowBooks", true);
+    	EnchantmentConfig.disenchanting = config.comment("able to disenchanting with vanilla book").define("disenchanting", true);
         config.pop();
     }
 }

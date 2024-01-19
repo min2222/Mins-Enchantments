@@ -24,9 +24,12 @@ public class MixinLivingEntity
 		{
 			ItemStack stack = living.getItemBySlot(EquipmentSlot.OFFHAND);
 			int shielding = living.getPersistentData().getInt(EventHandlerForge.AUTO_SHIELDING);
-			if(shielding > 0 && stack.getEnchantmentLevel(CustomEnchantments.AUTO_SHIELDING.get()) > 0)
+			if(shielding > 0)
 			{
-				ci.cancel();
+				if(stack.getEnchantmentLevel(CustomEnchantments.AUTO_SHIELDING.get()) > 0)
+				{
+					ci.cancel();
+				}
 			}
 		}
     }

@@ -27,6 +27,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -290,23 +291,6 @@ public class EventHandlerForge
 					if(original + speed < original + (level * EnchantmentConfig.accelerateMaxSpeedPerLevel.get()))
 					{
 						stack.getTag().putFloat(ACCELERATE, speed + (level * EnchantmentConfig.accelerateSpeedPerLevel.get()));
-					}
-				}
-			}
-		}
-		
-		if(living.getItemBySlot(EquipmentSlot.OFFHAND).getItem() instanceof ShieldItem)
-		{
-			ItemStack stack = living.getItemBySlot(EquipmentSlot.OFFHAND);
-			if(stack.getEnchantmentLevel(CustomEnchantments.AUTO_SHIELDING.get()) > 0 && EnchantmentUtil.isDamageSourceBlocked(living, event.getSource()))
-			{
-				int level = stack.getEnchantmentLevel(CustomEnchantments.AUTO_SHIELDING.get());
-				if(Math.random() <= (level * EnchantmentConfig.autoShieldingChancePerLevel.get()) / 100)
-				{
-					int shielding = living.getPersistentData().getInt(AUTO_SHIELDING);
-					if(shielding <= 0)
-					{
-						living.getPersistentData().putInt(AUTO_SHIELDING, 20);
 					}
 				}
 			}
@@ -645,7 +629,12 @@ public class EventHandlerForge
 					living.startUsingItem(InteractionHand.OFF_HAND);
 				}
 			}
-			else if(living.getPersistentData().contains(AUTO_SHIELDING))
+		}
+		
+		if(living.getPersistentData().contains(AUTO_SHIELDING))
+		{
+			int shielding = living.getPersistentData().getInt(AUTO_SHIELDING);
+			if(shielding <= 0)
 			{
 				living.stopUsingItem();
 				living.getPersistentData().remove(AUTO_SHIELDING);
@@ -958,7 +947,53 @@ public class EventHandlerForge
 	public static void onLivingDamage(LivingDamageEvent event)
 	{
 		LivingEntity living = event.getEntity();
-		ItemStack stack = living.getMainHandItem();
+		ItemStack mainHandStack = living.getMainHandItem();
+		ItemStack offHandStack = living.getOffhandItem();
+		
+		if(offHandStack.getItem() instanceof ShieldItem)
+		{
+			if(offHandStack.getEnchantmentLevel(CustomEnchantments.AUTO_SHIELDING.get()) > 0 && EnchantmentUtil.isDamageSourceBlocked(living, event.getSource()))
+			{
+				int level = offHandStack.getEnchantmentLevel(CustomEnchantments.AUTO_SHIELDING.get());
+				if(Math.random() <= (level * EnchantmentConfig.autoShieldingChancePerLevel.get()) / 100)
+				{
+					int shielding = living.getPersistentData().getInt(AUTO_SHIELDING);
+					if(shielding <= 0)
+					{
+						living.getPersistentData().putInt(AUTO_SHIELDING, 15);
+						float amount = event.getAmount();
+						if(amount > 0.0F)
+						{
+							net.minecraftforge.event.entity.living.ShieldBlockEvent ev = net.minecraftforge.common.ForgeHooks.onShieldBlock(living, event.getSource(), amount);
+							if(!ev.isCanceled())
+							{
+								if(ev.shieldTakesDamage())
+								{
+									living.hurtCurrentlyUsedShield(amount);
+								}
+								amount -= ev.getBlockedDamage();
+								event.setAmount(amount);
+								if (!event.getSource().is(DamageTypeTags.IS_PROJECTILE))
+								{
+									Entity entity = event.getSource().getDirectEntity();
+									if (entity instanceof LivingEntity) 
+									{
+										LivingEntity livingentity = (LivingEntity)entity;
+										living.blockUsingShield(livingentity);
+									}
+								}
+								
+								if(amount <= 0)
+								{
+									living.level().broadcastEntityEvent(living, (byte)29);
+								}
+								event.setCanceled(true);
+							}
+						}
+					}
+				}
+			}
+		}
 		
 		if(event.getSource().getEntity() != null)
 		{
@@ -988,9 +1023,9 @@ public class EventHandlerForge
 				}
 			}
 			
-			if(stack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get()) > 0)
+			if(mainHandStack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get()) > 0)
 			{
-				int level = stack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get());
+				int level = mainHandStack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get());
 				double armorPoint = living.getAttributeBaseValue(Attributes.ARMOR);
 				float damage = (float) ((armorPoint * (level * EnchantmentConfig.armorCrackDamagePerLevel.get())) / 100);
 				event.setAmount(event.getAmount() + damage);

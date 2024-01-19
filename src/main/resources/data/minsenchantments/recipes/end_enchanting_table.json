@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "SPS",
+        "PPP"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:end_crystal"
+        },
+        "S": {
+            "item": "minecraft:obsidian"
+        },
+        "P": {
+            "item": "minecraft:end_stone_bricks"
+        }
+    },
+    "result": {
+        "item": "minsenchantments:end_enchanting_table",
+        "count": 1
+    }
+}

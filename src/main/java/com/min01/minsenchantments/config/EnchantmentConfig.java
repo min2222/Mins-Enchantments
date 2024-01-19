@@ -70,6 +70,7 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> aquaticAuraMaxCost;
 	
 	public static ConfigValue<Float> aquaticAuraRadiusPerLevel;
+	public static ForgeConfigSpec.BooleanValue disableAquaticAuraToPlayer;
 	
 	//curse
 	public static ConfigValue<Integer> mermaidsCurseMinCost;
@@ -189,8 +190,11 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> skillfulMaxCost;
 	
 	public static ConfigValue<Float> skillfulMaxDamagePerLevel;
+	public static ConfigValue<Float> skillfulMaxSpeedPerLevel;
 	public static ConfigValue<Float> skillfulDurabilityPerLevel;
+	public static ConfigValue<Float> skillfulSpeedPerLevel;
 	public static ConfigValue<Float> skillfulDamagePerLevel;
+	
 	
 	public static ConfigValue<Integer> cellDivisionMinCost;
 	public static ConfigValue<Integer> cellDivisionMaxCost;
@@ -311,6 +315,7 @@ public class EnchantmentConfig
     	EnchantmentConfig.aquaticAuraMaxCost = config.comment("maximum enchantability for aquatic aura enchantment").define("aquaticAuraMaxCost", 11);
     	
     	EnchantmentConfig.aquaticAuraRadiusPerLevel = config.comment("effect radius for each level of aquatic aura enchantment").define("aquaticAuraRadiusPerLevel", 3.0F);
+    	EnchantmentConfig.disableAquaticAuraToPlayer = config.comment("disable players affected by aquatic aura enchantment").define("disableAquaticAuraToPlayer", true);
     	
     	EnchantmentConfig.mermaidsCurseMinCost = config.comment("minimum enchantability for curse of mermaid enchantment").define("mermaidsCurseMinCost", 1);
     	EnchantmentConfig.mermaidsCurseMaxCost = config.comment("maximum enchantability for curse of mermaid enchantment").define("mermaidsCurseMaxCost", 11);
@@ -423,13 +428,15 @@ public class EnchantmentConfig
     	EnchantmentConfig.skillfulMaxCost = config.comment("maximum enchantability for skillful enchantment").define("skillfulMaxCost", 11);
 
     	EnchantmentConfig.skillfulMaxDamagePerLevel = config.comment("maximum additional damage for each level of skillful enchantment").define("skillfulMaxDamagePerLevel", 3.0F);
+    	EnchantmentConfig.skillfulMaxSpeedPerLevel = config.comment("maximum additional mining speed for each level of skillful enchantment").define("skillfulMaxSpeedPerLevel", 3.0F);
     	EnchantmentConfig.skillfulDurabilityPerLevel = config.comment("minimum durability required to increase damage for each level of skillful enchantment").define("skillfulDurabilityPerLevel", 900.0F);
     	EnchantmentConfig.skillfulDamagePerLevel = config.comment("additional damage when enough durability used for each level of skillful enchantment").define("skillfulDamagePerLevel", 2.0F);
+    	EnchantmentConfig.skillfulSpeedPerLevel = config.comment("additional mining speed when enough durability used for each level of skillful enchantment").define("skillfulSpeedPerLevel", 2.0F);
     	
     	EnchantmentConfig.cellDivisionMinCost = config.comment("minimum enchantability for cell division enchantment").define("cellDivisionMinCost", 1);
     	EnchantmentConfig.cellDivisionMaxCost = config.comment("maximum enchantability for cell division enchantment").define("cellDivisionMaxCost", 11);
 
-    	EnchantmentConfig.cellDivisionScalePerSplit = config.comment("scale decrease amount for each split of cell division enchantment").define("cellDivisionScalePerSplit", 0.1F);
+    	EnchantmentConfig.cellDivisionScalePerSplit = config.comment("scale decrease amount for each split of cell division enchantment").define("cellDivisionScalePerSplit", 0.3F);
     	EnchantmentConfig.cellDivisionMaxSplitPerLevel = config.comment("maximum split amount for each level of cell division enchantment").define("cellDivisionMaxSplitPerLevel", 1);
     	EnchantmentConfig.cellDivisionSplitAmountPerLevel = config.comment("amount for additional projectile of each split for each level of cell division enchantment").define("cellDivisionSplitAmountPerLevel", 1);
 

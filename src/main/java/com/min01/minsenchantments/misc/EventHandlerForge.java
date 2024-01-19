@@ -76,6 +76,7 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -105,6 +106,8 @@ public class EventHandlerForge
 	public static final String SNIPE_LVL = "SnipeLvL";
 	public static final String SNIPE_TICK = "SnipeTick";
 	public static final String AUTO_SHIELDING = "AutoShielding";
+	public static final String SKILLFUL = "Skillful";
+	public static final String SKILLFUL_DMG = "SkillfulDmg";
 	public static final String CELL_DIVISION = "CellDivision";
 	public static final String CELL_DIVISION_LVL = "CellDivisionLvl";
 	public static final String CELL_DIVISION_NUMBER = "CellDivisionNumber";
@@ -116,6 +119,30 @@ public class EventHandlerForge
 	public static final String MINER_COUNT = "MinerCount";
 	
 	public static final Map<Class<? extends Entity>, Object> ENTITY_MAP = new HashMap<>();
+	
+	@SubscribeEvent
+	public static void onBreakSpeed(PlayerEvent.BreakSpeed event)
+	{
+		Player player = event.getEntity();
+		ItemStack stack = player.getMainHandItem();
+		if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
+			int currentDurability = stack.getDamageValue();
+			if(currentDurability % (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level) == 0)
+			{
+				float speed = level * EnchantmentConfig.skillfulSpeedPerLevel.get();
+				if(speed <= level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
+				{
+					event.setNewSpeed(event.getOriginalSpeed() + speed);
+				}
+				if(speed > level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
+				{
+					event.setNewSpeed(event.getOriginalSpeed() + (level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get()));
+				}
+			}
+		}
+	}
 	
 	@SubscribeEvent
 	public static void onLivingEntityStopUseItem(LivingEntityUseItemEvent.Stop event)
@@ -184,6 +211,29 @@ public class EventHandlerForge
 				living.getPersistentData().putBoolean(WATER_JET, true);
 			}
 		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
+		{
+			if(stack.getItem().canBeDepleted())
+			{
+				int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
+				living.getPersistentData().putBoolean(SKILLFUL, true);
+				
+				int currentDurability = stack.getDamageValue();
+				if(currentDurability % (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level) == 0)
+				{
+					float damage = level * EnchantmentConfig.skillfulDamagePerLevel.get();
+					if(damage <= level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
+					{
+						living.getPersistentData().putFloat(SKILLFUL_DMG, damage);
+					}
+					if(damage > level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
+					{
+						living.getPersistentData().putFloat(SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
+					}
+				}
+			}
+		}
 	}
 	
 	@SubscribeEvent
@@ -236,9 +286,11 @@ public class EventHandlerForge
 				if(stack.getTag().contains(ACCELERATE))
 				{
 					float speed = stack.getTag().getFloat(ACCELERATE);
-					//float original = stack.getTag().getFloat(ACCELERATE_ORIGINAL);
-					//TODO max speed implementation
-					stack.getTag().putFloat(ACCELERATE, speed + (level * EnchantmentConfig.accelerateSpeedPerLevel.get()));
+					float original = stack.getTag().getFloat(ACCELERATE_ORIGINAL);
+					if(original + speed < original + (level * EnchantmentConfig.accelerateMaxSpeedPerLevel.get()))
+					{
+						stack.getTag().putFloat(ACCELERATE, speed + (level * EnchantmentConfig.accelerateSpeedPerLevel.get()));
+					}
 				}
 			}
 		}
@@ -303,7 +355,7 @@ public class EventHandlerForge
 					player.getMainHandItem().getOrCreateTag().putFloat(ACCELERATE, speed - 0.002F);
 				}
 			}
-			else
+			else if(!player.getMainHandItem().getOrCreateTag().contains(ACCELERATE_ORIGINAL))
 			{
 				player.getMainHandItem().getOrCreateTag().putFloat(ACCELERATE, 0);
 				Multimap<Attribute, AttributeModifier> map = player.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND);
@@ -861,10 +913,39 @@ public class EventHandlerForge
 					}
 					else if(stack.getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0)
 					{
-						if(living.isEyeInFluidType(ForgeMod.WATER_TYPE.get()))
+						if(living.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && living.getProjectile(stack).getOrCreateTag().contains(WATER_JET))
 						{
 							proj.setNoGravity(true);
 							proj.getPersistentData().putBoolean(WATER_JET, true);
+						}
+					}
+					
+					if(living.getPersistentData().contains(SKILLFUL))
+					{
+						float damage = living.getPersistentData().getFloat(SKILLFUL_DMG);
+						proj.getPersistentData().putBoolean(SKILLFUL, true);
+						proj.getPersistentData().putFloat(SKILLFUL_DMG, damage);
+						
+						living.getPersistentData().remove(SKILLFUL);
+						living.getPersistentData().remove(SKILLFUL_DMG);
+					}
+					else if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
+					{
+						int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
+						proj.getPersistentData().putBoolean(SKILLFUL, true);
+
+						int currentDurability = stack.getDamageValue();
+						if(currentDurability % (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level) == 0)
+						{
+							float damage = level * EnchantmentConfig.skillfulDamagePerLevel.get();
+							if(damage <= level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
+							{
+								proj.getPersistentData().putFloat(SKILLFUL_DMG, damage);
+							}
+							if(damage > level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
+							{
+								proj.getPersistentData().putFloat(SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
+							}
 						}
 					}
 				}
@@ -922,66 +1003,73 @@ public class EventHandlerForge
 			
 			if(entity instanceof Projectile proj)
 			{
-				if(proj.getPersistentData().contains(SNIPE))
+				Entity owner = proj.getOwner();
+				
+				if(owner != null)
 				{
-					int level = proj.getPersistentData().getInt(SNIPE_LVL);
-					event.setAmount(event.getAmount() + (level * EnchantmentConfig.snipeAdditionalDamagePerLevel.get()));
-				}
-			}
-			
-			if(entity instanceof ThrownTrident trident)
-			{
-				if(trident.getOwner() != null)
-				{
-					Entity owner = trident.getOwner();
-					if(trident.getPersistentData().contains(SHARP_WAVES) && owner.isInWater())
+					if(proj.getPersistentData().contains(SNIPE))
 					{
-						BlockPos pos = NbtUtils.readBlockPos(trident.getPersistentData().getCompound(SHARP_WAVES));
-						double distance = trident.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
-						int level = trident.getPersistentData().getInt(SHARP_WAVES_LVL);
-						float damage = trident.getPersistentData().getFloat(SHARP_WAVES_DMG);
-						if(distance % (EnchantmentConfig.sharpWavesDistancePerLevel.get() / level) == 0)
-						{
-							if(damage <= level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
-							{
-								trident.getPersistentData().putFloat(SHARP_WAVES_DMG, damage + (level * EnchantmentConfig.sharpWavesDamagePerLevel.get()));
-							}
-							if(damage > level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
-							{
-								trident.getPersistentData().putFloat(SHARP_WAVES_DMG, level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get());
-							}
-						}
+						int level = proj.getPersistentData().getInt(SNIPE_LVL);
+						event.setAmount(event.getAmount() + (level * EnchantmentConfig.snipeAdditionalDamagePerLevel.get()));
+					}
+					
+					if(proj.getPersistentData().contains(SKILLFUL))
+					{
+						float damage = proj.getPersistentData().getFloat(SKILLFUL_DMG);
 						event.setAmount(event.getAmount() + damage);
 					}
 					
-					if(trident.getPersistentData().contains(POSEIDONS_GRACE) && !trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
+					if(proj instanceof ThrownTrident trident)
 					{
-						int level = ItemStack.of(trident.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM)).getEnchantmentLevel(CustomEnchantments.POSEIDONS_GRACE.get());
-						for(int i = 0; i < level * 2; i++)
+						if(trident.getPersistentData().contains(SHARP_WAVES) && owner.isInWater())
 						{
-							double spawnRange = level * 5;
-		                    double x = (double)owner.getX() + (trident.level().getRandom().nextDouble() - trident.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
-		                    double z = (double)owner.getZ() + (trident.level().getRandom().nextDouble() - trident.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
-		                    
-		                    if(trident.level().getBlockState(BlockPos.containing(x, event.getEntity().getY() - 1, z)).liquid())
-		                    {
-								ThrownTrident summonedTrident = (ThrownTrident) trident.getType().create(trident.level());
-								ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, summonedTrident, ItemStack.of(trident.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM)), "f_37555_");
-								summonedTrident.setOwner(trident.getOwner());
-								summonedTrident.setPos(x, event.getEntity().getY() - 1, z);
-								summonedTrident.setDeltaMovement(0, 0.35, 0);
-								summonedTrident.setNoGravity(true);
-								summonedTrident.pickup = AbstractArrow.Pickup.DISALLOWED;
-								summonedTrident.getPersistentData().putBoolean(POSEIDONS_GRACE_SUMMONED, true);
-								summonedTrident.getPersistentData().putUUID(POSEIDONS_GRACE_TARGET, event.getEntity().getUUID());
-								trident.level().addFreshEntity(summonedTrident);
-		                    }
+							BlockPos pos = NbtUtils.readBlockPos(trident.getPersistentData().getCompound(SHARP_WAVES));
+							double distance = trident.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
+							int level = trident.getPersistentData().getInt(SHARP_WAVES_LVL);
+							float damage = trident.getPersistentData().getFloat(SHARP_WAVES_DMG);
+							if(distance % (EnchantmentConfig.sharpWavesDistancePerLevel.get() / level) == 0)
+							{
+								if(damage <= level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
+								{
+									trident.getPersistentData().putFloat(SHARP_WAVES_DMG, damage + (level * EnchantmentConfig.sharpWavesDamagePerLevel.get()));
+								}
+								if(damage > level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
+								{
+									trident.getPersistentData().putFloat(SHARP_WAVES_DMG, level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get());
+								}
+							}
+							event.setAmount(event.getAmount() + damage);
 						}
-					}
-					
-					if(trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
-					{
-						event.getEntity().invulnerableTime = 0;
+						
+						if(trident.getPersistentData().contains(POSEIDONS_GRACE) && !trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
+						{
+							int level = ItemStack.of(trident.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM)).getEnchantmentLevel(CustomEnchantments.POSEIDONS_GRACE.get());
+							for(int i = 0; i < level * 2; i++)
+							{
+								double spawnRange = level * 5;
+			                    double x = (double)owner.getX() + (trident.level().getRandom().nextDouble() - trident.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+			                    double z = (double)owner.getZ() + (trident.level().getRandom().nextDouble() - trident.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+			                    
+			                    if(trident.level().getBlockState(BlockPos.containing(x, event.getEntity().getY() - 1, z)).liquid())
+			                    {
+									ThrownTrident summonedTrident = (ThrownTrident) trident.getType().create(trident.level());
+									ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, summonedTrident, ItemStack.of(trident.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM)), "f_37555_");
+									summonedTrident.setOwner(trident.getOwner());
+									summonedTrident.setPos(x, event.getEntity().getY() - 1, z);
+									summonedTrident.setDeltaMovement(0, 0.35, 0);
+									summonedTrident.setNoGravity(true);
+									summonedTrident.pickup = AbstractArrow.Pickup.DISALLOWED;
+									summonedTrident.getPersistentData().putBoolean(POSEIDONS_GRACE_SUMMONED, true);
+									summonedTrident.getPersistentData().putUUID(POSEIDONS_GRACE_TARGET, event.getEntity().getUUID());
+									trident.level().addFreshEntity(summonedTrident);
+			                    }
+							}
+						}
+						
+						if(trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
+						{
+							event.getEntity().invulnerableTime = 0;
+						}
 					}
 				}
 			}
@@ -1062,11 +1150,10 @@ public class EventHandlerForge
 				int level = proj.getPersistentData().getInt(CELL_DIVISION_LVL);
 				int number = proj.getPersistentData().getInt(CELL_DIVISION_NUMBER);
 				float scale = proj.getPersistentData().getFloat(CELL_DIVISION_SCALE);
-				//TODO
-				//float maxNumber = level * EnchantmentConfig.cellDivisionMaxSplitPerLevel.get();
-				if(number < 3)
+				float maxNumber = level * EnchantmentConfig.cellDivisionMaxSplitPerLevel.get();
+				if(number < maxNumber)
 				{
-					for(int i = 0; i < (level * EnchantmentConfig.cellDivisionSplitAmountPerLevel.get()) + 1; i++)
+					for(int i = 0; i < (level * EnchantmentConfig.cellDivisionSplitAmountPerLevel.get()); i++)
 					{
 						Projectile cell = (Projectile) proj.getType().create(proj.level());
 						cell.setOwner(owner);

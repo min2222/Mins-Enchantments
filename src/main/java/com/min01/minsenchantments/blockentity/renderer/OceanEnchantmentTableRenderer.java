@@ -35,11 +35,11 @@ public class OceanEnchantmentTableRenderer implements BlockEntityRenderer<OceanE
 	   
 	public OceanEnchantmentTableRenderer(BlockEntityRendererProvider.Context p_173613_) 
 	{
-	      this.renderer = p_173613_.getBlockEntityRenderDispatcher();
-	      this.eye = p_173613_.bakeLayer(ModelLayers.CONDUIT_EYE);
-	      this.wind = p_173613_.bakeLayer(ModelLayers.CONDUIT_WIND);
-	      this.shell = p_173613_.bakeLayer(ModelLayers.CONDUIT_SHELL);
-	      this.cage = p_173613_.bakeLayer(ModelLayers.CONDUIT_CAGE);
+		this.renderer = p_173613_.getBlockEntityRenderDispatcher();
+		this.eye = p_173613_.bakeLayer(ModelLayers.CONDUIT_EYE);
+		this.wind = p_173613_.bakeLayer(ModelLayers.CONDUIT_WIND);
+		this.shell = p_173613_.bakeLayer(ModelLayers.CONDUIT_SHELL);
+		this.cage = p_173613_.bakeLayer(ModelLayers.CONDUIT_CAGE);
 	}
 
 	@Override

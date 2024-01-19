@@ -18,6 +18,7 @@ public class MixinEnchantmentHelper
 	@Inject(at = @At("TAIL"), method = "getDamageBonus", cancellable = true)
     private static void getDamageBonus(ItemStack p_44834_, MobType p_44835_, CallbackInfoReturnable<Float> ci)
     {
+		//TODO remove this and move to MixinItemStack
 		if(p_44834_.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
 		{
 			int level = p_44834_.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());

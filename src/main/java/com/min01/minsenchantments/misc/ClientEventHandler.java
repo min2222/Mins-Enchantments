@@ -1,10 +1,12 @@
 package com.min01.minsenchantments.misc;
 
 import com.min01.minsenchantments.MinsEnchantments;
+import com.min01.minsenchantments.blockentity.renderer.EndEnchantmentTableRenderer;
 import com.min01.minsenchantments.blockentity.renderer.NetherEnchantmentTableRenderer;
 import com.min01.minsenchantments.blockentity.renderer.OceanEnchantmentTableRenderer;
 import com.min01.minsenchantments.init.CustomBlocks;
 import com.min01.minsenchantments.init.CustomMenuType;
+import com.min01.minsenchantments.screen.EndEnchantmentScreen;
 import com.min01.minsenchantments.screen.NetherEnchantmentScreen;
 import com.min01.minsenchantments.screen.OceanEnchantmentScreen;
 
@@ -23,8 +25,10 @@ public class ClientEventHandler
 	{
 		MenuScreens.register(CustomMenuType.OCEAN_ENCHANTMENT.get(), OceanEnchantmentScreen::new);
 		MenuScreens.register(CustomMenuType.NETHER_ENCHANTMENT.get(), NetherEnchantmentScreen::new);
+		MenuScreens.register(CustomMenuType.END_ENCHANTMENT.get(), EndEnchantmentScreen::new);
 		
         BlockEntityRenderers.register(CustomBlocks.OCEAN_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), OceanEnchantmentTableRenderer::new);
         BlockEntityRenderers.register(CustomBlocks.NETHER_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), NetherEnchantmentTableRenderer::new);
+        BlockEntityRenderers.register(CustomBlocks.END_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), EndEnchantmentTableRenderer::new);
 	}
 }

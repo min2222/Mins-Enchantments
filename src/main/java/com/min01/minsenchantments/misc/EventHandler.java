@@ -19,6 +19,7 @@ public class EventHandler
         {
             event.accept(CustomBlocks.OCEAN_ENCHANTMENT_TABLE.get());
             event.accept(CustomBlocks.NETHER_ENCHANTMENT_TABLE.get());
+            event.accept(CustomBlocks.END_ENCHANTMENT_TABLE.get());
         }
     }
 }

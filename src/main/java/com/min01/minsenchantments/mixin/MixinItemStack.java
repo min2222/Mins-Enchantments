@@ -27,25 +27,28 @@ public class MixinItemStack
 	@Redirect(method = "getAttributeModifiers", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getAttributeModifiers(Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)Lcom/google/common/collect/Multimap;"))
 	private Multimap<Attribute, AttributeModifier> getAttributeModifiers(Item item, EquipmentSlot slot, ItemStack stack) 
 	{
-		if(stack.getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0 && slot == EquipmentSlot.MAINHAND)
+		if(slot == EquipmentSlot.MAINHAND)
 		{
-			float speed = ItemStack.class.cast(this).getTag().getFloat(EventHandlerForge.ACCELERATE);
-		    ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		    Multimap<Attribute, AttributeModifier> map = item.getAttributeModifiers(slot, stack);
-		    for(Entry<Attribute, AttributeModifier> entry : map.entries())
-		    {
-		    	if(entry.getKey() != Attributes.ATTACK_SPEED)
-		    	{
-				    builder.put(entry.getKey(), entry.getValue());
-		    	}
-		    	else
-		    	{
-		    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41375_");
-					AttributeModifier modifier = new AttributeModifier(uuid, "Accelerate Modifier", entry.getValue().getAmount() + speed, Operation.ADDITION);
-				    builder.put(Attributes.ATTACK_SPEED, modifier);
-		    	}
-		    }
-			return builder.build();
+			if(stack.getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)
+			{
+				float speed = ItemStack.class.cast(this).getTag().getFloat(EventHandlerForge.ACCELERATE);
+			    ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+			    Multimap<Attribute, AttributeModifier> map = item.getAttributeModifiers(slot, stack);
+			    for(Entry<Attribute, AttributeModifier> entry : map.entries())
+			    {
+			    	if(entry.getKey() != Attributes.ATTACK_SPEED)
+			    	{
+					    builder.put(entry.getKey(), entry.getValue());
+			    	}
+			    	else
+			    	{
+			    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41375_");
+						AttributeModifier modifier = new AttributeModifier(uuid, "Accelerate Modifier", entry.getValue().getAmount() + speed, Operation.ADDITION);
+					    builder.put(Attributes.ATTACK_SPEED, modifier);
+			    	}
+			    }
+				return builder.build();
+			}
 		}
 		return item.getAttributeModifiers(slot, stack);
 	}

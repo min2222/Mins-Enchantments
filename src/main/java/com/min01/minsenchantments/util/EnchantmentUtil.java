@@ -1,18 +1,9 @@
 package com.min01.minsenchantments.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import com.min01.minsenchantments.misc.EntityTimer;
-import com.min01.minsenchantments.network.EnchantmentNetwork;
-import com.min01.minsenchantments.network.EntityTimerSyncPacket;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,76 +20,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class EnchantmentUtil
 {
-	public static final Map<UUID, EntityTimer> TIMER_MAP = new HashMap<>();
-	public static final Map<UUID, EntityTimer> CLIENT_TIMER_MAP = new HashMap<>();
-	public static final EntityTimer ENTITY_TIMER = new EntityTimer(20.0F, 0L);
-
-	public static final String REPLAYMOD = "replaymod";
-	public static final String MINS_UNIVERSE = "minsuniverse";
-	
-	public static boolean hasMU()
-	{
-		return EnchantmentUtil.isModLoaded(MINS_UNIVERSE);
-	}
-	
-	public static boolean isNotReplay()
-	{
-		return true;
-	}
-	
-    public static void setTickrate(Entity entity, float tickrate)
-    {
-    	if(!hasMU())
-    	{
-    		Level level = entity.level();
-        	if(!level.isClientSide)
-        	{
-            	for(ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) 
-            	{
-            		EnchantmentNetwork.CHANNEL.sendTo(new EntityTimerSyncPacket(entity.getUUID(), tickrate, false), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-            	}
-            	
-        		if(TIMER_MAP.containsKey(entity.getUUID()))
-        		{
-        			TIMER_MAP.remove(entity.getUUID());
-        		}
-        		
-    			TIMER_MAP.put(entity.getUUID(), new EntityTimer(tickrate, 0));
-        	}
-    	}
-    }
-    
-    public static void resetTickrate(Entity entity)
-    {
-    	if(!hasMU())
-    	{
-    		Level level = entity.level();
-        	if(!level.isClientSide)
-        	{
-            	for(ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) 
-            	{
-            		EnchantmentNetwork.CHANNEL.sendTo(new EntityTimerSyncPacket(entity.getUUID(), 0, true), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-            	}
-            	
-        		if(TIMER_MAP.containsKey(entity.getUUID()))
-        		{
-        			TIMER_MAP.remove(entity.getUUID());
-        		}
-        	}
-    	}
-    }
-	
-	public static boolean isModLoaded(String modid)
-	{
-		return ModList.get().isLoaded(modid);
-	}
-	
 	public static boolean isDamageSourceBlocked(LivingEntity living, DamageSource p_21276_) 
 	{
 		Entity entity = p_21276_.getDirectEntity();

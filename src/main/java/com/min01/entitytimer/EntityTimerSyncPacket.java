@@ -1,10 +1,7 @@
-package com.min01.minsenchantments.network;
+package com.min01.entitytimer;
 
 import java.util.UUID;
 import java.util.function.Supplier;
-
-import com.min01.minsenchantments.misc.EntityTimer;
-import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -44,17 +41,17 @@ public class EntityTimerSyncPacket
 			{
 				if(!message.reset)
 				{
-					if(EnchantmentUtil.CLIENT_TIMER_MAP.containsKey(message.uuid))
+					if(TimerUtil.CLIENT_TIMER_MAP.containsKey(message.uuid))
 					{
-						EnchantmentUtil.CLIENT_TIMER_MAP.remove(message.uuid);
+						TimerUtil.CLIENT_TIMER_MAP.remove(message.uuid);
 					}
-					EnchantmentUtil.CLIENT_TIMER_MAP.put(message.uuid, new EntityTimer(message.tickRate, 0));
+					TimerUtil.CLIENT_TIMER_MAP.put(message.uuid, new EntityTimer(message.tickRate, 0));
 				}
 				else
 				{
-					if(EnchantmentUtil.CLIENT_TIMER_MAP.containsKey(message.uuid))
+					if(TimerUtil.CLIENT_TIMER_MAP.containsKey(message.uuid))
 					{
-						EnchantmentUtil.CLIENT_TIMER_MAP.remove(message.uuid);
+						TimerUtil.CLIENT_TIMER_MAP.remove(message.uuid);
 					}
 				}
 			});

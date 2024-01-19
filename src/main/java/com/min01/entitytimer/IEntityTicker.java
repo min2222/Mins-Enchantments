@@ -1,4 +1,4 @@
-package com.min01.minsenchantments.misc;
+package com.min01.entitytimer;
 
 public interface IEntityTicker 
 {	

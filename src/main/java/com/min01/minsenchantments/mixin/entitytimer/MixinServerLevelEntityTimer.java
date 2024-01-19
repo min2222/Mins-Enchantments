@@ -11,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.min01.minsenchantments.misc.EventHandlerForge;
-import com.min01.minsenchantments.util.EnchantmentUtil;
+import com.min01.entitytimer.TimerUtil;
 
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
@@ -29,11 +28,11 @@ import net.minecraft.world.level.storage.WritableLevelData;
 @Mixin(ServerLevel.class)
 public abstract class MixinServerLevelEntityTimer extends Level
 {
-	protected MixinServerLevelEntityTimer(WritableLevelData p_270739_, ResourceKey<Level> p_270683_, RegistryAccess p_270200_, Holder<DimensionType> p_270240_, Supplier<ProfilerFiller> p_270692_, boolean p_270904_, boolean p_270470_, long p_270248_, int p_270466_) 
+	protected MixinServerLevelEntityTimer(WritableLevelData p_220352_, ResourceKey<Level> p_220353_, RegistryAccess p_270200_, Holder<DimensionType> p_220354_, Supplier<ProfilerFiller> p_220355_, boolean p_220356_, boolean p_220357_, long p_220358_, int p_220359_)
 	{
-		super(p_270739_, p_270683_, p_270200_, p_270240_, p_270692_, p_270904_, p_270470_, p_270248_, p_270466_);
+		super(p_220352_, p_220353_, p_270200_, p_220354_, p_220355_, p_220356_, p_220357_, p_220358_, p_220359_);
 	}
-
+	
 	@Inject(at = @At("HEAD"), method = "addFreshEntity")
 	private void addFreshEntity(Entity p_8837_, CallbackInfoReturnable<Boolean> ci)
 	{
@@ -56,46 +55,46 @@ public abstract class MixinServerLevelEntityTimer extends Level
 		
 		if(entity == null && walker.isPresent())
 		{
-			entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker.get());
+			entity = (Entity) TimerUtil.ENTITY_MAP.get(walker.get());
 			if(entity == null && walker2.isPresent())
 			{
-				entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker2.get());
+				entity = (Entity) TimerUtil.ENTITY_MAP.get(walker2.get());
 				if(entity == null && walker3.isPresent())
 				{
-					entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker3.get());
+					entity = (Entity) TimerUtil.ENTITY_MAP.get(walker3.get());
 					if(entity == null && walker4.isPresent())
 					{
-						entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker4.get());
+						entity = (Entity) TimerUtil.ENTITY_MAP.get(walker4.get());
 						if(entity == null && walker5.isPresent())
 						{
-							entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker5.get());
+							entity = (Entity) TimerUtil.ENTITY_MAP.get(walker5.get());
 							if(entity == null && walker6.isPresent())
 							{
-								entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker6.get());
+								entity = (Entity) TimerUtil.ENTITY_MAP.get(walker6.get());
 								if(entity == null && walker7.isPresent())
 								{
-									entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker7.get());
+									entity = (Entity) TimerUtil.ENTITY_MAP.get(walker7.get());
 									if(entity == null && walker8.isPresent())
 									{
-										entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker8.get());
+										entity = (Entity) TimerUtil.ENTITY_MAP.get(walker8.get());
 										if(entity == null && walker9.isPresent())
 										{
-											entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker9.get());
+											entity = (Entity) TimerUtil.ENTITY_MAP.get(walker9.get());
 											if(entity == null && walker10.isPresent())
 											{
-												entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker10.get());
+												entity = (Entity) TimerUtil.ENTITY_MAP.get(walker10.get());
 												if(entity == null && walker11.isPresent())
 												{
-													entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker11.get());
+													entity = (Entity) TimerUtil.ENTITY_MAP.get(walker11.get());
 													if(entity == null && walker12.isPresent())
 													{
-														entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker12.get());
+														entity = (Entity) TimerUtil.ENTITY_MAP.get(walker12.get());
 														if(entity == null && walker13.isPresent())
 														{
-															entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker13.get());
+															entity = (Entity) TimerUtil.ENTITY_MAP.get(walker13.get());
 															if(entity == null && walker14.isPresent())
 															{
-																entity = (Entity) EventHandlerForge.ENTITY_MAP.get(walker14.get());
+																entity = (Entity) TimerUtil.ENTITY_MAP.get(walker14.get());
 															}
 														}
 													}
@@ -111,9 +110,9 @@ public abstract class MixinServerLevelEntityTimer extends Level
 			}
 		}
 		
-		if(entity != null && EnchantmentUtil.TIMER_MAP.containsKey(entity.getUUID()))
+		if(entity != null && TimerUtil.TIMER_MAP.containsKey(entity.getUUID()))
 		{
-			EnchantmentUtil.setTickrate(p_8837_, EnchantmentUtil.TIMER_MAP.get(entity.getUUID()).tickrate);
+			TimerUtil.setTickrate(p_8837_, TimerUtil.TIMER_MAP.get(entity.getUUID()).tickrate);
 		}
 	}
 	
@@ -121,14 +120,14 @@ public abstract class MixinServerLevelEntityTimer extends Level
 	@Inject(at = @At("HEAD"), method = "tickNonPassenger", cancellable = true)
 	private void tickNonPassenger(Entity p_8648_, CallbackInfo ci) 
 	{
-		if(EnchantmentUtil.isNotReplay())
+		if(TimerUtil.isNotReplay())
 		{
 			ci.cancel();
-			if(!EnchantmentUtil.TIMER_MAP.isEmpty())
+			if(!TimerUtil.TIMER_MAP.isEmpty())
 			{
-				if(EnchantmentUtil.TIMER_MAP.containsKey(p_8648_.getUUID()))
+				if(TimerUtil.TIMER_MAP.containsKey(p_8648_.getUUID()))
 				{
-					int j = EnchantmentUtil.TIMER_MAP.get(p_8648_.getUUID()).advanceTimeEntity(Util.getMillis());
+					int j = TimerUtil.TIMER_MAP.get(p_8648_.getUUID()).advanceTimeEntity(Util.getMillis());
 					for(int k = 0; k < Math.min(10, j); ++k)
 					{
 						p_8648_.setOldPosAndRot();
@@ -148,7 +147,7 @@ public abstract class MixinServerLevelEntityTimer extends Level
 						}
 					}
 				}
-				else if(!EnchantmentUtil.TIMER_MAP.containsKey(p_8648_.getUUID()))
+				else if(!TimerUtil.TIMER_MAP.containsKey(p_8648_.getUUID()))
 				{
 					p_8648_.setOldPosAndRot();
 					ProfilerFiller profilerfiller = this.getProfiler();

@@ -1,13 +1,13 @@
 package com.min01.minsenchantments.misc;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import com.google.common.collect.Multimap;
+import com.min01.entitytimer.TimerUtil;
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -118,8 +118,6 @@ public class EventHandlerForge
 	public static final String MINER = "Miner";
 	public static final String MINER_LVL = "MinerLvL";
 	public static final String MINER_COUNT = "MinerCount";
-	
-	public static final Map<Class<? extends Entity>, Object> ENTITY_MAP = new HashMap<>();
 	
 	@SubscribeEvent
 	public static void onBreakSpeed(PlayerEvent.BreakSpeed event)
@@ -747,8 +745,6 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onEntityJoin(EntityJoinLevelEvent event)
 	{
-		ENTITY_MAP.put(event.getEntity().getClass(), event.getEntity());
-		
 		if(event.getEntity() instanceof AbstractArrow arrow)
 		{
 			if(arrow.getOwner() != null)
@@ -850,7 +846,7 @@ public class EventHandlerForge
 					if(living.getPersistentData().contains(SNIPE))
 					{
 						int level = living.getPersistentData().getInt(SNIPE_LVL);
-						EnchantmentUtil.setTickrate(proj, 20 + (level * EnchantmentConfig.snipeProjectileSpeedPerLevel.get()));
+						TimerUtil.setTickrate(proj, 20 + (level * EnchantmentConfig.snipeProjectileSpeedPerLevel.get()));
 						proj.getPersistentData().putBoolean(SNIPE, true);
 						proj.getPersistentData().putInt(SNIPE_LVL, level);
 						
@@ -860,7 +856,7 @@ public class EventHandlerForge
 					else if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
 					{
 						int level = stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get());
-						EnchantmentUtil.setTickrate(proj, 20 + (level * EnchantmentConfig.snipeProjectileSpeedPerLevel.get()));
+						TimerUtil.setTickrate(proj, 20 + (level * EnchantmentConfig.snipeProjectileSpeedPerLevel.get()));
 						proj.getPersistentData().putBoolean(SNIPE, true);
 						proj.getPersistentData().putInt(SNIPE_LVL, level);
 					}

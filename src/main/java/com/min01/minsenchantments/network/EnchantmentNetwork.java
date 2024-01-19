@@ -1,5 +1,6 @@
 package com.min01.minsenchantments.network;
 
+import com.min01.entitytimer.EntityTimerSyncPacket;
 import com.min01.minsenchantments.MinsEnchantments;
 
 import net.minecraft.resources.ResourceLocation;

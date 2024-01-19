@@ -1,4 +1,4 @@
-package com.min01.minsenchantments.mixin;
+package com.min01.minsenchantments.mixin.entitytimer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,11 +9,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-public class EnchantmentMixinConfigPlugin implements IMixinConfigPlugin
+public class EntityTimerMixinConfigPlugin implements IMixinConfigPlugin
 {
-	private final boolean hasMU = hasClass("com.min01.universe.MinsUniverse");
+	private final boolean hasConflict = hasClass("com.min01.universe.MinsUniverse");
 	
-	public EnchantmentMixinConfigPlugin() throws IOException 
+	public EntityTimerMixinConfigPlugin() throws IOException 
 	{
 		
 	}
@@ -43,7 +43,7 @@ public class EnchantmentMixinConfigPlugin implements IMixinConfigPlugin
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName)
 	{
-		return mixinClassName.endsWith("EntityTimer") ? !this.hasMU : true;
+		return mixinClassName.endsWith("EntityTimer") ? !this.hasConflict : true;
 	}
 
 	@Override

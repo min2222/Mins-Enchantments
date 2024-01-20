@@ -259,6 +259,7 @@ public class EventHandlerForge
 	{
 		LivingEntity living = event.getEntity();
 		Entity source = event.getSource().getEntity();
+		Entity directSource = event.getSource().getDirectEntity();
 		
 		if(source != null && source instanceof LivingEntity attacker)
 		{
@@ -273,9 +274,13 @@ public class EventHandlerForge
 			
 			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.FLAME_THORN.get(), living) > 0)
 			{
-				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.FLAME_THORN.get(), living);
-				source.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
-				source.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);
+				boolean flag = directSource instanceof Projectile proj ? proj.getOwner() != null && proj.getOwner() == living : directSource == living;
+				if(attacker != living && !flag)
+				{
+					int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.FLAME_THORN.get(), living);
+					attacker.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
+					attacker.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);
+				}
 			}
 			
 			if(attacker.getMainHandItem().getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)

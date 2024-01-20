@@ -62,6 +62,7 @@ import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -169,7 +170,7 @@ public class EventHandlerForge
 		if(stack.getEnchantmentLevel(CustomEnchantments.POSEIDONS_GRACE.get()) > 0)
 		{
 			living.getPersistentData().putBoolean(POSEIDONS_GRACE, true);
-			living.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(stack.getTag()));
+			living.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(new CompoundTag()));
 		}
 		
 		if(stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get()) > 0)
@@ -413,7 +414,7 @@ public class EventHandlerForge
 				}
 				Vec3 lookPos = player.position().add(EnchantmentUtil.getLookPos(player.getXRot(), player.getYRot(), 0, 0.001F));
 				Vec3 motion = EnchantmentUtil.fromToVector(player.position(), lookPos, (float) (swimSpeed + tide));
-				player.setDeltaMovement(motion.x, player.getDeltaMovement().y, motion.z);
+				player.setDeltaMovement(motion.x, motion.y, motion.z);
 				if(player instanceof ServerPlayer serverPlayer)
 				{
 					serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
@@ -800,7 +801,7 @@ public class EventHandlerForge
 						{
 							ItemStack tridentItem = ItemStack.of(living.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM));
 							trident.getPersistentData().putBoolean(POSEIDONS_GRACE, true);
-							trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, tridentItem.save(tridentItem.getTag()));
+							trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, tridentItem.save(new CompoundTag()));
 							
 							living.getPersistentData().remove(POSEIDONS_GRACE);
 							living.getPersistentData().remove(POSEIDONS_GRACE_ITEM);
@@ -808,7 +809,7 @@ public class EventHandlerForge
 						else if(stack.getEnchantmentLevel(CustomEnchantments.POSEIDONS_GRACE.get()) > 0)
 						{
 							trident.getPersistentData().putBoolean(POSEIDONS_GRACE, true);
-							trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(stack.getTag()));
+							trident.getPersistentData().put(POSEIDONS_GRACE_ITEM, stack.save(new CompoundTag()));
 						}
 					}
 					
@@ -943,7 +944,6 @@ public class EventHandlerForge
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event)
 	{
@@ -1086,7 +1086,7 @@ public class EventHandlerForge
 			                    double x = (double)owner.getX() + (trident.level().getRandom().nextDouble() - trident.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
 			                    double z = (double)owner.getZ() + (trident.level().getRandom().nextDouble() - trident.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
 			                    
-			                    if(trident.level().getBlockState(BlockPos.containing(x, event.getEntity().getY() - 1, z)).liquid())
+			                    if(trident.level().getFluidState(BlockPos.containing(x, event.getEntity().getY() - 1, z)).is(Fluids.WATER) || trident.level().getFluidState(BlockPos.containing(x, event.getEntity().getY() - 1, z)).is(Fluids.FLOWING_WATER))
 			                    {
 									ThrownTrident summonedTrident = (ThrownTrident) trident.getType().create(trident.level());
 									ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, summonedTrident, ItemStack.of(trident.getPersistentData().getCompound(POSEIDONS_GRACE_ITEM)), "f_37555_");
@@ -1219,32 +1219,15 @@ public class EventHandlerForge
 				
 				if(proj instanceof AbstractArrow arrow)
 				{
-					if(proj instanceof ThrownTrident)
-					{
-						if(number > 0)
-						{
-							arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
-						}
-					}
-					else
+					if(number > 0)
 					{
 						arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
 					}
 				}
 				
-				if(event.getRayTraceResult().getType() == HitResult.Type.BLOCK)
+				if(number > 0)
 				{
-					if(proj instanceof ThrownTrident)
-					{
-						if(number > 0)
-						{
-							proj.discard();
-						}
-					}
-					else
-					{
-						proj.discard();
-					}
+					proj.discard();
 				}
 			}
 		}

@@ -2,7 +2,7 @@
 	"required": true,
 	"minVersion": "0.8",
 	"package": "com.min01.minsenchantments.mixin",
-	"plugin": "com.min01.minsenchantments.mixin.EntityTimerMixinConfigPlugin",
+	"plugin": "com.min01.minsenchantments.mixin.entitytimer.EntityTimerMixinConfigPlugin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
 		"MixinEnchantment",

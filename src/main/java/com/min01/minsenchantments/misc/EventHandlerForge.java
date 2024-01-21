@@ -105,6 +105,7 @@ public class EventHandlerForge
 	public static final String LORD_OF_THE_SEA = "LordOfTheSea";
 	public static final String LORD_OF_THE_SEA_DMG = "LordOfTheSeaDmg";
 	public static final String WATER_JET = "WaterJet";
+	public static final String AQUATIC_AURA = "AquaticAura";
 	public static final String SOUL_FIRE = "SoulFire";
 	public static final String TELEPORTATION = "Teleportation";
 	public static final String RECOCHET = "Recochet";
@@ -117,6 +118,7 @@ public class EventHandlerForge
 	public static final String SKILLFUL = "Skillful";
 	public static final String SKILLFUL_DMG = "SkillfulDmg";
 	public static final String SKILLFUL_SPEED = "SkillfulSpeed";
+	public static final String SKILLFUL_COUNT = "SkillfulCount";
 	public static final String CELL_DIVISION = "CellDivision";
 	public static final String CELL_DIVISION_LVL = "CellDivisionLvl";
 	public static final String CELL_DIVISION_NUMBER = "CellDivisionNumber";
@@ -560,8 +562,8 @@ public class EventHandlerForge
 			
 			list.forEach((entity) -> 
 			{
-				//FIXME not working
-				ObfuscationReflectionHelper.setPrivateValue(Entity.class, entity, true, "f_19798_");
+				//TODO need to find a way to remove tag while list not contain it, also air supply thing not implemented yet
+				//entity.getPersistentData().putBoolean(AQUATIC_AURA, true);
 			});
 			
 			projList.forEach((proj) -> 

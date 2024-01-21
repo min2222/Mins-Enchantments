@@ -56,8 +56,10 @@ public class MixinItemStack
 			{
 				int damage = stack.getDamageValue();
 				int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
-				//FIXME
-				if(damage > 1 && damage % (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level) == 0)
+				int count = stack.getOrCreateTag().getInt(EventHandlerForge.SKILLFUL);
+				int currentCount = stack.getOrCreateTag().getInt(EventHandlerForge.SKILLFUL_COUNT);
+				stack.getOrCreateTag().putInt(EventHandlerForge.SKILLFUL, damage / (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level));
+				if(currentCount < count)
 				{
 					float speed = stack.getOrCreateTag().getFloat(EventHandlerForge.SKILLFUL_SPEED);
 					float dmg = stack.getOrCreateTag().getFloat(EventHandlerForge.SKILLFUL_DMG);
@@ -84,6 +86,7 @@ public class MixinItemStack
 							stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_SPEED, level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get());
 						}
 					}
+					stack.getOrCreateTag().putInt(EventHandlerForge.SKILLFUL_COUNT, currentCount + 1);
 				}
 				
 			    for(Entry<Attribute, AttributeModifier> entry : map.entries())

@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "SPS",
+        "PPP"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:sculk_shrieker"
+        },
+        "S": {
+            "item": "minecraft:echo_shard"
+        },
+        "P": {
+            "item": "minecraft:sculk_catalyst"
+        }
+    },
+    "result": {
+        "item": "minsenchantments:sculk_enchanting_table",
+        "count": 1
+    }
+}

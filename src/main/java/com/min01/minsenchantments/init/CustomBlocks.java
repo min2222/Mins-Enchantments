@@ -5,9 +5,11 @@ import com.min01.minsenchantments.block.AbstractCustomEnchantmentTableBlock;
 import com.min01.minsenchantments.block.EndEnchantmentTableBlock;
 import com.min01.minsenchantments.block.NetherEnchantmentTableBlock;
 import com.min01.minsenchantments.block.OceanEnchantmentTableBlock;
+import com.min01.minsenchantments.block.SculkEnchantmentTableBlock;
 import com.min01.minsenchantments.blockentity.EndEnchantmentTableBlockEntity;
 import com.min01.minsenchantments.blockentity.NetherEnchantmentTableBlockEntity;
 import com.min01.minsenchantments.blockentity.OceanEnchantmentTableBlockEntity;
+import com.min01.minsenchantments.blockentity.SculkEnchantmentTableBlockEntity;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,4 +37,7 @@ public class CustomBlocks
     
     public static final RegistryObject<AbstractCustomEnchantmentTableBlock> END_ENCHANTMENT_TABLE = BLOCKS.register("end_enchanting_table", () -> new EndEnchantmentTableBlock(TABLE_PROPERITES));
     public static final RegistryObject<BlockEntityType<EndEnchantmentTableBlockEntity>> END_ENCHANTMENT_TABLE_BLOCK_ENTITY = BLOCK_ENTITIES.register("end_enchanting_table", () -> BlockEntityType.Builder.of(EndEnchantmentTableBlockEntity::new, END_ENCHANTMENT_TABLE.get()).build(null));
+    
+    public static final RegistryObject<AbstractCustomEnchantmentTableBlock> SCULK_ENCHANTMENT_TABLE = BLOCKS.register("sculk_enchanting_table", () -> new SculkEnchantmentTableBlock(TABLE_PROPERITES));
+    public static final RegistryObject<BlockEntityType<SculkEnchantmentTableBlockEntity>> SCULK_ENCHANTMENT_TABLE_BLOCK_ENTITY = BLOCK_ENTITIES.register("sculk_enchanting_table", () -> BlockEntityType.Builder.of(SculkEnchantmentTableBlockEntity::new, SCULK_ENCHANTMENT_TABLE.get()).build(null));
 }

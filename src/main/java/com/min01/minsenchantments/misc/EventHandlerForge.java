@@ -27,6 +27,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
@@ -63,11 +64,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.PlayLevelSoundEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -79,6 +82,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -101,6 +105,8 @@ public class EventHandlerForge
 	public static final String LORD_OF_THE_SEA = "LordOfTheSea";
 	public static final String LORD_OF_THE_SEA_DMG = "LordOfTheSeaDmg";
 	public static final String WATER_JET = "WaterJet";
+	public static final String SOUL_FIRE = "SoulFire";
+	public static final String TELEPORTATION = "Teleportation";
 	public static final String RECOCHET = "Recochet";
 	public static final String RECOCHET_BOUNCE = "RecochetBounce";
 	public static final String WALLBREAK = "Wallbreak";
@@ -110,6 +116,7 @@ public class EventHandlerForge
 	public static final String AUTO_SHIELDING = "AutoShielding";
 	public static final String SKILLFUL = "Skillful";
 	public static final String SKILLFUL_DMG = "SkillfulDmg";
+	public static final String SKILLFUL_SPEED = "SkillfulSpeed";
 	public static final String CELL_DIVISION = "CellDivision";
 	public static final String CELL_DIVISION_LVL = "CellDivisionLvl";
 	public static final String CELL_DIVISION_NUMBER = "CellDivisionNumber";
@@ -121,26 +128,39 @@ public class EventHandlerForge
 	public static final String MINER_COUNT = "MinerCount";
 	
 	@SubscribeEvent
+	public static void onPlaySoundAtEntity(PlayLevelSoundEvent.AtEntity event)
+	{
+		Entity entity = event.getEntity();
+		if(entity instanceof LivingEntity living)
+		{
+			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CONCEALMENT.get(), living) > 0)
+			{
+				event.setCanceled(true);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onBlockBreak(BlockEvent.BreakEvent event)
+	{
+		Player player = event.getPlayer();
+		ItemStack stack = player.getMainHandItem();
+		if(stack.getEnchantmentLevel(CustomEnchantments.INFECTION.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.INFECTION.get());
+			event.setExpToDrop(event.getExpToDrop() + (level * EnchantmentConfig.infectionExpPerLevel.get()));
+		}
+	}
+	
+	@SubscribeEvent
 	public static void onBreakSpeed(PlayerEvent.BreakSpeed event)
 	{
 		Player player = event.getEntity();
 		ItemStack stack = player.getMainHandItem();
 		if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
 		{
-			int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
-			int currentDurability = stack.getDamageValue();
-			if(currentDurability % (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level) == 0)
-			{
-				float speed = level * EnchantmentConfig.skillfulSpeedPerLevel.get();
-				if(speed <= level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
-				{
-					event.setNewSpeed(event.getOriginalSpeed() + speed);
-				}
-				if(speed > level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
-				{
-					event.setNewSpeed(event.getOriginalSpeed() + (level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get()));
-				}
-			}
+			float speed = stack.getOrCreateTag().getFloat(SKILLFUL_SPEED);
+			event.setNewSpeed(event.getOriginalSpeed() + speed);
 		}
 	}
 	
@@ -214,25 +234,14 @@ public class EventHandlerForge
 		
 		if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
 		{
-			if(stack.getItem().canBeDepleted())
-			{
-				int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
-				living.getPersistentData().putBoolean(SKILLFUL, true);
-				
-				int currentDurability = stack.getDamageValue();
-				if(currentDurability % (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level) == 0)
-				{
-					float damage = level * EnchantmentConfig.skillfulDamagePerLevel.get();
-					if(damage <= level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
-					{
-						living.getPersistentData().putFloat(SKILLFUL_DMG, damage);
-					}
-					if(damage > level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
-					{
-						living.getPersistentData().putFloat(SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
-					}
-				}
-			}
+			float damage = stack.getOrCreateTag().getFloat(SKILLFUL_DMG);
+			living.getPersistentData().putFloat(SKILLFUL_DMG, damage);
+			living.getPersistentData().putBoolean(SKILLFUL, true);
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.TELEPORTATION.get()) > 0)
+		{
+			living.getPersistentData().putBoolean(TELEPORTATION, true);
 		}
 	}
 	
@@ -296,6 +305,15 @@ public class EventHandlerForge
 					{
 						stack.getTag().putFloat(ACCELERATE, speed + (level * EnchantmentConfig.accelerateSpeedPerLevel.get()));
 					}
+				}
+			}
+			
+			if(attacker.getMainHandItem().getEnchantmentLevel(CustomEnchantments.SOUL_FIRE.get()) > 0)
+			{
+				int level = attacker.getMainHandItem().getEnchantmentLevel(CustomEnchantments.SOUL_FIRE.get());
+				if(!living.isOnFire())
+				{
+					living.getPersistentData().putInt(SOUL_FIRE, level * (EnchantmentConfig.soulFireDurationPerLevel.get() * 20));
 				}
 			}
 		}
@@ -395,7 +413,6 @@ public class EventHandlerForge
 						});
 					}
 				}
-				
 			}
 		}
 		
@@ -479,6 +496,23 @@ public class EventHandlerForge
 				{
 					waterAnimal.getPersistentData().remove(LORD_OF_THE_SEA);
 					waterAnimal.getPersistentData().remove(LORD_OF_THE_SEA_DMG);
+				}
+			}
+		}
+		
+		if(living.getPersistentData().contains(SOUL_FIRE))
+		{
+			int remainingSoulFireTicks = living.getPersistentData().getInt(SOUL_FIRE);
+			if (remainingSoulFireTicks > 0) 
+			{
+				if (!living.fireImmune())
+				{
+		            if (remainingSoulFireTicks % 20 == 0 && !living.isInLava()) 
+		            {
+		            	living.hurt(living.damageSources().onFire(), 2.0F);
+		            }
+		            
+		            living.getPersistentData().putInt(SOUL_FIRE, remainingSoulFireTicks - 1);
 				}
 			}
 		}
@@ -751,22 +785,6 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onEntityJoin(EntityJoinLevelEvent event)
 	{
-		if(event.getEntity() instanceof AbstractArrow arrow)
-		{
-			if(arrow.getOwner() != null)
-			{
-				Entity entity = arrow.getOwner();
-				if(entity instanceof LivingEntity living)
-				{
-					ItemStack stack = living.getItemInHand(living.getUsedItemHand());
-					if(stack.getEnchantmentLevel(CustomEnchantments.WATERBOLT.get()) > 0)
-					{
-						arrow.getPersistentData().putBoolean(WATER_BOLT, true);
-					}
-				}
-			}
-		}
-		
 		if(event.getEntity() instanceof Projectile proj)
 		{
 			if(proj.getOwner() != null)
@@ -776,6 +794,45 @@ public class EventHandlerForge
 				if(entity instanceof LivingEntity living)
 				{
 					ItemStack stack = living.getItemInHand(living.getUsedItemHand());
+					
+					if(proj instanceof AbstractArrow arrow)
+					{
+						if(stack.getEnchantmentLevel(CustomEnchantments.WATERBOLT.get()) > 0)
+						{
+							arrow.getPersistentData().putBoolean(WATER_BOLT, true);
+						}
+						
+						if(stack.getEnchantmentLevel(CustomEnchantments.SONIC_BOOM.get()) > 0)
+						{
+							int level = stack.getEnchantmentLevel(CustomEnchantments.SONIC_BOOM.get());
+				            Vec3 vec3 = living.position().add(0, living.getEyeHeight(), 0);
+				            Vec3 lookPos = vec3.add(EnchantmentUtil.getLookPos(living.getXRot(), living.getYRot(), 0, 1));
+				            Vec3 vec31 = lookPos.subtract(vec3);
+				            Vec3 vec32 = vec31.normalize();
+
+				            for(int i = 1; i < Mth.floor(vec31.length()) + (level * EnchantmentConfig.sonicBoomDistancePerLevel.get()); ++i)
+				            {
+				            	Vec3 vec33 = vec3.add(vec32.scale((double)i));				            	
+				            	if(living.level() instanceof ServerLevel serverLevel)
+				            	{
+				            		serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, vec33.x, vec33.y, vec33.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+				            	}
+				            	AABB aabb = new AABB(vec3, vec33);
+				            	List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, aabb);
+				            	list.removeIf((entity1) -> entity1 == living);
+				            	list.forEach((entity1) ->
+				            	{
+				            		entity1.hurt(arrow.damageSources().sonicBoom(living), level * EnchantmentConfig.sonicBoomDamagePerLevel.get());
+						            double d1 = 0.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+						            double d0 = 2.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+						            entity1.push(vec32.x() * d0, vec32.y() * d1, vec32.z() * d0);
+				            	});
+				            }
+
+				            living.playSound(SoundEvents.WARDEN_SONIC_BOOM, 3.0F, 1.0F);
+							event.setCanceled(true);
+						}
+					}
 					
 					if(proj instanceof ThrownTrident trident)
 					{
@@ -922,22 +979,20 @@ public class EventHandlerForge
 					}
 					else if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
 					{
-						int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
+						float damage = stack.getOrCreateTag().getFloat(SKILLFUL_DMG);
 						proj.getPersistentData().putBoolean(SKILLFUL, true);
-
-						int currentDurability = stack.getDamageValue();
-						if(currentDurability % (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level) == 0)
-						{
-							float damage = level * EnchantmentConfig.skillfulDamagePerLevel.get();
-							if(damage <= level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
-							{
-								proj.getPersistentData().putFloat(SKILLFUL_DMG, damage);
-							}
-							if(damage > level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
-							{
-								proj.getPersistentData().putFloat(SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
-							}
-						}
+						proj.getPersistentData().putFloat(SKILLFUL_DMG, damage);
+					}
+					
+					if(living.getPersistentData().contains(TELEPORTATION))
+					{
+						proj.getPersistentData().putBoolean(TELEPORTATION, true);
+						
+						living.getPersistentData().remove(TELEPORTATION);
+					}
+					else if(stack.getEnchantmentLevel(CustomEnchantments.TELEPORTATION.get()) > 0)
+					{
+						proj.getPersistentData().putBoolean(TELEPORTATION, true);
 					}
 				}
 			}
@@ -1152,6 +1207,11 @@ public class EventHandlerForge
 						}
 					}
 				});
+			}
+			
+			if(proj.getPersistentData().contains(TELEPORTATION))
+			{
+				owner.setPos(event.getRayTraceResult().getLocation());
 			}
 			
 			if(proj.getPersistentData().contains(WATER_JET))

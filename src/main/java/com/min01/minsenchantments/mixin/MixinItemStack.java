@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.misc.EventHandlerForge;
 
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -29,11 +31,10 @@ public class MixinItemStack
 	{
 		if(slot == EquipmentSlot.MAINHAND)
 		{
+		    ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+		    Multimap<Attribute, AttributeModifier> map = item.getAttributeModifiers(slot, stack);
 			if(stack.getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)
 			{
-				float speed = ItemStack.class.cast(this).getTag().getFloat(EventHandlerForge.ACCELERATE);
-			    ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-			    Multimap<Attribute, AttributeModifier> map = item.getAttributeModifiers(slot, stack);
 			    for(Entry<Attribute, AttributeModifier> entry : map.entries())
 			    {
 			    	if(entry.getKey() != Attributes.ATTACK_SPEED)
@@ -42,12 +43,64 @@ public class MixinItemStack
 			    	}
 			    	else
 			    	{
+						float speed = stack.getOrCreateTag().getFloat(EventHandlerForge.ACCELERATE);
 			    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41375_");
 						AttributeModifier modifier = new AttributeModifier(uuid, "Accelerate Modifier", entry.getValue().getAmount() + speed, Operation.ADDITION);
 					    builder.put(Attributes.ATTACK_SPEED, modifier);
 			    	}
 			    }
 				return builder.build();
+			}
+			
+			if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
+			{
+				int damage = stack.getDamageValue();
+				int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
+				//FIXME
+				if(damage > 1 && damage % (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level) == 0)
+				{
+					float speed = stack.getOrCreateTag().getFloat(EventHandlerForge.SKILLFUL_SPEED);
+					float dmg = stack.getOrCreateTag().getFloat(EventHandlerForge.SKILLFUL_DMG);
+					
+					if(dmg < level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
+					{
+						stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_DMG, dmg + (level * EnchantmentConfig.skillfulDamagePerLevel.get()));
+					}
+					
+					if(dmg > level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
+					{
+						stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
+					}
+
+					if(stack.getItem() instanceof DiggerItem)
+					{
+						if(speed < level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
+						{
+							stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_SPEED, speed + (level * EnchantmentConfig.skillfulSpeedPerLevel.get()));
+						}
+						
+						if(speed > level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
+						{
+							stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_SPEED, level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get());
+						}
+					}
+				}
+				
+			    for(Entry<Attribute, AttributeModifier> entry : map.entries())
+			    {
+			    	if(entry.getKey() != Attributes.ATTACK_DAMAGE)
+			    	{
+					    builder.put(entry.getKey(), entry.getValue());
+			    	}
+			    	else
+			    	{
+						float amount = stack.getOrCreateTag().getFloat(EventHandlerForge.SKILLFUL_DMG);
+			    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41374_");
+			    		AttributeModifier modifier = new AttributeModifier(uuid, "Skillful Modifier", entry.getValue().getAmount() + amount, Operation.ADDITION);
+			    		builder.put(Attributes.ATTACK_DAMAGE, modifier);
+			    	}
+			    }
+	    		return builder.build();
 			}
 		}
 		return item.getAttributeModifiers(slot, stack);

@@ -4,11 +4,13 @@ import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.enchantment.curse.EnchantmentOvergravity;
 import com.min01.minsenchantments.enchantment.curse.EnchantmentUndeadCurse;
 import com.min01.minsenchantments.enchantment.end.EnchantmentEndermanCurse;
+import com.min01.minsenchantments.enchantment.end.EnchantmentTeleportation;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentAutoSmelt;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentAutoSmelt.EnchantmentAutoSmeltModifier;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentDry;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentFlameThorn;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentLavaWalker;
+import com.min01.minsenchantments.enchantment.nether.EnchantmentSoulFire;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentAccelerate;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentArmorCrack;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentAutoShielding;
@@ -40,6 +42,9 @@ import com.min01.minsenchantments.enchantment.ocean.EnchantmentTide;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentWaterJet;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentWaterbolt;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentWavesProtection;
+import com.min01.minsenchantments.enchantment.sculk.EnchantmentConcealment;
+import com.min01.minsenchantments.enchantment.sculk.EnchantmentInfection;
+import com.min01.minsenchantments.enchantment.sculk.EnchantmentSonicBoom;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.world.item.ElytraItem;
@@ -80,10 +85,15 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> AUTO_SMELT = ENCHANTMENTS.register("auto_smelt", () -> new EnchantmentAutoSmelt());
 	public static final RegistryObject<Enchantment> FLAME_THORN = ENCHANTMENTS.register("flame_thorn", () -> new EnchantmentFlameThorn());
 	public static final RegistryObject<Enchantment> DRY = ENCHANTMENTS.register("dry", () -> new EnchantmentDry());
+	public static final RegistryObject<Enchantment> SOUL_FIRE = ENCHANTMENTS.register("soul_fire", () -> new EnchantmentSoulFire());
 	
 	//end
+	public static final RegistryObject<Enchantment> TELEPORTATION = ENCHANTMENTS.register("teleportation", () -> new EnchantmentTeleportation());
 	
 	//sculk
+	public static final RegistryObject<Enchantment> SONIC_BOOM = ENCHANTMENTS.register("sonic_boom", () -> new EnchantmentSonicBoom());
+	public static final RegistryObject<Enchantment> INFECTION = ENCHANTMENTS.register("infection", () -> new EnchantmentInfection());
+	public static final RegistryObject<Enchantment> CONCEALMENT = ENCHANTMENTS.register("concealment", () -> new EnchantmentConcealment());
 	
 	//normal
 	public static final RegistryObject<Enchantment> RECOCHET = ENCHANTMENTS.register("recochet", () -> new EnchantmentRecochet());

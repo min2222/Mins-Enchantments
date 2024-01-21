@@ -7,15 +7,51 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.misc.EventHandlerForge;
+import com.min01.minsenchantments.misc.IExtraEntity;
 
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.level.Level;
 
 @Mixin(LivingEntity.class)
-public class MixinLivingEntity
+public abstract class MixinLivingEntity extends Entity implements IExtraEntity
 {
+	private static final EntityDataAccessor<Boolean> IS_SOUL_FIRE = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BOOLEAN);
+	
+	public MixinLivingEntity(EntityType<?> p_19870_, Level p_19871_) 
+	{
+		super(p_19870_, p_19871_);
+	}
+	
+	@Inject(at = @At("HEAD"), method = "defineSynchedData", cancellable = true)
+	private void defineSynchedData(CallbackInfo ci)
+	{
+		this.getEntityData().define(IS_SOUL_FIRE, false);
+	}
+	
+	@Inject(at = @At("HEAD"), method = "tick", cancellable = true)
+	private void tick(CallbackInfo ci)
+	{
+		Level level = this.level();
+		if(!level.isClientSide)
+		{
+			this.getEntityData().set(IS_SOUL_FIRE, this.getPersistentData().getInt(EventHandlerForge.SOUL_FIRE) > 0);
+		}
+	}
+
+	@Override
+	public boolean isSoulFire() 
+	{
+		return this.getEntityData().get(IS_SOUL_FIRE);
+	}
+	
 	@Inject(at = @At("HEAD"), method = "stopUsingItem", cancellable = true)
     private void stopUsingItem(CallbackInfo ci)
     {

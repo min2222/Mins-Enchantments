@@ -9,6 +9,7 @@ import com.min01.minsenchantments.init.CustomMenuType;
 import com.min01.minsenchantments.screen.EndEnchantmentScreen;
 import com.min01.minsenchantments.screen.NetherEnchantmentScreen;
 import com.min01.minsenchantments.screen.OceanEnchantmentScreen;
+import com.min01.minsenchantments.screen.SculkEnchantmentScreen;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -26,6 +27,7 @@ public class ClientEventHandler
 		MenuScreens.register(CustomMenuType.OCEAN_ENCHANTMENT.get(), OceanEnchantmentScreen::new);
 		MenuScreens.register(CustomMenuType.NETHER_ENCHANTMENT.get(), NetherEnchantmentScreen::new);
 		MenuScreens.register(CustomMenuType.END_ENCHANTMENT.get(), EndEnchantmentScreen::new);
+		MenuScreens.register(CustomMenuType.SCULK_ENCHANTMENT.get(), SculkEnchantmentScreen::new);
 		
         BlockEntityRenderers.register(CustomBlocks.OCEAN_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), OceanEnchantmentTableRenderer::new);
         BlockEntityRenderers.register(CustomBlocks.NETHER_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), NetherEnchantmentTableRenderer::new);

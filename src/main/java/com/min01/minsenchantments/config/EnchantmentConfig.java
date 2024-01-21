@@ -132,9 +132,29 @@ public class EnchantmentConfig
 	
 	public static ConfigValue<Integer> dryRadiusPerLevel;
 	
+	public static ConfigValue<Integer> soulFireMinCost;
+	public static ConfigValue<Integer> soulFireMaxCost;
+	
+	public static ConfigValue<Integer> soulFireDurationPerLevel;
+	
 	//end
+	public static ConfigValue<Integer> teleportationMinCost;
+	public static ConfigValue<Integer> teleportationMaxCost;
 	
 	//sculk
+	public static ConfigValue<Integer> sonicBoomMinCost;
+	public static ConfigValue<Integer> sonicBoomMaxCost;
+	
+	public static ConfigValue<Float> sonicBoomDamagePerLevel;
+	public static ConfigValue<Float> sonicBoomDistancePerLevel;
+	
+	public static ConfigValue<Integer> infectionMinCost;
+	public static ConfigValue<Integer> infectionMaxCost;
+	
+	public static ConfigValue<Integer> infectionExpPerLevel;
+	
+	public static ConfigValue<Integer> concealmentMinCost;
+	public static ConfigValue<Integer> concealmentMaxCost;
 	
 	//normal
 	public static ConfigValue<Integer> recochetMinCost;
@@ -191,7 +211,7 @@ public class EnchantmentConfig
 	
 	public static ConfigValue<Float> skillfulMaxDamagePerLevel;
 	public static ConfigValue<Float> skillfulMaxSpeedPerLevel;
-	public static ConfigValue<Float> skillfulDurabilityPerLevel;
+	public static ConfigValue<Integer> skillfulDurabilityPerLevel;
 	public static ConfigValue<Float> skillfulSpeedPerLevel;
 	public static ConfigValue<Float> skillfulDamagePerLevel;
 	
@@ -375,6 +395,28 @@ public class EnchantmentConfig
     	
     	EnchantmentConfig.dryRadiusPerLevel = config.comment("absorb radius for each level of dry enchantment").define("dryRadiusPerLevel", 5);
     	
+    	EnchantmentConfig.soulFireMinCost = config.comment("minimum enchantability for soul fire enchantment").define("soulFireMinCost", 1);
+    	EnchantmentConfig.soulFireMaxCost = config.comment("maximum enchantability for soul fire enchantment").define("soulFireMaxCost", 11);
+    	
+    	EnchantmentConfig.soulFireDurationPerLevel = config.comment("fire duration for each level of soul fire enchantment").define("soulFireDurationPerLevel", 1);
+    	
+    	EnchantmentConfig.teleportationMinCost = config.comment("minimum enchantability for teleportation enchantment").define("teleportationMinCost", 25);
+    	EnchantmentConfig.teleportationMaxCost = config.comment("maximum enchantability for teleportation enchantment").define("teleportationMaxCost", 50);
+    	
+    	EnchantmentConfig.sonicBoomMinCost = config.comment("minimum enchantability for sonic boom enchantment").define("sonicBoomMinCost", 1);
+    	EnchantmentConfig.sonicBoomMaxCost = config.comment("maximum enchantability for sonic boom enchantment").define("sonicBoomMaxCost", 11);
+    	
+    	EnchantmentConfig.sonicBoomDamagePerLevel = config.comment("damage for each level of sonic boom enchantment").define("sonicBoomDamagePerLevel", 1.0F);
+    	EnchantmentConfig.sonicBoomDistancePerLevel = config.comment("distance for each level of sonic boom enchantment").define("sonicBoomDistancePerLevel", 2.0F);
+    	
+    	EnchantmentConfig.infectionMinCost = config.comment("minimum enchantability for infection enchantment").define("infectionMinCost", 1);
+    	EnchantmentConfig.infectionMaxCost = config.comment("maximum enchantability for infection enchantment").define("infectionMaxCost", 11);
+    	
+    	EnchantmentConfig.infectionExpPerLevel = config.comment("additional exp orb count for each level of infection enchantment").define("infectionExpPerLevel", 1);
+    	
+    	EnchantmentConfig.concealmentMinCost = config.comment("minimum enchantability for concealment enchantment").define("concealmentMinCost", 25);
+    	EnchantmentConfig.concealmentMaxCost = config.comment("maximum enchantability for concealment enchantment").define("concealmentMaxCost", 50);
+    	
     	EnchantmentConfig.recochetMinCost = config.comment("minimum enchantability for recochet enchantment").define("recochetMinCost", 25);
     	EnchantmentConfig.recochetMaxCost = config.comment("maximum enchantability for recochet enchantment").define("recochetMaxCost", 50);
     	
@@ -429,7 +471,7 @@ public class EnchantmentConfig
 
     	EnchantmentConfig.skillfulMaxDamagePerLevel = config.comment("maximum additional damage for each level of skillful enchantment").define("skillfulMaxDamagePerLevel", 3.0F);
     	EnchantmentConfig.skillfulMaxSpeedPerLevel = config.comment("maximum additional mining speed for each level of skillful enchantment").define("skillfulMaxSpeedPerLevel", 3.0F);
-    	EnchantmentConfig.skillfulDurabilityPerLevel = config.comment("minimum durability required to increase damage for each level of skillful enchantment").define("skillfulDurabilityPerLevel", 900.0F);
+    	EnchantmentConfig.skillfulDurabilityPerLevel = config.comment("minimum durability required to increase damage for each level of skillful enchantment").define("skillfulDurabilityPerLevel", 900);
     	EnchantmentConfig.skillfulDamagePerLevel = config.comment("additional damage when enough durability used for each level of skillful enchantment").define("skillfulDamagePerLevel", 2.0F);
     	EnchantmentConfig.skillfulSpeedPerLevel = config.comment("additional mining speed when enough durability used for each level of skillful enchantment").define("skillfulSpeedPerLevel", 2.0F);
     	

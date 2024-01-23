@@ -379,7 +379,7 @@ public class EventHandlerForge
 		
 		if(player.isUsingItem())
 		{
-			ItemStack stack = player.getItemInHand(player.getUsedItemHand());
+			ItemStack stack = player.getUseItem();
 			if(stack.getEnchantmentLevel(CustomEnchantments.QUICKDRAW.get()) > 0)
 			{
 				int level = stack.getEnchantmentLevel(CustomEnchantments.QUICKDRAW.get());
@@ -709,7 +709,7 @@ public class EventHandlerForge
 			    }
 			    else
 			    {
-					living.setDeltaMovement(living.getDeltaMovement().x, 0.05 + (living.getDeltaMovement().y + climbSpeed), living.getDeltaMovement().z);
+					living.setDeltaMovement(living.getDeltaMovement().x, climbSpeed, living.getDeltaMovement().z);
 			    }
 				living.fallDistance = 0.0F;
 			}
@@ -795,7 +795,7 @@ public class EventHandlerForge
 				
 				if(entity instanceof LivingEntity living)
 				{
-					ItemStack stack = living.getItemInHand(living.getUsedItemHand());
+					ItemStack stack = living.getUseItem();
 					
 					if(proj instanceof AbstractArrow arrow)
 					{

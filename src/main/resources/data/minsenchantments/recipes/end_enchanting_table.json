@@ -10,10 +10,10 @@
             "item": "minecraft:end_crystal"
         },
         "S": {
-            "item": "minecraft:obsidian"
+            "item": "minecraft:ender_eye"
         },
         "P": {
-            "item": "minecraft:end_stone_bricks"
+            "item": "minecraft:obsidian"
         }
     },
     "result": {

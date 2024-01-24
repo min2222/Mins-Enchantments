@@ -4,6 +4,7 @@
 		"minsenchantments:ocean_enchanting_table",
 		"minsenchantments:nether_enchanting_table",
 		"minsenchantments:end_enchanting_table",
-		"minsenchantments:sculk_enchanting_table"
+		"minsenchantments:sculk_enchanting_table",
+		"minsenchantments:blessing_table"
 	]
 }

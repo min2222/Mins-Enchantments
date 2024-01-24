@@ -16,4 +16,5 @@ public class CustomItems
 	public static final RegistryObject<Item> NETHER_ENCHANTMENT_TABLE = ITEMS.register("nether_enchanting_table", () -> new BlockItem(CustomBlocks.NETHER_ENCHANTMENT_TABLE.get(), new Item.Properties()));
 	public static final RegistryObject<Item> END_ENCHANTMENT_TABLE = ITEMS.register("end_enchanting_table", () -> new BlockItem(CustomBlocks.END_ENCHANTMENT_TABLE.get(), new Item.Properties()));
 	public static final RegistryObject<Item> SCULK_ENCHANTMENT_TABLE = ITEMS.register("sculk_enchanting_table", () -> new BlockItem(CustomBlocks.SCULK_ENCHANTMENT_TABLE.get(), new Item.Properties()));
+	public static final RegistryObject<Item> BLESSMENT_TABLE = ITEMS.register("blessing_table", () -> new BlockItem(CustomBlocks.BLESSMENT_TABLE.get(), new Item.Properties()));
 }

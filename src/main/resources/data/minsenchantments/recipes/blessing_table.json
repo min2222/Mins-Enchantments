@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "ENQ",
+        " D "
+    ],
+    "key": {
+        "#": {
+            "item": "minsenchantments:end_enchanting_table"
+        },
+        "E": {
+            "item": "minsenchantments:ocean_enchanting_table"
+        },
+        "N": {
+            "item": "minecraft:nether_star"
+        },
+        "Q": {
+            "item": "minsenchantments:nether_enchanting_table"
+        },
+        "D": {
+            "item": "minsenchantments:sculk_enchanting_table"
+        }
+    },
+    "result": {
+        "item": "minsenchantments:blessing_table",
+        "count": 1
+    }
+}

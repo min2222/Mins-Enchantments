@@ -2,10 +2,12 @@ package com.min01.minsenchantments.init;
 
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.block.AbstractCustomEnchantmentTableBlock;
+import com.min01.minsenchantments.block.BlessmentTableBlock;
 import com.min01.minsenchantments.block.EndEnchantmentTableBlock;
 import com.min01.minsenchantments.block.NetherEnchantmentTableBlock;
 import com.min01.minsenchantments.block.OceanEnchantmentTableBlock;
 import com.min01.minsenchantments.block.SculkEnchantmentTableBlock;
+import com.min01.minsenchantments.blockentity.BlessmentTableBlockEntity;
 import com.min01.minsenchantments.blockentity.EndEnchantmentTableBlockEntity;
 import com.min01.minsenchantments.blockentity.NetherEnchantmentTableBlockEntity;
 import com.min01.minsenchantments.blockentity.OceanEnchantmentTableBlockEntity;
@@ -40,4 +42,7 @@ public class CustomBlocks
     
     public static final RegistryObject<AbstractCustomEnchantmentTableBlock> SCULK_ENCHANTMENT_TABLE = BLOCKS.register("sculk_enchanting_table", () -> new SculkEnchantmentTableBlock(TABLE_PROPERITES));
     public static final RegistryObject<BlockEntityType<SculkEnchantmentTableBlockEntity>> SCULK_ENCHANTMENT_TABLE_BLOCK_ENTITY = BLOCK_ENTITIES.register("sculk_enchanting_table", () -> BlockEntityType.Builder.of(SculkEnchantmentTableBlockEntity::new, SCULK_ENCHANTMENT_TABLE.get()).build(null));
+    
+    public static final RegistryObject<AbstractCustomEnchantmentTableBlock> BLESSMENT_TABLE = BLOCKS.register("blessing_table", () -> new BlessmentTableBlock(TABLE_PROPERITES));
+    public static final RegistryObject<BlockEntityType<BlessmentTableBlockEntity>> BLESSMENT_TABLE_BLOCK_ENTITY = BLOCK_ENTITIES.register("blessing_table", () -> BlockEntityType.Builder.of(BlessmentTableBlockEntity::new, BLESSMENT_TABLE.get()).build(null));
 }

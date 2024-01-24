@@ -1,10 +1,11 @@
 package com.min01.minsenchantments.blessment;
 
+import com.min01.minsenchantments.enchantment.AbstractCustomEnchantment;
+
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public abstract class AbstractBlessment extends Enchantment implements IBlessment
+public abstract class AbstractBlessment extends AbstractCustomEnchantment implements IBlessment
 {
 	public AbstractBlessment(Rarity p_44676_, EnchantmentCategory p_44677_, EquipmentSlot[] p_44678_)
 	{

@@ -16,12 +16,18 @@ public class EnchantmentRecochet extends Enchantment
 	@Override
 	public int getMaxCost(int p_44691_) 
 	{
-		return EnchantmentConfig.recochetMaxCost.get();
+		return this.getMinCost(p_44691_) + EnchantmentConfig.recochetMaxCost.get();
 	}
 	
 	@Override
 	public int getMinCost(int p_44679_) 
 	{
-		return EnchantmentConfig.recochetMinCost.get();
+		return EnchantmentConfig.recochetMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.recochetMaxCost.get();
+	}
+	
+	@Override
+	public int getMaxLevel() 
+	{
+		return 5;
 	}
 }

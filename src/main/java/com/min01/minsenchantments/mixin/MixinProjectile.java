@@ -22,7 +22,8 @@ public class MixinProjectile
 			if(Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.RECOCHET))
 			{
 			    int bounce = Projectile.class.cast(this).getPersistentData().getInt(EventHandlerForge.RECOCHET_BOUNCE);
-			    if(bounce < EnchantmentConfig.recochetMaxBounce.get())
+			    int level = Projectile.class.cast(this).getPersistentData().getInt(EventHandlerForge.RECOCHET_LVL);
+			    if(bounce < level * EnchantmentConfig.recochetBouncePerLevel.get())
 			    {
 					ci.cancel();
 			    }

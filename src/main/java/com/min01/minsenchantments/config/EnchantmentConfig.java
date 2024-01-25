@@ -160,7 +160,7 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> recochetMinCost;
 	public static ConfigValue<Integer> recochetMaxCost;
 	
-	public static ConfigValue<Integer> recochetMaxBounce;
+	public static ConfigValue<Integer> recochetBouncePerLevel;
 	
 	public static ConfigValue<Integer> climbMinCost;
 	public static ConfigValue<Integer> climbMaxCost;
@@ -417,10 +417,10 @@ public class EnchantmentConfig
     	EnchantmentConfig.concealmentMinCost = config.comment("minimum enchantability for concealment enchantment").define("concealmentMinCost", 25);
     	EnchantmentConfig.concealmentMaxCost = config.comment("maximum enchantability for concealment enchantment").define("concealmentMaxCost", 50);
     	
-    	EnchantmentConfig.recochetMinCost = config.comment("minimum enchantability for recochet enchantment").define("recochetMinCost", 25);
-    	EnchantmentConfig.recochetMaxCost = config.comment("maximum enchantability for recochet enchantment").define("recochetMaxCost", 50);
+    	EnchantmentConfig.recochetMinCost = config.comment("minimum enchantability for recochet enchantment").define("recochetMinCost", 1);
+    	EnchantmentConfig.recochetMaxCost = config.comment("maximum enchantability for recochet enchantment").define("recochetMaxCost", 11);
     	
-    	EnchantmentConfig.recochetMaxBounce = config.comment("maximum bouncing count for recochet enchantment").define("recochetMaxBounce", 5);
+    	EnchantmentConfig.recochetBouncePerLevel = config.comment("bouncing count for each level of recochet enchantment").define("recochetBouncePerLevel", 2);
     	
     	EnchantmentConfig.climbMinCost = config.comment("minimum enchantability for climb enchantment").define("climbMinCost", 1);
     	EnchantmentConfig.climbMaxCost = config.comment("maximum enchantability for climb enchantment").define("climbMaxCost", 11);
@@ -497,7 +497,7 @@ public class EnchantmentConfig
     	EnchantmentConfig.accelerateMaxCost = config.comment("maximum enchantability for accelerate enchantment").define("accelerateMaxCost", 11);
     	
     	EnchantmentConfig.accelerateMaxSpeedPerLevel = config.comment("maximum attack speed for each level of accelerate enchantment").define("accelerateMaxSpeedPerLevel", 0.1F);
-    	EnchantmentConfig.accelerateSpeedPerLevel = config.comment("attack speed increase amount of each hit for each level of accelerate enchantment").define("accelerateSpeedPerLevel", 0.015F);
+    	EnchantmentConfig.accelerateSpeedPerLevel = config.comment("attack speed increase amount of each hit for each level of accelerate enchantment").define("accelerateSpeedPerLevel", 0.03F);
     	
     	EnchantmentConfig.minerMinCost = config.comment("minimum enchantability for accelerate enchantment").define("minerMinCost", 1);
     	EnchantmentConfig.minerMaxCost = config.comment("maximum enchantability for accelerate enchantment").define("minerMaxCost", 11);

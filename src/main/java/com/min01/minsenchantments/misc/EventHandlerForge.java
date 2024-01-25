@@ -1,6 +1,7 @@
 package com.min01.minsenchantments.misc;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -76,6 +77,7 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingBreatheEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
@@ -110,6 +112,7 @@ public class EventHandlerForge
 	public static final String TELEPORTATION = "Teleportation";
 	public static final String RECOCHET = "Recochet";
 	public static final String RECOCHET_BOUNCE = "RecochetBounce";
+	public static final String RECOCHET_LVL = "RecochetLvL";
 	public static final String WALLBREAK = "Wallbreak";
 	public static final String SNIPE = "Snipe";
 	public static final String SNIPE_LVL = "SnipeLvL";
@@ -128,6 +131,9 @@ public class EventHandlerForge
 	public static final String MINER = "Miner";
 	public static final String MINER_LVL = "MinerLvL";
 	public static final String MINER_COUNT = "MinerCount";
+	
+	public static final Map<LivingEntity, List<LivingEntity>> LIST_MAP = new HashMap<>();
+	public static final Map<LivingEntity, List<LivingEntity>> LIST_MAP2 = new HashMap<>();
 	
 	@SubscribeEvent
 	public static void onPlaySoundAtEntity(PlayLevelSoundEvent.AtEntity event)
@@ -197,7 +203,9 @@ public class EventHandlerForge
 		
 		if(stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get()) > 0)
 		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get());
 			living.getPersistentData().putBoolean(RECOCHET, true);
+			living.getPersistentData().putInt(RECOCHET_LVL, level);
 		}
 		
 		if(stack.getEnchantmentLevel(CustomEnchantments.WALLBREAK.get()) > 0)
@@ -338,6 +346,16 @@ public class EventHandlerForge
 	}
 	
 	@SubscribeEvent
+	public static void onLivingBreath(LivingBreatheEvent event)
+	{
+		LivingEntity living = event.getEntity();
+		if(living.getPersistentData().contains(AQUATIC_AURA))
+		{
+			event.setCanBreathe(false);
+		}
+	}
+	
+	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event)
 	{
 		Player player = event.player;
@@ -472,6 +490,27 @@ public class EventHandlerForge
 	{
 		LivingEntity living = event.getEntity();
 		
+		if(LIST_MAP.containsKey(living))
+		{
+			List<LivingEntity> list = LIST_MAP.get(living);
+			list.forEach((entity) ->
+			{
+				LIST_MAP2.put(entity, list);
+			});
+		}
+		
+		if(LIST_MAP2.containsKey(living))
+		{
+			for(Entry<LivingEntity, List<LivingEntity>> entry : LIST_MAP.entrySet())
+			{
+				List<LivingEntity> list = entry.getValue();
+				if(living.getPersistentData().contains(AQUATIC_AURA) && !list.contains(living))
+				{
+					living.getPersistentData().remove(AQUATIC_AURA);
+				}
+			}
+		}
+		
 		if(living.level() instanceof ServerLevel level)
 		{
 			if(living.getPersistentData().contains(LORD_OF_THE_SEA) && living instanceof WaterAnimal waterAnimal)
@@ -558,12 +597,11 @@ public class EventHandlerForge
 			List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(enchantLevel * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
 			List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(enchantLevel * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
 			list.removeIf((entity) -> entity == living);
-			projList.removeIf((proj) -> (proj.getOwner() != null && proj.getOwner() == living) || proj instanceof ThrownTrident);
-			
+			projList.removeIf((proj) -> (proj.getOwner() != null && proj.getOwner() == living) || proj instanceof ThrownTrident);	
+			LIST_MAP.put(living, list);
 			list.forEach((entity) -> 
 			{
-				//TODO need to find a way to remove tag while list not contain it, also air supply thing not implemented yet
-				//entity.getPersistentData().putBoolean(AQUATIC_AURA, true);
+				entity.getPersistentData().putBoolean(AQUATIC_AURA, true);
 			});
 			
 			projList.forEach((proj) -> 
@@ -890,12 +928,17 @@ public class EventHandlerForge
 
 					if(living.getPersistentData().contains(RECOCHET))
 					{
+						int level = living.getPersistentData().getInt(RECOCHET_LVL);
 						proj.getPersistentData().putBoolean(RECOCHET, true);
+						proj.getPersistentData().putInt(RECOCHET_LVL, level);
 						living.getPersistentData().remove(RECOCHET);
+						living.getPersistentData().remove(RECOCHET_LVL);
 					}
 					else if(stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get()) > 0)
 					{
+						int level = stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get());
 						proj.getPersistentData().putBoolean(RECOCHET, true);
+						proj.getPersistentData().putInt(RECOCHET_LVL, level);
 					}
 					
 					if(living.getPersistentData().contains(WALLBREAK))
@@ -1297,6 +1340,7 @@ public class EventHandlerForge
 		if(proj.getPersistentData().contains(RECOCHET) && event.getRayTraceResult().getType() == HitResult.Type.BLOCK)
 		{
 		    int bounce = proj.getPersistentData().getInt(RECOCHET_BOUNCE);
+		    int level = proj.getPersistentData().getInt(RECOCHET_LVL);
 		    double motionx = proj.getDeltaMovement().x;
 		    double motiony = proj.getDeltaMovement().y;
 		    double motionz = proj.getDeltaMovement().z;
@@ -1334,7 +1378,7 @@ public class EventHandlerForge
 			    proj.getPersistentData().putInt(RECOCHET_BOUNCE, bounce + 1);
 			}
 			
-			if(bounce < EnchantmentConfig.recochetMaxBounce.get()) 
+			if(bounce < level * EnchantmentConfig.recochetBouncePerLevel.get()) 
 			{
 				proj.setDeltaMovement(motionx, motiony, motionz);
 			}

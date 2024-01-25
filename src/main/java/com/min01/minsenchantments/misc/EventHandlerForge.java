@@ -173,7 +173,7 @@ public class EventHandlerForge
 	}
 	
 	@SubscribeEvent
-	public static void onLivingEntityStopUseItem(LivingEntityUseItemEvent.Stop event)
+	public static void onLivingEntityStartUseItem(LivingEntityUseItemEvent.Start event)
 	{
 		LivingEntity living = event.getEntity();
 		ItemStack stack = event.getItem();
@@ -182,11 +182,13 @@ public class EventHandlerForge
 		{
 			living.getPersistentData().putInt(SNIPE_TICK, stack.getUseDuration());
 		}
-		
-		if(stack.getEnchantmentLevel(CustomEnchantments.SNIPE.get()) > 0)
-		{
-			living.getPersistentData().putInt(SNIPE_TICK, stack.getUseDuration());
-		}
+	}
+	
+	@SubscribeEvent
+	public static void onLivingEntityStopUseItem(LivingEntityUseItemEvent.Stop event)
+	{
+		LivingEntity living = event.getEntity();
+		ItemStack stack = event.getItem();
 		
 		if(stack.getEnchantmentLevel(CustomEnchantments.SHARP_WAVES.get()) > 0)
 		{
@@ -835,6 +837,18 @@ public class EventHandlerForge
 				{
 					ItemStack stack = living.getUseItem();
 					
+					if(stack.isEmpty())
+					{
+						if(living.getMainHandItem().isEmpty())
+						{
+							stack = living.getOffhandItem();
+						}
+						else
+						{
+							stack = living.getMainHandItem();
+						}
+					}
+					
 					if(proj instanceof AbstractArrow arrow)
 					{
 						if(stack.getEnchantmentLevel(CustomEnchantments.WATERBOLT.get()) > 0)
@@ -946,7 +960,7 @@ public class EventHandlerForge
 						proj.getPersistentData().putBoolean(WALLBREAK, true);
 						living.getPersistentData().remove(WALLBREAK);
 					}
-					else if(stack.getEnchantmentLevel(CustomEnchantments.RECOCHET.get()) > 0)
+					else if(stack.getEnchantmentLevel(CustomEnchantments.WALLBREAK.get()) > 0)
 					{
 						proj.getPersistentData().putBoolean(WALLBREAK, true);
 					}

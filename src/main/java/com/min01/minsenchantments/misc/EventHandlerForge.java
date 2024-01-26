@@ -1474,6 +1474,7 @@ public class EventHandlerForge
 	                    double y = (double)(living.getY() + living.getEyeHeight() + proj.level().getRandom().nextInt(2) - 1);
 	                    double z = (double)living.getZ() + (proj.level().getRandom().nextDouble() - proj.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
 	                    extra.setPos(x, y, z);
+	                    extra.setOwner(proj.getOwner());
 	                    Vec3 vec = EnchantmentUtil.fromToVector(extra.position(), living.position().add(0, living.getEyeHeight(), 0), 1);
 	                    extra.setDeltaMovement(vec);
 	                    extra.getPersistentData().putBoolean(SOUL_OF_TERRARIAN_SUMMONED, true);

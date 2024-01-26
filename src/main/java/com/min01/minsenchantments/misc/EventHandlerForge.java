@@ -60,13 +60,13 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
@@ -79,6 +79,7 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingBreatheEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -94,9 +95,21 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = MinsEnchantments.MODID, bus = Bus.FORGE)
 public class EventHandlerForge
 {
+	public static final String HARDENING = "Hardening";
+	public static final String HARDENING_ORIGINAL = "HardeningOriginal";
+	public static final String RAGE = "Rage";
+	public static final String RAGE_ORIGINAL = "RageOriginal";
+	public static final String RETURNING = "Returning";
+	public static final String HOMING = "Homing";
+	public static final String HOMING_LVL = "HomingLvL";
+	public static final String HOMING_TIME = "HomingTime";
+	public static final String SOUL_OF_TERRARIAN = "SoulofTerrarian";
+	public static final String SOUL_OF_TERRARIAN_SUMMONED = "SoulofTerrarianSummoned";
+	public static final String SOUL_OF_TERRARIAN_LVL = "SoulofTerrarianLvL";
+	
 	public static final String WATER_BOLT = "WaterBolt";
 	public static final String SHARP_WAVES = "SharpWaves";
-	public static final String SHARP_WAVES_LVL = "SharpWavesLvl";
+	public static final String SHARP_WAVES_LVL = "SharpWavesLvL";
 	public static final String SHARP_WAVES_DMG = "SharpWavesDmg";
 	public static final String TIDE = "Tide";
 	public static final String POSEIDONS_GRACE = "PoseidonsGrace";
@@ -123,7 +136,7 @@ public class EventHandlerForge
 	public static final String SKILLFUL_SPEED = "SkillfulSpeed";
 	public static final String SKILLFUL_COUNT = "SkillfulCount";
 	public static final String CELL_DIVISION = "CellDivision";
-	public static final String CELL_DIVISION_LVL = "CellDivisionLvl";
+	public static final String CELL_DIVISION_LVL = "CellDivisionLvL";
 	public static final String CELL_DIVISION_NUMBER = "CellDivisionNumber";
 	public static final String CELL_DIVISION_SCALE = "CellDivisionScale";
 	public static final String ACCELERATE = "Accelerate";
@@ -170,6 +183,49 @@ public class EventHandlerForge
 			float speed = stack.getOrCreateTag().getFloat(SKILLFUL_SPEED);
 			event.setNewSpeed(event.getOriginalSpeed() + speed);
 		}
+	}
+	
+	@SubscribeEvent
+	public static void onPlayerClone(PlayerEvent.Clone event)
+	{
+		Player player = event.getEntity();
+		if(event.isWasDeath())
+		{
+			Iterable<ItemStack> armors = player.getArmorSlots();
+			armors.forEach((stack) ->
+			{
+				if(stack.getEnchantmentLevel(CustomEnchantments.RETURNING.get()) > 0)
+				{
+					int level = stack.getEnchantmentLevel(CustomEnchantments.RETURNING.get());
+					if(stack.getOrCreateTag().contains(RETURNING))
+					{
+						if(stack.getMaxDamage() - stack.getDamageValue() >=  EnchantmentConfig.returningDurabilityPerLevel.get() / level)
+						{
+							stack.hurtAndBreak(EnchantmentConfig.returningDurabilityPerLevel.get() / level, player, (living) -> 
+							{
+								
+							});
+							player.setPos(Vec3.atCenterOf(NbtUtils.readBlockPos(stack.getOrCreateTag().getCompound(RETURNING))));
+							player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE);
+						}
+					}
+				}
+			});
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onLivingDeath(LivingDeathEvent event)
+	{
+		LivingEntity living = event.getEntity();
+		Iterable<ItemStack> armors = living.getArmorSlots();
+		armors.forEach((stack) ->
+		{
+			if(stack.getEnchantmentLevel(CustomEnchantments.RETURNING.get()) > 0)
+			{
+				stack.getOrCreateTag().put(RETURNING, NbtUtils.writeBlockPos(living.blockPosition()));
+			}
+		});
 	}
 	
 	@SubscribeEvent
@@ -255,6 +311,20 @@ public class EventHandlerForge
 		{
 			living.getPersistentData().putBoolean(TELEPORTATION, true);
 		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.HOMING.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.HOMING.get());
+			living.getPersistentData().putBoolean(HOMING, true);
+			living.getPersistentData().putInt(HOMING_LVL, level);
+		}
+		
+		if(stack.getEnchantmentLevel(CustomEnchantments.SOUL_OF_TERRARIAN.get()) > 0)
+		{
+			int level = stack.getEnchantmentLevel(CustomEnchantments.SOUL_OF_TERRARIAN.get());
+			living.getPersistentData().putBoolean(SOUL_OF_TERRARIAN, true);
+			living.getPersistentData().putInt(SOUL_OF_TERRARIAN_LVL, level);
+		}
 	}
 	
 	@SubscribeEvent
@@ -285,6 +355,18 @@ public class EventHandlerForge
 		
 		if(source != null && source instanceof LivingEntity attacker)
 		{
+			if(living.getOffhandItem().getEnchantmentLevel(CustomEnchantments.MIRROR.get()) > 0 && living.isBlocking())
+			{
+				if(!(directSource instanceof Projectile proj))
+				{
+					int level = living.getOffhandItem().getEnchantmentLevel(CustomEnchantments.MIRROR.get());
+					if(Math.random() <= (level * EnchantmentConfig.mirrorReflectChancePerLevel.get()) / 100)
+					{
+						attacker.hurt(event.getSource(), event.getAmount());
+					}
+				}
+			}
+			
 			if(attacker.getMainHandItem().getEnchantmentLevel(CustomEnchantments.LEECH.get()) > 0)
 			{
 				int level = attacker.getMainHandItem().getEnchantmentLevel(CustomEnchantments.LEECH.get());
@@ -302,6 +384,21 @@ public class EventHandlerForge
 					int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.FLAME_THORN.get(), living);
 					attacker.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
 					attacker.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);
+				}
+			}
+			
+			if(attacker.getMainHandItem().getEnchantmentLevel(CustomEnchantments.RAGE.get()) > 0)
+			{
+				ItemStack stack = attacker.getMainHandItem();
+				int level = stack.getEnchantmentLevel(CustomEnchantments.RAGE.get());
+				if(stack.getTag().contains(RAGE))
+				{
+					float damage = stack.getTag().getFloat(RAGE);
+					float original = stack.getTag().getFloat(RAGE_ORIGINAL);
+					if(original + damage < original + (level * EnchantmentConfig.rageMaxDamagePerLevel.get()))
+					{
+						stack.getTag().putFloat(RAGE, damage + (level * EnchantmentConfig.rageDamagePerLevel.get()));
+					}
 				}
 			}
 			
@@ -339,11 +436,6 @@ public class EventHandlerForge
 		{
 			int level = living.getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(CustomEnchantments.OVERGRAVITY.get());
 			event.setDamageMultiplier(event.getDamageMultiplier() + (level *  EnchantmentConfig.overgravityFallDamagePerLevel.get()));
-			
-			if(level >= 5)
-			{
-				living.level().explode(null, living.getX(), living.getY(), living.getZ(), level * 2, ExplosionInteraction.NONE);
-			}
 		}
 	}
 	
@@ -373,6 +465,30 @@ public class EventHandlerForge
 			}
 		}
 		
+		if(player.getMainHandItem().getEnchantmentLevel(CustomEnchantments.RAGE.get()) > 0)
+		{
+			if(player.getMainHandItem().getOrCreateTag().contains(RAGE))
+			{
+				float damage = player.getMainHandItem().getOrCreateTag().getFloat(RAGE);
+				if(damage + player.getMainHandItem().getOrCreateTag().getFloat(RAGE_ORIGINAL) > player.getMainHandItem().getOrCreateTag().getFloat(RAGE_ORIGINAL))
+				{
+					player.getMainHandItem().getOrCreateTag().putFloat(RAGE, damage - 0.002F);
+				}
+			}
+			else if(!player.getMainHandItem().getOrCreateTag().contains(RAGE_ORIGINAL))
+			{
+				player.getMainHandItem().getOrCreateTag().putFloat(RAGE, 0);
+				Multimap<Attribute, AttributeModifier> map = player.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND);
+				for(Entry<Attribute, AttributeModifier> entry : map.entries())
+				{
+					if(entry.getKey() == Attributes.ATTACK_DAMAGE)
+					{
+						player.getMainHandItem().getOrCreateTag().putFloat(RAGE_ORIGINAL, (float) (entry.getValue().getAmount()));
+					}
+				}
+			}
+		}
+		
 		if(player.getMainHandItem().getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)
 		{
 			if(player.getMainHandItem().getOrCreateTag().contains(ACCELERATE))
@@ -395,6 +511,34 @@ public class EventHandlerForge
 					}
 				}
 			}
+		}
+		
+		if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.HARDENING.get(), player) > 0)
+		{
+			Iterable<ItemStack> armors = player.getArmorSlots();
+			armors.forEach((stack) ->
+			{
+				if(stack.getOrCreateTag().contains(HARDENING))
+				{
+					float armor = stack.getOrCreateTag().getFloat(HARDENING);
+					if(armor + stack.getOrCreateTag().getFloat(HARDENING_ORIGINAL) > stack.getOrCreateTag().getFloat(HARDENING_ORIGINAL))
+					{
+						stack.getOrCreateTag().putFloat(HARDENING, armor - 0.002F);
+					}
+				}
+				else if(!stack.getOrCreateTag().contains(HARDENING_ORIGINAL))
+				{
+					stack.getOrCreateTag().putFloat(HARDENING, 0);
+					Multimap<Attribute, AttributeModifier> map = stack.getAttributeModifiers(stack.getEquipmentSlot());
+					for(Entry<Attribute, AttributeModifier> entry : map.entries())
+					{
+						if(entry.getKey() == Attributes.ARMOR)
+						{
+							player.getMainHandItem().getOrCreateTag().putFloat(HARDENING_ORIGINAL, (float) (entry.getValue().getAmount()));
+						}
+					}
+				}
+			});
 		}
 		
 		if(player.isUsingItem())
@@ -1053,6 +1197,39 @@ public class EventHandlerForge
 					{
 						proj.getPersistentData().putBoolean(TELEPORTATION, true);
 					}
+					
+					if(living.getPersistentData().contains(HOMING))
+					{
+						int level = living.getPersistentData().getInt(HOMING_LVL);
+						
+						proj.getPersistentData().putBoolean(HOMING, true);
+						proj.getPersistentData().putInt(HOMING_LVL, level);
+						
+						living.getPersistentData().remove(HOMING);
+						living.getPersistentData().remove(HOMING_LVL);
+					}
+					else if(stack.getEnchantmentLevel(CustomEnchantments.HOMING.get()) > 0)
+					{
+						int level = stack.getEnchantmentLevel(CustomEnchantments.HOMING.get());
+						proj.getPersistentData().putInt(HOMING_LVL, level);
+						proj.getPersistentData().putBoolean(HOMING, true);
+					}
+					
+					if(living.getPersistentData().contains(SOUL_OF_TERRARIAN))
+					{
+						int level = living.getPersistentData().getInt(SOUL_OF_TERRARIAN_LVL);
+						proj.getPersistentData().putBoolean(SOUL_OF_TERRARIAN, true);
+						proj.getPersistentData().putInt(SOUL_OF_TERRARIAN_LVL, level);
+						
+						living.getPersistentData().remove(SOUL_OF_TERRARIAN);
+						living.getPersistentData().remove(SOUL_OF_TERRARIAN_LVL);
+					}
+					else if(stack.getEnchantmentLevel(CustomEnchantments.SOUL_OF_TERRARIAN.get()) > 0)
+					{
+						int level = stack.getEnchantmentLevel(CustomEnchantments.SOUL_OF_TERRARIAN.get());
+						proj.getPersistentData().putBoolean(SOUL_OF_TERRARIAN, true);
+						proj.getPersistentData().putInt(SOUL_OF_TERRARIAN_LVL, level);
+					}
 				}
 			}
 		}
@@ -1062,7 +1239,6 @@ public class EventHandlerForge
 	public static void onLivingDamage(LivingDamageEvent event)
 	{
 		LivingEntity living = event.getEntity();
-		ItemStack mainHandStack = living.getMainHandItem();
 		ItemStack offHandStack = living.getOffhandItem();
 		
 		if(offHandStack.getItem() instanceof ShieldItem)
@@ -1113,6 +1289,45 @@ public class EventHandlerForge
 		if(event.getSource().getEntity() != null)
 		{
 			Entity entity = event.getSource().getEntity();
+			
+			if(entity instanceof LivingEntity sourceEntity)
+			{
+				ItemStack stack = sourceEntity.getMainHandItem();
+				if(stack.getEnchantmentLevel(CustomEnchantments.MALICE.get()) > 0)
+				{
+					int level = stack.getEnchantmentLevel(CustomEnchantments.MALICE.get());
+					float percent = level * EnchantmentConfig.malicePercentagePerLevel.get();
+					float damage = (living.getHealth() * percent) / 100; 
+					event.setAmount(event.getAmount() + damage);
+				}
+				
+				if(stack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get()) > 0)
+				{
+					int level = stack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get());
+					double armorPoint = living.getAttributeBaseValue(Attributes.ARMOR);
+					float damage = (float) ((armorPoint * (level * EnchantmentConfig.armorCrackDamagePerLevel.get())) / 100);
+					event.setAmount(event.getAmount() + damage);
+				}
+			}
+			
+			Iterable<ItemStack> armors = living.getArmorSlots();
+			armors.forEach((stack) ->
+			{
+				if(stack.getEnchantmentLevel(CustomEnchantments.HARDENING.get()) > 0)
+				{
+					int level = stack.getEnchantmentLevel(CustomEnchantments.HARDENING.get());
+					if(stack.getTag().contains(HARDENING))
+					{
+						float armor = stack.getTag().getFloat(HARDENING);
+						float original = stack.getTag().getFloat(HARDENING_ORIGINAL);
+						if(original + armor < original + (level * EnchantmentConfig.hardeningMaxArmorPerLevel.get()))
+						{
+							stack.getTag().putFloat(HARDENING, armor + (level * EnchantmentConfig.hardeningArmorPerLevel.get()));
+						}
+					}
+				}
+			});
+			
 			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.LORD_OF_THE_SEA.get(), living) > 0 && entity instanceof LivingEntity source && living.isInWater())
 			{
 				int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.LORD_OF_THE_SEA.get(), living);
@@ -1136,14 +1351,6 @@ public class EventHandlerForge
 				{
 					living.getPersistentData().putFloat(WAVES_PROTECTION, level * (EnchantmentConfig.wavesProtectionDurationPerLevel.get() * 20));
 				}
-			}
-			
-			if(mainHandStack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get()) > 0)
-			{
-				int level = mainHandStack.getEnchantmentLevel(CustomEnchantments.ARMOR_CRACK.get());
-				double armorPoint = living.getAttributeBaseValue(Attributes.ARMOR);
-				float damage = (float) ((armorPoint * (level * EnchantmentConfig.armorCrackDamagePerLevel.get())) / 100);
-				event.setAmount(event.getAmount() + damage);
 			}
 		}
 		
@@ -1237,6 +1444,53 @@ public class EventHandlerForge
 			if(trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
 			{
 				trident.discard();
+			}
+		}
+		
+		if(event.getRayTraceResult() instanceof EntityHitResult entityHit)
+		{
+			Entity entity = entityHit.getEntity();
+			if(entity instanceof LivingEntity living)
+			{
+				if(living.getOffhandItem().getEnchantmentLevel(CustomEnchantments.MIRROR.get()) > 0 && living.isBlocking())
+				{
+					int level = living.getOffhandItem().getEnchantmentLevel(CustomEnchantments.MIRROR.get());
+					if(Math.random() <= (level * EnchantmentConfig.mirrorReflectChancePerLevel.get()) / 100)
+					{
+						proj.setDeltaMovement(proj.getDeltaMovement().reverse());
+						proj.setOwner(living);
+						proj.hasImpulse = true;
+					}
+				}
+				
+				if(proj.getPersistentData().contains(SOUL_OF_TERRARIAN) && !proj.getPersistentData().contains(SOUL_OF_TERRARIAN_SUMMONED))
+				{
+					int level = proj.getPersistentData().getInt(SOUL_OF_TERRARIAN_LVL);
+					for(int i = 0; i < level * EnchantmentConfig.soulOfTerrarianProjAmountPerLevel.get(); i++)
+					{
+						Projectile extra = (Projectile) proj.getType().create(proj.level());
+						double spawnRange = living.getBbWidth() + level;
+	                    double x = (double)living.getX() + (proj.level().getRandom().nextDouble() - proj.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+	                    double y = (double)(living.getY() + living.getEyeHeight() + proj.level().getRandom().nextInt(2) - 1);
+	                    double z = (double)living.getZ() + (proj.level().getRandom().nextDouble() - proj.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+	                    extra.setPos(x, y, z);
+	                    Vec3 vec = EnchantmentUtil.fromToVector(extra.position(), living.position().add(0, living.getEyeHeight(), 0), 1);
+	                    extra.setDeltaMovement(vec);
+	                    extra.getPersistentData().putBoolean(SOUL_OF_TERRARIAN_SUMMONED, true);
+	                    extra.hasImpulse = true;
+	                    if(extra instanceof AbstractArrow arrow)
+	                    {
+	                    	arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+	                    }
+	                    proj.level().addFreshEntity(extra);
+					}
+				}
+				
+				if(proj.getPersistentData().contains(SOUL_OF_TERRARIAN_SUMMONED))
+				{
+					living.invulnerableTime = 0;
+					proj.discard();
+				}
 			}
 		}
 		
@@ -1406,31 +1660,57 @@ public class EventHandlerForge
 		{
 			for(Entity entity : serverLevel.getAllEntities())
 			{
-				if(entity instanceof AbstractArrow arrow)
+				if(entity instanceof Projectile proj)
 				{
-					if((arrow.getPersistentData().contains(WATER_BOLT) || arrow.getPersistentData().contains(WATER_JET)) && arrow.isInWater())
+					if(proj.getOwner() != null)
 					{
-						float waterInertia = ((AbstractArrowInvoker) arrow).Invoke_getWaterInertia();
-						arrow.setDeltaMovement(arrow.getDeltaMovement().x / waterInertia, arrow.getDeltaMovement().y / waterInertia, arrow.getDeltaMovement().z / waterInertia);
-					}
-				}
-				
-				if(entity instanceof ThrownTrident trident)
-				{
-					if(trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
-					{
-						if(trident.tickCount >= 20)
+						Entity owner = proj.getOwner();
+						if(proj instanceof AbstractArrow arrow)
 						{
-							if(trident.level() instanceof ServerLevel level)
+							if((arrow.getPersistentData().contains(WATER_BOLT) || arrow.getPersistentData().contains(WATER_JET)) && arrow.isInWater())
 							{
-								Entity target = level.getEntity(trident.getPersistentData().getUUID(POSEIDONS_GRACE_TARGET));
-								if(target != null)
+								float waterInertia = ((AbstractArrowInvoker) arrow).Invoke_getWaterInertia();
+								arrow.setDeltaMovement(arrow.getDeltaMovement().x / waterInertia, arrow.getDeltaMovement().y / waterInertia, arrow.getDeltaMovement().z / waterInertia);
+							}
+						}
+						
+						if(proj.getPersistentData().contains(HOMING) && !proj.onGround())
+						{
+							int level = proj.getPersistentData().getInt(HOMING_LVL);
+							List<LivingEntity> list = proj.level().getEntitiesOfClass(LivingEntity.class, proj.getBoundingBox().inflate(level));
+							list.removeIf((living) -> living == owner);
+							list.removeIf((living) -> living instanceof Player && EnchantmentConfig.disableHomingPlayers.get());
+							list.forEach((living) ->
+							{
+								int time = proj.getPersistentData().getInt(HOMING_TIME);
+								if(time < level * (EnchantmentConfig.homingMaxHomingTimePerLevel.get() * 20))
 								{
-									trident.setDeltaMovement(EnchantmentUtil.fromToVector(trident.position(), target.position().add(0, target.getEyeHeight(), 0), EnchantmentConfig.poseidonsGraceTridentSpeed.get()));
+									Vec3 vec = EnchantmentUtil.fromToVector(proj.position(), living.position().add(0, 0.5F, 0), 0.5F * level);
+									proj.setDeltaMovement(vec);
+									proj.hasImpulse = true;
+									proj.getPersistentData().putInt(HOMING_TIME, time + 1);
 								}
-								else
+							});
+						}
+						
+						if(proj instanceof ThrownTrident trident)
+						{
+							if(trident.getPersistentData().contains(POSEIDONS_GRACE_SUMMONED))
+							{
+								if(trident.tickCount >= 20)
 								{
-									trident.discard();
+									if(trident.level() instanceof ServerLevel level)
+									{
+										Entity target = level.getEntity(trident.getPersistentData().getUUID(POSEIDONS_GRACE_TARGET));
+										if(target != null)
+										{
+											trident.setDeltaMovement(EnchantmentUtil.fromToVector(trident.position(), target.position().add(0, target.getEyeHeight(), 0), EnchantmentConfig.poseidonsGraceTridentSpeed.get()));
+										}
+										else
+										{
+											trident.discard();
+										}
+									}
 								}
 							}
 						}

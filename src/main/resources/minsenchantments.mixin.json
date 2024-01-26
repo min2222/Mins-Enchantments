@@ -12,6 +12,7 @@
 		"MixinProjectile",
 		"MixinItemStack",
 		"MixinEntity",
+		"MixinItemCooldowns",
 		"entitytimer.MixinServerLevelEntityTimer"
 	],
 	"client": [

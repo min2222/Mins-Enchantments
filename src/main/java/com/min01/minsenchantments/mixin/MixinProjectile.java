@@ -6,9 +6,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
+import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.misc.EventHandlerForge;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
 @Mixin(Projectile.class)
@@ -17,6 +21,19 @@ public class MixinProjectile
 	@Inject(at = @At("HEAD"), method = "onHit", cancellable = true)
     private void onHit(HitResult p_37260_, CallbackInfo ci)
     {
+		if(p_37260_.getType() == HitResult.Type.ENTITY)
+		{
+			EntityHitResult entityHit = (EntityHitResult) p_37260_;
+			Entity entity = entityHit.getEntity();
+			if(entity instanceof LivingEntity living)
+			{
+				if(living.getOffhandItem().getEnchantmentLevel(CustomEnchantments.MIRROR.get()) > 0 && living.isBlocking())
+				{
+					ci.cancel();
+				}
+			}
+		}
+		
 		if(p_37260_.getType() == HitResult.Type.BLOCK)
 		{
 			if(Projectile.class.cast(this).getPersistentData().contains(EventHandlerForge.RECOCHET))

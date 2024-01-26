@@ -1,16 +1,15 @@
-package com.min01.minsenchantments.enchantment.normal;
+package com.min01.minsenchantments.blessment;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
 
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class EnchantmentBarrier extends Enchantment
+public class BlessmentBarrier extends AbstractBlessment
 {
-	public EnchantmentBarrier()
+	public BlessmentBarrier()
 	{
-		super(Rarity.RARE, EnchantmentCategory.ARMOR, new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET});
+		super(EnchantmentCategory.ARMOR, new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET});
 	}
 	
 	@Override

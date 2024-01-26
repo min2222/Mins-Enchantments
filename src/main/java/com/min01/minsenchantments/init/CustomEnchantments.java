@@ -1,6 +1,15 @@
 package com.min01.minsenchantments.init;
 
 import com.min01.minsenchantments.MinsEnchantments;
+import com.min01.minsenchantments.blessment.BlessmentBarrier;
+import com.min01.minsenchantments.blessment.BlessmentGodHand;
+import com.min01.minsenchantments.blessment.BlessmentHardening;
+import com.min01.minsenchantments.blessment.BlessmentHoming;
+import com.min01.minsenchantments.blessment.BlessmentMalice;
+import com.min01.minsenchantments.blessment.BlessmentMirror;
+import com.min01.minsenchantments.blessment.BlessmentRage;
+import com.min01.minsenchantments.blessment.BlessmentReturning;
+import com.min01.minsenchantments.blessment.BlessmentSoulOfTerrarian;
 import com.min01.minsenchantments.enchantment.curse.EnchantmentOvergravity;
 import com.min01.minsenchantments.enchantment.curse.EnchantmentUndeadCurse;
 import com.min01.minsenchantments.enchantment.end.EnchantmentEndermanCurse;
@@ -14,7 +23,6 @@ import com.min01.minsenchantments.enchantment.nether.EnchantmentSoulFire;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentAccelerate;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentArmorCrack;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentAutoShielding;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentBarrier;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentCellDivision;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentClimb;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentCriticalStrike;
@@ -50,6 +58,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
@@ -65,8 +74,20 @@ public class CustomEnchantments
 	public static final EnchantmentCategory PROJECTILE_WEAPON = EnchantmentCategory.create("PROJECTILE_WEAPON", (item) -> item instanceof ProjectileWeaponItem);
 	public static final EnchantmentCategory SHIELD = EnchantmentCategory.create("SHIELD", (item) -> item instanceof ShieldItem);
 	public static final EnchantmentCategory ELYTRA = EnchantmentCategory.create("ELYTRA", (item) -> item instanceof ElytraItem);
+	public static final EnchantmentCategory WEAPONS = EnchantmentCategory.create("WEAPONS", (item) -> item instanceof ProjectileWeaponItem || item instanceof SwordItem || item instanceof ShieldItem);
 	
 	public static final RegistryObject<Codec<EnchantmentAutoSmeltModifier>> AUTO_SMELT_LOOT_MODIFIER = LOOT_MODIFIERS.register("auto_smelt", EnchantmentAutoSmeltModifier.CODEC);
+	
+	//blessment
+	public static final RegistryObject<Enchantment> BARRIER = ENCHANTMENTS.register("barrier", () -> new BlessmentBarrier());
+	public static final RegistryObject<Enchantment> HARDENING = ENCHANTMENTS.register("hardening", () -> new BlessmentHardening());
+	public static final RegistryObject<Enchantment> RAGE = ENCHANTMENTS.register("rage", () -> new BlessmentRage());
+	public static final RegistryObject<Enchantment> RETURNING = ENCHANTMENTS.register("returning", () -> new BlessmentReturning());
+	public static final RegistryObject<Enchantment> HOMING = ENCHANTMENTS.register("homing", () -> new BlessmentHoming());
+	public static final RegistryObject<Enchantment> MIRROR = ENCHANTMENTS.register("mirror", () -> new BlessmentMirror());
+	public static final RegistryObject<Enchantment> SOUL_OF_TERRARIAN = ENCHANTMENTS.register("soul_of_terrarian", () -> new BlessmentSoulOfTerrarian());
+	public static final RegistryObject<Enchantment> GOD_HAND = ENCHANTMENTS.register("god_hand", () -> new BlessmentGodHand());
+	public static final RegistryObject<Enchantment> MALICE = ENCHANTMENTS.register("malice", () -> new BlessmentMalice());
 	
 	//ocean
 	public static final RegistryObject<Enchantment> WATERBOLT = ENCHANTMENTS.register("waterbolt", () -> new EnchantmentWaterbolt());
@@ -104,7 +125,6 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> SNIPE = ENCHANTMENTS.register("snipe", () -> new EnchantmentSnipe());
 	public static final RegistryObject<Enchantment> MAGNET = ENCHANTMENTS.register("magnet", () -> new EnchantmentMagnet());
 	public static final RegistryObject<Enchantment> AUTO_SHIELDING = ENCHANTMENTS.register("auto_shielding", () -> new EnchantmentAutoShielding());
-	public static final RegistryObject<Enchantment> BARRIER = ENCHANTMENTS.register("barrier", () -> new EnchantmentBarrier());
 	public static final RegistryObject<Enchantment> SKILLFUL = ENCHANTMENTS.register("skillful", () -> new EnchantmentSkillful());
 	public static final RegistryObject<Enchantment> CELL_DIVISION = ENCHANTMENTS.register("cell_division", () -> new EnchantmentCellDivision());
 	public static final RegistryObject<Enchantment> QUICKDRAW = ENCHANTMENTS.register("quickdraw", () -> new EnchantmentQuickdraw());

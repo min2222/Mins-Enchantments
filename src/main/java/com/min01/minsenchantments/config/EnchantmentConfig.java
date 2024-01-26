@@ -14,7 +14,58 @@ public class EnchantmentConfig
     public static ForgeConfigSpec CONFIG;
     
     //blessment
+	public static ConfigValue<Integer> barrierMinCost;
+	public static ConfigValue<Integer> barrierMaxCost;
+	
+	public static ConfigValue<Float> barrierRadiusPerLevel;
+	public static ConfigValue<Float> barrierPushPowerPerLevel;
+	
+	public static ForgeConfigSpec.BooleanValue disableBarrierPushingPlayer;
+	
+	public static ConfigValue<Integer> hardeningMinCost;
+	public static ConfigValue<Integer> hardeningMaxCost;
+	
+	public static ConfigValue<Float> hardeningArmorPerLevel;
+	public static ConfigValue<Float> hardeningMaxArmorPerLevel;
+	
+	public static ConfigValue<Integer> rageMinCost;
+	public static ConfigValue<Integer> rageMaxCost;
+	
+	public static ConfigValue<Float> rageDamagePerLevel;
+	public static ConfigValue<Float> rageMaxDamagePerLevel;
+	
+	public static ConfigValue<Integer> returningMinCost;
+	public static ConfigValue<Integer> returningMaxCost;
+	
+	public static ConfigValue<Integer> returningDurabilityPerLevel;
+	
+	public static ConfigValue<Integer> homingMinCost;
+	public static ConfigValue<Integer> homingMaxCost;
+	
+	public static ConfigValue<Float> homingMaxHomingTimePerLevel;
+	public static ForgeConfigSpec.BooleanValue disableHomingPlayers;
+	
+	public static ConfigValue<Integer> mirrorMinCost;
+	public static ConfigValue<Integer> mirrorMaxCost;
+	
+	public static ConfigValue<Float> mirrorReflectChancePerLevel;
+	
+	public static ConfigValue<Integer> soulOfTerrarianMinCost;
+	public static ConfigValue<Integer> soulOfTerrarianMaxCost;
+	
+	public static ConfigValue<Integer> soulOfTerrarianProjAmountPerLevel;
+	
+	public static ConfigValue<Integer> godHandMinCost;
+	public static ConfigValue<Integer> godHandMaxCost;
+	
+	public static ConfigValue<Integer> godHandCooldownPerLevel;
+	
+	public static ConfigValue<Integer> maliceMinCost;
+	public static ConfigValue<Integer> maliceMaxCost;
 
+	public static ConfigValue<Float> maliceDamagePerLevel;
+	public static ConfigValue<Float> malicePercentagePerLevel;
+	
     //enchantment
     
     //ocean
@@ -197,14 +248,6 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> autoShieldingMaxCost;
 	
 	public static ConfigValue<Float> autoShieldingChancePerLevel;
-
-	public static ConfigValue<Integer> barrierMinCost;
-	public static ConfigValue<Integer> barrierMaxCost;
-	
-	public static ConfigValue<Float> barrierRadiusPerLevel;
-	public static ConfigValue<Float> barrierPushPowerPerLevel;
-	
-	public static ForgeConfigSpec.BooleanValue disableBarrierPushingPlayer;
 	
 	public static ConfigValue<Integer> skillfulMinCost;
 	public static ConfigValue<Integer> skillfulMaxCost;
@@ -282,6 +325,61 @@ public class EnchantmentConfig
 	
     public static void init(ForgeConfigSpec.Builder config) 
     {
+    	config.push("Blessment Settings");
+    	EnchantmentConfig.barrierMinCost = config.comment("minimum enchantability for barrier enchantment").define("barrierMinCost", 1);
+    	EnchantmentConfig.barrierMaxCost = config.comment("maximum enchantability for barrier enchantment").define("barrierMaxCost", 11);
+    	
+    	EnchantmentConfig.barrierPushPowerPerLevel = config.comment("pushing power for each level of barrier enchantment").define("barrierPushPowerPerLevel", 0.01F);
+    	EnchantmentConfig.barrierRadiusPerLevel = config.comment("pushing radius for each level of barrier enchantment").define("barrierRadiusPerLevel", 2.0F);
+    	
+    	EnchantmentConfig.disableBarrierPushingPlayer = config.comment("disable players pushed by barrier enchantment").define("disableBarrierPushingPlayer", true);
+    	
+    	EnchantmentConfig.hardeningMinCost = config.comment("minimum enchantability for hardening blessment").define("hardeningMinCost", 1);
+    	EnchantmentConfig.hardeningMaxCost = config.comment("maximum enchantability for hardening blessment").define("hardeningMaxCost", 11);
+
+    	EnchantmentConfig.hardeningArmorPerLevel = config.comment("armor increase amount for each level of hardening blessment").define("hardeningArmorPerLevel", 0.05F);
+    	EnchantmentConfig.hardeningMaxArmorPerLevel = config.comment("maximum armor point for each level of hardening blessment").define("hardeningMaxArmorPerLevel", 2.0F);
+    	
+    	EnchantmentConfig.rageMinCost = config.comment("minimum enchantability for rage blessment").define("rageMinCost", 1);
+    	EnchantmentConfig.rageMaxCost = config.comment("maximum enchantability for rage blessment").define("rageMaxCost", 11);
+    	
+    	EnchantmentConfig.rageDamagePerLevel = config.comment("damage increase amount for each level of rage blessment").define("rageDamagePerLevel", 0.05F);
+    	EnchantmentConfig.rageMaxDamagePerLevel = config.comment("maximum damage for each level of rage blessment").define("rageMaxDamagePerLevel", 2.0F);
+    	
+    	EnchantmentConfig.returningMinCost = config.comment("minimum enchantability for returning blessment").define("returningMinCost", 1);
+    	EnchantmentConfig.returningMaxCost = config.comment("maximum enchantability for returning blessment").define("returningMaxCost", 11);
+    	
+    	EnchantmentConfig.returningDurabilityPerLevel = config.comment("minimum durability required for each level of returning blessment").define("returningDurabilityPerLevel", 1000);
+    	
+    	EnchantmentConfig.homingMinCost = config.comment("minimum enchantability for homing blessment").define("homingMinCost", 1);
+    	EnchantmentConfig.homingMaxCost = config.comment("maximum enchantability for homing blessment").define("homingMaxCost", 11);
+    	
+    	EnchantmentConfig.homingMaxHomingTimePerLevel = config.comment("maximum homing time for each level of homing blessment").define("homingMaxHomingTimePerLevel", 3.0F);
+    	EnchantmentConfig.disableHomingPlayers = config.comment("disable homing blessment work with other players").define("disableHomingPlayers", true);
+    	
+    	EnchantmentConfig.mirrorMinCost = config.comment("minimum enchantability for mirror blessment").define("mirrorMinCost", 1);
+    	EnchantmentConfig.mirrorMaxCost = config.comment("maximum enchantability for mirror blessment").define("mirrorMaxCost", 11);
+    	
+    	EnchantmentConfig.mirrorReflectChancePerLevel = config.comment("chance to reflect damage and projectile for each level of mirror blessment").define("mirrorReflectChancePerLevel", 20.0F);
+    	
+    	EnchantmentConfig.soulOfTerrarianMinCost = config.comment("minimum enchantability for soul of terrarian blessment").define("soulOfTerrarianMinCost", 1);
+    	EnchantmentConfig.soulOfTerrarianMaxCost = config.comment("maximum enchantability for soul of terrarian blessment").define("soulOfTerrarianMaxCost", 11);
+    	
+    	EnchantmentConfig.soulOfTerrarianProjAmountPerLevel = config.comment("additional projectile amount for each level of soul of terrarian blessment").define("soulOfTerrarianProjAmountPerLevel", 2);
+    	
+    	EnchantmentConfig.godHandMinCost = config.comment("minimum enchantability for god hand blessment").define("godHandMinCost", 1);
+    	EnchantmentConfig.godHandMaxCost = config.comment("maximum enchantability for god hand blessment").define("godHandMaxCost", 11);
+    	
+    	EnchantmentConfig.godHandCooldownPerLevel = config.comment("cooldown decrease amount for each level of god hand blessment").define("godHandCooldownPerLevel", 1);
+    	
+    	EnchantmentConfig.maliceMinCost = config.comment("minimum enchantability for malice blessment").define("maliceMinCost", 1);
+    	EnchantmentConfig.maliceMaxCost = config.comment("maximum enchantability for malice blessment").define("maliceMaxCost", 11);
+    	
+    	EnchantmentConfig.maliceDamagePerLevel = config.comment("damage decrease amount for each level of malice blessment").define("maliceDamagePerLevel", 2.0F);
+    	EnchantmentConfig.malicePercentagePerLevel = config.comment("health percentage for each level of malice blessment").define("malicePercentagePerLevel", 0.4F);
+    	
+    	config.pop();
+    	
     	config.push("Enchantment Settings");
     	EnchantmentConfig.waterboltMinCost = config.comment("minimum enchantability for waterbolt enchantment").define("waterboltMinCost", 25);
     	EnchantmentConfig.waterboltMaxCost = config.comment("maximum enchantability for waterbolt enchantment").define("waterboltMaxCost", 50);
@@ -457,14 +555,6 @@ public class EnchantmentConfig
     	EnchantmentConfig.autoShieldingMaxCost = config.comment("maximum enchantability for auto shielding enchantment").define("autoShieldingMaxCost", 11);
     	
     	EnchantmentConfig.autoShieldingChancePerLevel = config.comment("shielding change for each level of auto shielding enchantment").define("autoShieldingChancePerLevel", 5.0F);
-    	
-    	EnchantmentConfig.barrierMinCost = config.comment("minimum enchantability for barrier enchantment").define("barrierMinCost", 1);
-    	EnchantmentConfig.barrierMaxCost = config.comment("maximum enchantability for barrier enchantment").define("barrierMaxCost", 11);
-    	
-    	EnchantmentConfig.barrierPushPowerPerLevel = config.comment("pushing power for each level of barrier enchantment").define("barrierPushPowerPerLevel", 0.01F);
-    	EnchantmentConfig.barrierRadiusPerLevel = config.comment("pushing radius for each level of barrier enchantment").define("barrierRadiusPerLevel", 2.0F);
-    	
-    	EnchantmentConfig.disableBarrierPushingPlayer = config.comment("disable players pushed by barrier enchantment").define("disableBarrierPushingPlayer", true);
     	
     	EnchantmentConfig.skillfulMinCost = config.comment("minimum enchantability for skillful enchantment").define("skillfulMinCost", 1);
     	EnchantmentConfig.skillfulMaxCost = config.comment("maximum enchantability for skillful enchantment").define("skillfulMaxCost", 11);

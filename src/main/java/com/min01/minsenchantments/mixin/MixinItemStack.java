@@ -52,7 +52,7 @@ public class MixinItemStack
 							amount += stack.getOrCreateTag().getFloat(EventHandlerForge.HARDENING);
 						}
 						
-						EnumMap<ArmorItem.Type, UUID> enumMap = ObfuscationReflectionHelper.getPrivateValue(ArmorItem.class, armorItem, "ARMOR_MODIFIER_UUID_PER_TYPE");
+						EnumMap<ArmorItem.Type, UUID> enumMap = ObfuscationReflectionHelper.getPrivateValue(ArmorItem.class, armorItem, "f_265987_");
 						UUID uuid = enumMap.get(armorItem.getType());
 						AttributeModifier modifier = new AttributeModifier(uuid, "Hardening Modifier", entry.getValue().getAmount() + amount, Operation.ADDITION);
 					    builder.put(Attributes.ARMOR, modifier);

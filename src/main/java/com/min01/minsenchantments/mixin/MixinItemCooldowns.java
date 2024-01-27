@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
+import com.min01.minsenchantments.misc.EventHandlerForge;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
@@ -27,15 +28,21 @@ public class MixinItemCooldowns
 	@Inject(at = @At("HEAD"), method = "addCooldown", cancellable = true)
 	private void addCooldown(Item p_41525_, int p_41526_, CallbackInfo ci)
 	{
-		ItemStack stack = new ItemStack(p_41525_);
-		if(stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get()) > 0)
+		ItemStack stack = EventHandlerForge.ITEM_MAP.get(p_41525_);
+		if(stack != null)
 		{
-			//FIXME not working
-			ci.cancel();
-			int level = stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get());
-			int cooldown = p_41526_ - (level * (EnchantmentConfig.godHandCooldownPerLevel.get() * 20));
-			this.cooldowns.put(p_41525_, new ItemCooldowns.CooldownInstance(this.tickCount, this.tickCount + cooldown));
-			this.onCooldownStarted(p_41525_, cooldown);
+			if(stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get()) > 0)
+			{
+				ci.cancel();
+				int level = stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get());
+				int cooldown = p_41526_ - (level * (EnchantmentConfig.godHandCooldownPerLevel.get() * 20));
+				if(cooldown < 0)
+				{
+					cooldown = 0;
+				}
+				this.cooldowns.put(p_41525_, new ItemCooldowns.CooldownInstance(this.tickCount, this.tickCount + cooldown));
+				this.onCooldownStarted(p_41525_, cooldown);
+			}
 		}
 	}
 	

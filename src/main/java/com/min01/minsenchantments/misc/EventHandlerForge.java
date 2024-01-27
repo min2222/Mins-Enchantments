@@ -51,6 +51,7 @@ import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
@@ -85,6 +86,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -145,8 +147,22 @@ public class EventHandlerForge
 	public static final String MINER_LVL = "MinerLvL";
 	public static final String MINER_COUNT = "MinerCount";
 	
-	public static final Map<LivingEntity, List<LivingEntity>> LIST_MAP = new HashMap<>();
-	public static final Map<LivingEntity, List<LivingEntity>> LIST_MAP2 = new HashMap<>();
+	public static final Map<LivingEntity, List<LivingEntity>> AQUATIC_AURA_MAP = new HashMap<>();
+	public static final Map<LivingEntity, List<LivingEntity>> AQUATIC_AURA_MAP2 = new HashMap<>();
+	
+	public static final Map<Item, ItemStack> ITEM_MAP = new HashMap<>();
+	
+	@SubscribeEvent
+	public static void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event)
+	{
+		ITEM_MAP.put(event.getItemStack().getItem(), event.getItemStack());
+	}
+	
+	@SubscribeEvent
+	public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event)
+	{
+		ITEM_MAP.put(event.getItemStack().getItem(), event.getItemStack());
+	}
 	
 	@SubscribeEvent
 	public static void onPlaySoundAtEntity(PlayLevelSoundEvent.AtEntity event)
@@ -636,18 +652,18 @@ public class EventHandlerForge
 	{
 		LivingEntity living = event.getEntity();
 		
-		if(LIST_MAP.containsKey(living))
+		if(AQUATIC_AURA_MAP.containsKey(living))
 		{
-			List<LivingEntity> list = LIST_MAP.get(living);
+			List<LivingEntity> list = AQUATIC_AURA_MAP.get(living);
 			list.forEach((entity) ->
 			{
-				LIST_MAP2.put(entity, list);
+				AQUATIC_AURA_MAP2.put(entity, list);
 			});
 		}
 		
-		if(LIST_MAP2.containsKey(living))
+		if(AQUATIC_AURA_MAP2.containsKey(living))
 		{
-			for(Entry<LivingEntity, List<LivingEntity>> entry : LIST_MAP.entrySet())
+			for(Entry<LivingEntity, List<LivingEntity>> entry : AQUATIC_AURA_MAP.entrySet())
 			{
 				List<LivingEntity> list = entry.getValue();
 				if(living.getPersistentData().contains(AQUATIC_AURA) && !list.contains(living))
@@ -744,7 +760,7 @@ public class EventHandlerForge
 			List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(enchantLevel * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
 			list.removeIf((entity) -> entity == living);
 			projList.removeIf((proj) -> (proj.getOwner() != null && proj.getOwner() == living) || proj instanceof ThrownTrident);	
-			LIST_MAP.put(living, list);
+			AQUATIC_AURA_MAP.put(living, list);
 			list.forEach((entity) -> 
 			{
 				entity.getPersistentData().putBoolean(AQUATIC_AURA, true);

@@ -184,8 +184,11 @@ public class EventHandlerForge
 		ItemStack stack = player.getMainHandItem();
 		if(stack.getEnchantmentLevel(CustomEnchantments.INFECTION.get()) > 0)
 		{
-			int level = stack.getEnchantmentLevel(CustomEnchantments.INFECTION.get());
-			event.setExpToDrop(event.getExpToDrop() + (level * EnchantmentConfig.infectionExpPerLevel.get()));
+			if(event.getExpToDrop() > 0)
+			{
+				int level = stack.getEnchantmentLevel(CustomEnchantments.INFECTION.get());
+				event.setExpToDrop(event.getExpToDrop() + (level * EnchantmentConfig.infectionExpPerLevel.get()));
+			}
 		}
 	}
 	

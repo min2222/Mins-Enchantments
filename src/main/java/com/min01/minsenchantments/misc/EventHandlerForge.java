@@ -398,7 +398,8 @@ public class EventHandlerForge
 			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.FLAME_THORN.get(), living) > 0)
 			{
 				boolean flag = directSource instanceof Projectile proj ? proj.getOwner() != null && proj.getOwner() == living : directSource == living;
-				if(attacker != living && !flag)
+				//FIXME crash with wild fire from friends & foes
+				if(attacker != living && !flag && !(event.getSource().getMsgId().equals("thorns")))
 				{
 					int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.FLAME_THORN.get(), living);
 					attacker.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());

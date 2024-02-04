@@ -12,14 +12,10 @@
 		"MixinProjectile",
 		"MixinItemStack",
 		"MixinEntity",
-		"MixinItemCooldowns",
-		"entitytimer.MixinServerLevelEntityTimer"
+		"MixinItemCooldowns"
 	],
 	"client": [
-		"MixinEntityRenderDispatcher",
-		"entitytimer.MixinLevelRendererEntityTimer",
-		"entitytimer.MixinClientLevelEntityTimer",
-		"entitytimer.MixinMinecraftEntityTimer"
+		"MixinEntityRenderDispatcher"
 	],
 	"server": [],
 	"injectors": {

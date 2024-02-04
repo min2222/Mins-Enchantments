@@ -1,6 +1,5 @@
 package com.min01.minsenchantments.network;
 
-import com.min01.entitytimer.EntityTimerSyncPacket;
 import com.min01.minsenchantments.MinsEnchantments;
 
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +19,6 @@ public class EnchantmentNetwork
 	
 	public static void registerMessages()
 	{
-		CHANNEL.registerMessage(ID++, EntityTimerSyncPacket.class, EntityTimerSyncPacket::encode, EntityTimerSyncPacket::new, EntityTimerSyncPacket.Handler::onMessage);
 		CHANNEL.registerMessage(ID++, CellScaleSyncPacket.class, CellScaleSyncPacket::encode, CellScaleSyncPacket::new, CellScaleSyncPacket.Handler::onMessage);
 	}
 	

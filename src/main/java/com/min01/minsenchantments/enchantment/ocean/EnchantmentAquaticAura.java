@@ -3,10 +3,9 @@ package com.min01.minsenchantments.enchantment.ocean;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class EnchantmentAquaticAura extends Enchantment
+public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 {
 	public EnchantmentAquaticAura()
 	{

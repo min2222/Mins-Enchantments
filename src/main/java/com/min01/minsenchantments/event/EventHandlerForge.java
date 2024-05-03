@@ -179,6 +179,11 @@ public class EventHandlerForge
 				int duration = enchantment.onLivingEntityUseItemTick(event.getEntity(), event.getItem(), event.getDuration());
 				event.setDuration(duration);
 			}
+			
+			if(t instanceof IProjectileEnchantment enchantment)
+			{
+				enchantment.onUseTick(event.getEntity(), event.getItem(), event.getDuration());
+			}
 		});
 	}
 	

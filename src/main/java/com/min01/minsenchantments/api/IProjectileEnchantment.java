@@ -23,6 +23,18 @@ import net.minecraft.world.phys.HitResult;
 
 public interface IProjectileEnchantment
 {
+	default void onUseTick(LivingEntity entity, @NotNull ItemStack item, int duration)
+	{
+		entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		{
+			int level = item.getEnchantmentLevel(this.self());
+			if(level > 0)
+			{
+				t.setEnchantmentData(this.self(), new EnchantmentData(level, this.getData(entity, item, duration)));
+			}
+		});
+	}
+	
 	default void onRightClick(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos, @Nullable Direction clickDir)
 	{
 		player.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 

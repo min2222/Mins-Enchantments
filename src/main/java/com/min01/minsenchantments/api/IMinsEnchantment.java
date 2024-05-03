@@ -100,9 +100,9 @@ public interface IMinsEnchantment
 		
 	}
 	
-	default void onEntityJoin(Entity entity, Level level)
+	default boolean onEntityJoin(Entity entity, Level level)
 	{
-		
+		return false;
 	}
 	
 	default Pair<Boolean, Float> onLivingDamage(LivingEntity entity, DamageSource source, float amount)

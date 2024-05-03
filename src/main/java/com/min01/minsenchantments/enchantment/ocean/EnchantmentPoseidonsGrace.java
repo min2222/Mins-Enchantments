@@ -105,12 +105,20 @@ public class EnchantmentPoseidonsGrace extends AbstractOceanEnchantment implemen
 										{
 											ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, trident, ItemStack.of(tag.getCompound(EnchantmentTags.POSEIDONS_GRACE_ITEM)), "f_37555_");
 										}
-										tag.putBoolean(EnchantmentTags.POSEIDONS_GRACE_SUMMONED, true);
-										tag.putUUID(EnchantmentTags.POSEIDONS_GRACE_TARGET, living.getUUID());
 										projectile.level().addFreshEntity(summonedTrident);
-										projectile.discard();
+										summonedTrident.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t2 -> 
+										{
+											CompoundTag tag2 = new CompoundTag();
+											tag2.putBoolean(EnchantmentTags.POSEIDONS_GRACE_SUMMONED, true);
+											tag2.putUUID(EnchantmentTags.POSEIDONS_GRACE_TARGET, living.getUUID());
+											t2.setEnchantmentData(this, new EnchantmentData(level, tag2));
+										});
 				                    }
 								}
+							}
+							else
+							{
+								projectile.discard();
 							}
 						}
 					});
@@ -127,22 +135,25 @@ public class EnchantmentPoseidonsGrace extends AbstractOceanEnchantment implemen
 		{
 			trident.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
 			{
-				EnchantmentData data = t.getEnchantmentData(this);
-				CompoundTag tag = data.getData();
-				if(tag.contains(EnchantmentTags.POSEIDONS_GRACE_SUMMONED))
+				if(t.hasEnchantment(this))
 				{
-					if(trident.tickCount >= 20)
+					EnchantmentData data = t.getEnchantmentData(this);
+					CompoundTag tag = data.getData();
+					if(tag.contains(EnchantmentTags.POSEIDONS_GRACE_SUMMONED))
 					{
-						if(trident.level() instanceof ServerLevel level)
+						if(trident.tickCount >= 20)
 						{
-							Entity target = level.getEntity(tag.getUUID(EnchantmentTags.POSEIDONS_GRACE_TARGET));
-							if(target != null)
+							if(trident.level() instanceof ServerLevel level)
 							{
-								trident.setDeltaMovement(EnchantmentUtil.fromToVector(trident.position(), target.position().add(0, target.getEyeHeight(), 0), EnchantmentConfig.poseidonsGraceTridentSpeed.get()));
-							}
-							else
-							{
-								trident.discard();
+								Entity target = level.getEntity(tag.getUUID(EnchantmentTags.POSEIDONS_GRACE_TARGET));
+								if(target != null)
+								{
+									trident.setDeltaMovement(EnchantmentUtil.fromToVector(trident.position(), target.position().add(0, target.getEyeHeight(), 0), EnchantmentConfig.poseidonsGraceTridentSpeed.get()));
+								}
+								else
+								{
+									trident.discard();
+								}
 							}
 						}
 					}

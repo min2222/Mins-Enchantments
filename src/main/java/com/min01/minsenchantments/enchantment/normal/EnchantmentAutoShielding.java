@@ -57,7 +57,7 @@ public class EnchantmentAutoShielding extends AbstractMinsEnchantment
 				{
 					EnchantmentData data = t.getEnchantmentData(this);
 					CompoundTag tag = data.getData();
-					if(stack.getItem() instanceof ShieldItem && tag.getBoolean(EnchantmentTags.AUTO_SHIELDING))
+					if(stack.getItem() instanceof ShieldItem && tag.getBoolean(EnchantmentTags.IS_AUTO_SHIELDING))
 					{
 						int shielding = tag.getInt(EnchantmentTags.AUTO_SHIELDING);
 						if(shielding > 0)
@@ -68,10 +68,10 @@ public class EnchantmentAutoShielding extends AbstractMinsEnchantment
 						else
 						{
 							living.stopUsingItem();
-							tag.putBoolean(EnchantmentTags.AUTO_SHIELDING, false);
+							tag.putBoolean(EnchantmentTags.IS_AUTO_SHIELDING, false);
 						}
-						t.setEnchantmentData(this, new EnchantmentData(data.getEnchantLevel(), tag));
 					}
+					t.setEnchantmentData(this, new EnchantmentData(data.getEnchantLevel(), tag));
 				}
 				else
 				{
@@ -100,7 +100,7 @@ public class EnchantmentAutoShielding extends AbstractMinsEnchantment
 							EnchantmentData data = t.getEnchantmentData(this);
 							CompoundTag tag = data.getData();
 							int shielding = tag.getInt(EnchantmentTags.AUTO_SHIELDING);
-							if(shielding <= 0)
+							if(shielding <= 0 && !tag.getBoolean(EnchantmentTags.IS_AUTO_SHIELDING))
 							{
 								float am = amount;
 								if(am > 0.0F)
@@ -127,8 +127,8 @@ public class EnchantmentAutoShielding extends AbstractMinsEnchantment
 										{
 											living.level().broadcastEntityEvent(living, (byte)29);
 										}
-										tag.putInt(EnchantmentTags.AUTO_SHIELDING, 15);
-										tag.putBoolean(EnchantmentTags.AUTO_SHIELDING, true);
+										tag.putInt(EnchantmentTags.AUTO_SHIELDING, 10);
+										tag.putBoolean(EnchantmentTags.IS_AUTO_SHIELDING, true);
 										t.setEnchantmentData(this, new EnchantmentData(level, tag));
 										return Pair.of(true, am);
 									}

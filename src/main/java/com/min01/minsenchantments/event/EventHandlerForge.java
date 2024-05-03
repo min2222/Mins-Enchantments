@@ -75,8 +75,10 @@ public class EventHandlerForge
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
-				boolean isCanceled = enchantment.onPlaySoundAtEntity(event.getEntity(), event.getSound(), event.getSource(), event.getOriginalVolume(), event.getOriginalPitch());
-				event.setCanceled(isCanceled);
+				if(enchantment.onPlaySoundAtEntity(event.getEntity(), event.getSound(), event.getSource(), event.getOriginalVolume(), event.getOriginalPitch()))
+				{
+					event.setCanceled(true);
+				}
 			}
 		});
 	}
@@ -246,7 +248,10 @@ public class EventHandlerForge
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
-				enchantment.onEntityJoin(event.getEntity(), event.getLevel());
+				if(enchantment.onEntityJoin(event.getEntity(), event.getLevel()))
+				{
+					event.setCanceled(true);
+				}
 			}
 			
 			if(t instanceof IProjectileEnchantment enchantment)
@@ -264,7 +269,10 @@ public class EventHandlerForge
 			if(t instanceof IMinsEnchantment enchantment)
 			{ 
 				Pair<Boolean, Float> pair = enchantment.onLivingDamage(event.getEntity(), event.getSource(), event.getAmount());
-				event.setCanceled(pair.left());
+				if(pair.left())
+				{
+					event.setCanceled(true);
+				}
 				event.setAmount(pair.right());
 			}
 		});

@@ -47,7 +47,7 @@ public class EnchantmentSonicBoom extends AbstractSculkEnchantment
 	}
 	
 	@Override
-	public void onEntityJoin(Entity entity, Level world) 
+	public boolean onEntityJoin(Entity entity, Level world) 
 	{
 		if(entity instanceof Projectile projectile)
 		{
@@ -101,11 +101,12 @@ public class EnchantmentSonicBoom extends AbstractSculkEnchantment
 				            }
 
 				            living.playSound(SoundEvents.WARDEN_SONIC_BOOM, 3.0F, 1.0F);
-				            projectile.discard();
+				            return true;
 						}
 					}
 				}
 			}
 		}
+		return super.onEntityJoin(entity, world);
 	}
 }

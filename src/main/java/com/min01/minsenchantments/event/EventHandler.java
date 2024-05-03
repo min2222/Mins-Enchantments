@@ -1,4 +1,4 @@
-package com.min01.minsenchantments.misc;
+package com.min01.minsenchantments.event;
 
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.init.CustomBlocks;

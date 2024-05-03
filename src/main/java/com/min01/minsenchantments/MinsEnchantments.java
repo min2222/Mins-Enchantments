@@ -1,5 +1,6 @@
 package com.min01.minsenchantments;
 
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomBlocks;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -7,6 +8,8 @@ import com.min01.minsenchantments.init.CustomItems;
 import com.min01.minsenchantments.init.CustomMenuType;
 import com.min01.minsenchantments.network.EnchantmentNetwork;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -27,7 +30,8 @@ public class MinsEnchantments
 		CustomEnchantments.ENCHANTMENTS.register(bus);
 		CustomEnchantments.LOOT_MODIFIERS.register(bus);
 		EnchantmentNetwork.registerMessages();
-		
+
+		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EnchantmentCapabilities::attachEntityCapability);
         EnchantmentConfig.loadConfig(EnchantmentConfig.CONFIG, FMLPaths.CONFIGDIR.get().resolve("mins-enchantments.toml").toString());
 	}
 }

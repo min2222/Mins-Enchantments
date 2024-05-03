@@ -2,8 +2,8 @@ package com.min01.minsenchantments.screen;
 
 import org.joml.Quaternionf;
 
+import com.min01.minsenchantments.event.ClientEventHandlerForge;
 import com.min01.minsenchantments.menu.EndEnchantmentMenu;
-import com.min01.minsenchantments.misc.ClientEventHandlerForge;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;

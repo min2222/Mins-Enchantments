@@ -19,7 +19,7 @@ public class EnchantmentNetwork
 	
 	public static void registerMessages()
 	{
-		CHANNEL.registerMessage(ID++, CellScaleSyncPacket.class, CellScaleSyncPacket::encode, CellScaleSyncPacket::new, CellScaleSyncPacket.Handler::onMessage);
+		CHANNEL.registerMessage(ID++, EnchantmentCapabilityUpdatePacket.class, EnchantmentCapabilityUpdatePacket::encode, EnchantmentCapabilityUpdatePacket::new, EnchantmentCapabilityUpdatePacket.Handler::onMessage);
 	}
 	
     public static <MSG> void sendToAll(MSG message) 

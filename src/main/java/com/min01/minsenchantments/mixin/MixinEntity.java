@@ -6,35 +6,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.min01.minsenchantments.event.EntityTickEvent;
 import com.min01.minsenchantments.init.CustomEnchantments;
-import com.min01.minsenchantments.misc.EventHandlerForge;
-import com.min01.minsenchantments.misc.IExtraEntity;
 
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.Level;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(Entity.class)
-public class MixinEntity 
-{
-	@Inject(at = @At("HEAD"), method = "extinguishFire", cancellable = true)
-    private void extinguishFire(CallbackInfo ci)
+public class MixinEntity
+{	
+	@Inject(at = @At("TAIL"), method = "tick", cancellable = true)
+    private void tick(CallbackInfo ci)
     {
-		if(Entity.class.cast(this) instanceof LivingEntity living)
-		{
-			if(((IExtraEntity) living).isSoulFire())
-			{
-				Level level = living.level();
-				if(!level.isClientSide)
-				{
-					living.playSound(SoundEvents.GENERIC_EXTINGUISH_FIRE, 0.7F, 1.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.4F);
-				}
-				living.getPersistentData().remove(EventHandlerForge.SOUL_FIRE);
-			}
-		}
+		MinecraftForge.EVENT_BUS.post(new EntityTickEvent(Entity.class.cast(this)));
     }
 	
 	@Inject(at = @At("HEAD"), method = "dampensVibrations", cancellable = true)

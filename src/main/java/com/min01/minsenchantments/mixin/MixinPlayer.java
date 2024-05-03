@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
-import com.min01.minsenchantments.misc.EventHandlerForge;
+import com.min01.minsenchantments.misc.EnchantmentTags;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +28,7 @@ public class MixinPlayer
 			if(stack.getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0 && ci.getReturnValue().isEmpty())
 			{
 				ItemStack arrow = new ItemStack(Items.ARROW);
-				arrow.getOrCreateTag().putBoolean(EventHandlerForge.WATER_JET, true);
+				arrow.getOrCreateTag().putBoolean(EnchantmentTags.WATER_JET, true);
 				ci.setReturnValue(arrow);
 			}
 		}

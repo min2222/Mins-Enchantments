@@ -1,6 +1,8 @@
 package com.min01.minsenchantments.enchantment;
 
-public interface ICustomEnchantment 
+import com.min01.minsenchantments.api.IMinsEnchantment;
+
+public interface ICustomEnchantment extends IMinsEnchantment
 {
 
 }

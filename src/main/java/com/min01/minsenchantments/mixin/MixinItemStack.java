@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
-import com.min01.minsenchantments.misc.EventHandlerForge;
+import com.min01.minsenchantments.misc.EnchantmentTags;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -49,7 +49,7 @@ public class MixinItemStack
 						float amount = 0;
 						if(stack.getEnchantmentLevel(CustomEnchantments.HARDENING.get()) > 0)
 						{
-							amount += stack.getOrCreateTag().getFloat(EventHandlerForge.HARDENING);
+							amount += stack.getOrCreateTag().getFloat(EnchantmentTags.HARDENING);
 						}
 						
 						EnumMap<ArmorItem.Type, UUID> enumMap = ObfuscationReflectionHelper.getPrivateValue(ArmorItem.class, armorItem, "f_265987_");
@@ -72,65 +72,65 @@ public class MixinItemStack
 		    	else if(entry.getKey() == Attributes.ATTACK_DAMAGE)
 		    	{
 		    		float amount = 0;
-		    		float rage = 0;
+		    		float malice = 0;
 					if(stack.getEnchantmentLevel(CustomEnchantments.MALICE.get()) > 0)
 					{
 			    		int level = stack.getEnchantmentLevel(CustomEnchantments.MALICE.get());
-			    		rage = level * EnchantmentConfig.maliceDamagePerLevel.get();
-			    		if(entry.getValue().getAmount() - rage <= 0)
+			    		malice = level * EnchantmentConfig.maliceDamagePerLevel.get();
+			    		if(entry.getValue().getAmount() - malice <= 0)
 			    		{
-			    			rage = (float) entry.getValue().getAmount();
+			    			malice = (float) entry.getValue().getAmount();
 			    		}
 					}
 					
 					if(stack.getEnchantmentLevel(CustomEnchantments.RAGE.get()) > 0)
 					{
-						amount += stack.getOrCreateTag().getFloat(EventHandlerForge.RAGE);
+						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.RAGE);
 					}
 					
 					if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
 					{
 						int damage = stack.getDamageValue();
 						int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
-						int count = stack.getOrCreateTag().getInt(EventHandlerForge.SKILLFUL);
-						int currentCount = stack.getOrCreateTag().getInt(EventHandlerForge.SKILLFUL_COUNT);
-						stack.getOrCreateTag().putInt(EventHandlerForge.SKILLFUL, damage / (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level));
+						int count = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL);
+						int currentCount = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL_COUNT);
+						stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL, damage / (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level));
 						if(currentCount < count)
 						{
-							float speed = stack.getOrCreateTag().getFloat(EventHandlerForge.SKILLFUL_SPEED);
-							float dmg = stack.getOrCreateTag().getFloat(EventHandlerForge.SKILLFUL_DMG);
+							float speed = stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_SPEED);
+							float dmg = stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_DMG);
 							
 							if(dmg < level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
 							{
-								stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_DMG, dmg + (level * EnchantmentConfig.skillfulDamagePerLevel.get()));
+								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_DMG, dmg + (level * EnchantmentConfig.skillfulDamagePerLevel.get()));
 							}
 							
 							if(dmg > level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
 							{
-								stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
+								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
 							}
 
 							if(stack.getItem() instanceof DiggerItem)
 							{
 								if(speed < level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
 								{
-									stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_SPEED, speed + (level * EnchantmentConfig.skillfulSpeedPerLevel.get()));
+									stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_SPEED, speed + (level * EnchantmentConfig.skillfulSpeedPerLevel.get()));
 								}
 								
 								if(speed > level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
 								{
-									stack.getOrCreateTag().putFloat(EventHandlerForge.SKILLFUL_SPEED, level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get());
+									stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_SPEED, level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get());
 								}
 							}
-							stack.getOrCreateTag().putInt(EventHandlerForge.SKILLFUL_COUNT, currentCount + 1);
+							stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL_COUNT, currentCount + 1);
 						}
 						
-						amount += stack.getOrCreateTag().getFloat(EventHandlerForge.SKILLFUL_DMG);
+						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_DMG);
 					}
 
 
 		    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41374_");
-		    		AttributeModifier modifier = new AttributeModifier(uuid, "Enchantment Modifier", (entry.getValue().getAmount() - rage) + amount, Operation.ADDITION);
+		    		AttributeModifier modifier = new AttributeModifier(uuid, "Enchantment Modifier", (entry.getValue().getAmount() - malice) + amount, Operation.ADDITION);
 		    		builder.put(Attributes.ATTACK_DAMAGE, modifier);
 		    	}
 		    	else if(entry.getKey() == Attributes.ATTACK_SPEED)
@@ -138,7 +138,7 @@ public class MixinItemStack
 		    		float amount = 0;
 					if(stack.getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)
 					{
-						amount += stack.getOrCreateTag().getFloat(EventHandlerForge.ACCELERATE);
+						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.ACCELERATE);
 					}
 					
 		    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41375_");

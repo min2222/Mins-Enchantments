@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
-import com.min01.minsenchantments.misc.EventHandlerForge;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
@@ -28,7 +27,7 @@ public class MixinItemCooldowns
 	@Inject(at = @At("HEAD"), method = "addCooldown", cancellable = true)
 	private void addCooldown(Item p_41525_, int p_41526_, CallbackInfo ci)
 	{
-		ItemStack stack = EventHandlerForge.ITEM_MAP.get(p_41525_);
+		ItemStack stack = new ItemStack(p_41525_);
 		if(stack != null)
 		{
 			if(stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get()) > 0)

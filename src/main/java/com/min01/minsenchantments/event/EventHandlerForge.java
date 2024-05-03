@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.api.IMinsEnchantment;
+import com.min01.minsenchantments.api.IProjectileEnchantment;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 
 import it.unimi.dsi.fastutil.Pair;
@@ -74,7 +75,8 @@ public class EventHandlerForge
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
-				enchantment.onPlaySoundAtEntity(event.getEntity(), event.getSound(), event.getSource(), event.getOriginalVolume(), event.getOriginalPitch());
+				boolean isCanceled = enchantment.onPlaySoundAtEntity(event.getEntity(), event.getSound(), event.getSource(), event.getOriginalVolume(), event.getOriginalPitch());
+				event.setCanceled(isCanceled);
 			}
 		});
 	}
@@ -152,6 +154,11 @@ public class EventHandlerForge
 				int duration = enchantment.onLivingEntityStopUseItem(event.getEntity(), event.getItem(), event.getDuration());
 				event.setDuration(duration);
 			}
+			
+			if(t instanceof IProjectileEnchantment enchantment)
+			{
+				enchantment.onStopUse(event.getEntity(), event.getItem(), event.getDuration());
+			}
 		});
 	}
 	
@@ -202,7 +209,8 @@ public class EventHandlerForge
 			if(t instanceof IMinsEnchantment enchantment)
 			{
 				//TODO return with pair
-				enchantment.onLivingBreath(event.getEntity(), event.canBreathe(), event.getConsumeAirAmount(), event.getRefillAirAmount(), event.canRefillAir());
+				boolean canBreath = enchantment.onLivingBreath(event.getEntity(), event.canBreathe(), event.getConsumeAirAmount(), event.getRefillAirAmount(), event.canRefillAir());
+				event.setCanBreathe(canBreath);
 			}
 		});
 	}
@@ -240,6 +248,11 @@ public class EventHandlerForge
 			{
 				enchantment.onEntityJoin(event.getEntity(), event.getLevel());
 			}
+			
+			if(t instanceof IProjectileEnchantment enchantment)
+			{
+				enchantment.onJoinLevel(event.getEntity(), event.getLevel());
+			}
 		});
 	}
 	
@@ -249,9 +262,10 @@ public class EventHandlerForge
 		ForgeRegistries.ENCHANTMENTS.forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
-			{
-				float amount = enchantment.onLivingDamage(event.getEntity(), event.getSource(), event.getAmount());
-				event.setAmount(amount);
+			{ 
+				Pair<Boolean, Float> pair = enchantment.onLivingDamage(event.getEntity(), event.getSource(), event.getAmount());
+				event.setCanceled(pair.left());
+				event.setAmount(pair.right());
 			}
 		});
 	}
@@ -264,6 +278,11 @@ public class EventHandlerForge
 			if(t instanceof IMinsEnchantment enchantment)
 			{
 				enchantment.onProjectileImpact(event.getProjectile(), event.getRayTraceResult());
+			}
+			
+			if(t instanceof IProjectileEnchantment enchantment)
+			{
+				enchantment.onProjImpact(event.getProjectile(), event.getRayTraceResult());
 			}
 		});
 	}

@@ -35,9 +35,9 @@ public interface IMinsEnchantment
 		
 	}
 	
-	default void onPlaySoundAtEntity(Entity entity, Holder<SoundEvent> sound, SoundSource source, float volume, float pitch)
+	default boolean onPlaySoundAtEntity(Entity entity, Holder<SoundEvent> sound, SoundSource source, float volume, float pitch)
 	{
-		
+		return false;
 	}
 	
 	default int onBlockBreak(BlockPos pos, BlockState state, Player player, int exp)
@@ -85,9 +85,9 @@ public interface IMinsEnchantment
 		return Pair.of(distance, damageMultiplier);
 	}
 	
-	default void onLivingBreath(LivingEntity entity, boolean canBreathe, int consumeAirAmount, int refillAirAmount, boolean canRefillAir)
+	default boolean onLivingBreath(LivingEntity entity, boolean canBreathe, int consumeAirAmount, int refillAirAmount, boolean canRefillAir)
 	{
-		
+		return canBreathe;
 	}
 	
 	default void onPlayerTick(Phase phase, Player player)
@@ -105,9 +105,9 @@ public interface IMinsEnchantment
 		
 	}
 	
-	default float onLivingDamage(LivingEntity entity, DamageSource source, float amount)
+	default Pair<Boolean, Float> onLivingDamage(LivingEntity entity, DamageSource source, float amount)
 	{
-		return amount;
+		return Pair.of(false, amount);
 	}
 	
 	default void onProjectileImpact(Projectile projectile, HitResult ray)

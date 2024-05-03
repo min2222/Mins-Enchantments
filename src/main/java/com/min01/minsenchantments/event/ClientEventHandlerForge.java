@@ -39,6 +39,7 @@ public class ClientEventHandlerForge
     	{
     		if(t.hasEnchantment(CustomEnchantments.CELL_DIVISION.get()))
     		{
+    			//FIXME for some reason scale is 1.0, and doesnt change
     			float scale = t.getEnchantmentData(CustomEnchantments.CELL_DIVISION.get()).getData().getFloat(EnchantmentTags.CELL_DIVISION_SCALE);
         		event.getPoseStack().scale(scale, scale, scale);
     		}

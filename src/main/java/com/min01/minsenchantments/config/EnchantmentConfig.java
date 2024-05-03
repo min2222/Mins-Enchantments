@@ -258,7 +258,6 @@ public class EnchantmentConfig
 	public static ConfigValue<Float> skillfulSpeedPerLevel;
 	public static ConfigValue<Float> skillfulDamagePerLevel;
 	
-	
 	public static ConfigValue<Integer> cellDivisionMinCost;
 	public static ConfigValue<Integer> cellDivisionMaxCost;
 

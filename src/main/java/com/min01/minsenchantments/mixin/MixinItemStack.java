@@ -20,7 +20,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -93,11 +92,10 @@ public class MixinItemStack
 						int damage = stack.getDamageValue();
 						int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
 						int count = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL);
-						int currentCount = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL_COUNT);
+						int currentCount = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL_DMG_COUNT);
 						stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL, damage / (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level));
 						if(currentCount < count)
 						{
-							float speed = stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_SPEED);
 							float dmg = stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_DMG);
 							
 							if(dmg < level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
@@ -109,25 +107,11 @@ public class MixinItemStack
 							{
 								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
 							}
-
-							if(stack.getItem() instanceof DiggerItem)
-							{
-								if(speed < level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
-								{
-									stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_SPEED, speed + (level * EnchantmentConfig.skillfulSpeedPerLevel.get()));
-								}
-								
-								if(speed > level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
-								{
-									stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_SPEED, level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get());
-								}
-							}
-							stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL_COUNT, currentCount + 1);
+							stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL_DMG_COUNT, currentCount + 1);
 						}
 						
 						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_DMG);
 					}
-
 
 		    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41374_");
 		    		AttributeModifier modifier = new AttributeModifier(uuid, "Enchantment Modifier", (entry.getValue().getAmount() - malice) + amount, Operation.ADDITION);
@@ -139,6 +123,31 @@ public class MixinItemStack
 					if(stack.getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)
 					{
 						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.ACCELERATE);
+					}
+					
+					if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
+					{
+						int damage = stack.getDamageValue();
+						int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
+						int count = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL);
+						int currentCount = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL_SPEED_COUNT);
+						stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL, damage / (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level));
+						if(currentCount < count)
+						{
+							float speed = stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_SPEED);
+							if(speed < level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
+							{
+								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_SPEED, speed + (level * EnchantmentConfig.skillfulSpeedPerLevel.get()));
+							}
+							
+							if(speed > level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
+							{
+								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_SPEED, level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get());
+							}
+							stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL_SPEED_COUNT, currentCount + 1);
+						}
+						
+						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_SPEED);
 					}
 					
 		    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41375_");

@@ -26,8 +26,11 @@ public class EnchantmentCapabilityHandler implements IEnchantmentCapability
 		CompoundTag tag = new CompoundTag();
 		for(Map.Entry<Enchantment, EnchantmentData> entry : this.enchantMap.entrySet())
 		{
-			tag.putString("Enchantment", ForgeRegistries.ENCHANTMENTS.getKey(entry.getKey()).toString());
-			tag.put("EnchantData", entry.getValue().save());
+			if(entry.getKey() != null)
+			{
+				tag.putString("Enchantment", ForgeRegistries.ENCHANTMENTS.getKey(entry.getKey()).toString());
+				tag.put("EnchantData", entry.getValue().save());
+			}
 		}
 		return tag;
 	}
@@ -117,7 +120,10 @@ public class EnchantmentCapabilityHandler implements IEnchantmentCapability
 		{
 			for(Entry<Enchantment, EnchantmentData> entry : this.enchantMap.entrySet())
 			{
-				EnchantmentNetwork.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this.entity), new EnchantmentCapabilityUpdatePacket(this.entity, entry.getKey(), entry.getValue()));
+				if(entry.getKey() != null)
+				{
+					EnchantmentNetwork.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this.entity), new EnchantmentCapabilityUpdatePacket(this.entity, entry.getKey(), entry.getValue()));
+				}
 			}
 		}
 	}

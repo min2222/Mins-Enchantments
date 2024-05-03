@@ -33,6 +33,16 @@ public class EnchantmentOvergravity extends AbstractCurseEnchantment
 	}
 	
 	@Override
+	public void onLivingTick(LivingEntity living) 
+	{
+		int level = living.getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(this);
+		if(level > 0)
+		{
+			living.setDeltaMovement(living.getDeltaMovement().subtract(0, level * EnchantmentConfig.overgravityFallSpeedPerLevel.get(), 0));
+		}
+	}
+	
+	@Override
 	public Pair<Float, Float> onLivingFall(LivingEntity entity, float distance, float damageMultiplier) 
 	{
 		int level = entity.getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(this);

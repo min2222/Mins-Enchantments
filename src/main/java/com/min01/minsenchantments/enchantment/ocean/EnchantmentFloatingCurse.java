@@ -4,7 +4,10 @@ import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.enchantment.curse.AbstractCurseEnchantment;
 
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.common.ForgeMod;
 
 public class EnchantmentFloatingCurse extends AbstractCurseEnchantment
 {
@@ -29,5 +32,15 @@ public class EnchantmentFloatingCurse extends AbstractCurseEnchantment
 	public int getMaxLevel() 
 	{
 		return 5;
+	}
+	
+	@Override
+	public void onLivingTick(LivingEntity living)
+	{
+		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
+		if(level > 0 && living.isEyeInFluidType(ForgeMod.WATER_TYPE.get()))
+		{
+			living.setDeltaMovement(living.getDeltaMovement().add(0, level * EnchantmentConfig.floatingCurseFloatingSpeedPerLevel.get(), 0));
+		}
 	}
 }

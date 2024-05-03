@@ -3,7 +3,6 @@ package com.min01.minsenchantments.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
@@ -24,13 +23,6 @@ public abstract class MixinLivingEntity extends Entity
 	public MixinLivingEntity(EntityType<?> p_19870_, Level p_19871_) 
 	{
 		super(p_19870_, p_19871_);
-	}
-	
-	@Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInWater()Z"))
-	private boolean isInWater(LivingEntity instance) 
-	{
-		//TODO check nearby entities -> if has aquatic aura enchanted item, return true;
-		return instance.isInWater();
 	}
 	
 	@Inject(at = @At("HEAD"), method = "stopUsingItem", cancellable = true)

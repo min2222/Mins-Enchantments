@@ -2,8 +2,9 @@ package com.min01.minsenchantments.enchantment.end;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
+import com.min01.minsenchantments.api.IProjectileEnchantment;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 
@@ -13,9 +14,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.HitResult;
 
-public class EnchantmentTeleportation extends AbstractEndEnchantment
+public class EnchantmentTeleportation extends AbstractEndEnchantment implements IProjectileEnchantment
 {
 	public EnchantmentTeleportation()
 	{
@@ -35,33 +37,20 @@ public class EnchantmentTeleportation extends AbstractEndEnchantment
 	}
 	
 	@Override
-	public int onLivingEntityStopUseItem(LivingEntity entity, @NotNull ItemStack item, int duration) 
+	public void onImpact(Projectile projectile, Entity owner, HitResult ray, EnchantmentData data, IEnchantmentCapability cap)
 	{
-		int level = item.getEnchantmentLevel(this);
-		if(level > 0)
-		{
-			entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
-			{
-				t.setEnchantmentData(this, new EnchantmentData(level, new CompoundTag()));
-			});
-		}
-		return super.onLivingEntityStopUseItem(entity, item, duration);
+		owner.setPos(ray.getLocation());
 	}
 	
 	@Override
-	public void onProjectileImpact(Projectile projectile, HitResult ray)
+	public Enchantment self() 
 	{
-		if(projectile.getOwner() != null)
-		{
-			Entity owner = projectile.getOwner();
-			owner.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
-			{
-				if(t.hasEnchantment(this))
-				{
-					owner.setPos(ray.getLocation());
-					t.removeEnchantment(this);
-				}
-			});
-		}
+		return this;
+	}
+
+	@Override
+	public CompoundTag getData(LivingEntity entity, @NotNull ItemStack item, int duration) 
+	{
+		return new CompoundTag();
 	}
 }

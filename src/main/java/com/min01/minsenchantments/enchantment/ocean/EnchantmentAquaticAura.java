@@ -1,9 +1,20 @@
 package com.min01.minsenchantments.enchantment.ocean;
 
-import com.min01.minsenchantments.config.EnchantmentConfig;
+import java.util.List;
 
+import com.min01.minsenchantments.config.EnchantmentConfig;
+import com.min01.minsenchantments.mixin.AbstractArrowInvoker;
+
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 {
@@ -28,5 +39,65 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 	public int getMaxLevel() 
 	{
 		return 5;
+	}
+	
+	@Override
+	public boolean onLivingBreath(LivingEntity entity, boolean canBreathe, int consumeAirAmount, int refillAirAmount, boolean canRefillAir) 
+	{
+		List<LivingEntity> list = entity.level().getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(100));
+		list.removeIf(t -> t == entity);
+		for(LivingEntity living : list)
+		{
+			int level = EnchantmentHelper.getEnchantmentLevel(this, living);
+			if(level > 0)
+			{
+				AABB aabb = living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get());
+				if(aabb.contains(entity.position()))
+				{
+					return false;
+				}
+			}
+		}
+		return super.onLivingBreath(entity, canBreathe, consumeAirAmount, refillAirAmount, canRefillAir);
+	}
+	
+	@Override
+	public void onLivingTick(LivingEntity living) 
+	{
+		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
+		if(level > 0)
+		{
+			List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
+			projList.removeIf((proj) -> (proj.getOwner() != null && proj.getOwner() == living) || proj instanceof ThrownTrident);
+			projList.forEach((proj) -> 
+			{
+				if(proj instanceof AbstractArrow arrow)
+				{
+					float waterInertia = ((AbstractArrowInvoker)arrow).Invoke_getWaterInertia();
+					arrow.setDeltaMovement(arrow.getDeltaMovement().scale(waterInertia));
+				}
+				else
+				{
+					proj.setDeltaMovement(proj.getDeltaMovement().scale(0.6F));
+				}
+				
+				if(proj.getDeltaMovement() != Vec3.ZERO && !proj.onGround())
+				{
+					Vec3 vec3 = proj.getDeltaMovement();
+					double d5 = vec3.x;
+					double d6 = vec3.y;
+					double d1 = vec3.z;
+			         
+					double d7 = proj.getX() + d5;
+					double d2 = proj.getY() + d6;
+					double d3 = proj.getZ() + d1;
+			         
+		            for(int j = 0; j < 4; ++j) 
+		            {
+		                proj.level().addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
+		            }
+				}
+			});
+		}
 	}
 }

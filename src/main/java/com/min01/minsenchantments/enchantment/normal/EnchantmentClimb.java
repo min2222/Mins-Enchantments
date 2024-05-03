@@ -3,10 +3,11 @@ package com.min01.minsenchantments.enchantment.normal;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
-public class EnchantmentClimb extends Enchantment
+public class EnchantmentClimb extends AbstractMinsEnchantment
 {
 	public EnchantmentClimb()
 	{
@@ -29,5 +30,27 @@ public class EnchantmentClimb extends Enchantment
 	public int getMaxLevel() 
 	{
 		return 3;
+	}
+	
+	@Override
+	public void onLivingTick(LivingEntity living) 
+	{
+		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
+		if(level > 0)
+		{
+			if(living.horizontalCollision)
+			{
+				double climbSpeed = level * EnchantmentConfig.climbSpeedPerLevel.get();
+			    if(living.isShiftKeyDown())
+			    {
+			    	living.setDeltaMovement(living.getDeltaMovement().x, 0.0, living.getDeltaMovement().z);
+			    }
+			    else
+			    {
+					living.setDeltaMovement(living.getDeltaMovement().x, climbSpeed, living.getDeltaMovement().z);
+			    }
+				living.fallDistance = 0.0F;
+			}
+		}
 	}
 }

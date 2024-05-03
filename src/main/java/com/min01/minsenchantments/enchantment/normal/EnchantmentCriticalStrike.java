@@ -3,10 +3,9 @@ package com.min01.minsenchantments.enchantment.normal;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class EnchantmentCriticalStrike extends Enchantment
+public class EnchantmentCriticalStrike extends AbstractMinsEnchantment
 {
 	public EnchantmentCriticalStrike()
 	{

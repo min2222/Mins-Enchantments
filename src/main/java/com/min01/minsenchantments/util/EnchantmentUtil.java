@@ -62,7 +62,7 @@ public class EnchantmentUtil
 	
 	public static Vec3 fromToVector(Vec3 from, Vec3 to, float speed)
 	{
-		Vec3 motion = new Vec3(to.x - from.x, to.y - from.y, to.z - from.z).normalize();
+		Vec3 motion = to.subtract(from).normalize();
 		return motion.scale(speed);
 	}
 	

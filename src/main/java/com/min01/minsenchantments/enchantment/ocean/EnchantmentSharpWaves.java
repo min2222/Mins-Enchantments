@@ -54,6 +54,38 @@ public class EnchantmentSharpWaves extends AbstractOceanEnchantment implements I
 	}
 	
 	@Override
+	public void onEntityTick(Entity entity) 
+	{
+		if(entity instanceof Projectile projectile)
+		{
+			projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t ->
+			{
+				if(t.hasEnchantment(this))
+				{
+					EnchantmentData data = t.getEnchantmentData(this);
+					CompoundTag tag = data.getData();
+					BlockPos pos = NbtUtils.readBlockPos(tag.getCompound(EnchantmentTags.SHARP_WAVES));
+					double distance = projectile.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
+					int level = data.getEnchantLevel();
+					float damage = tag.getFloat(EnchantmentTags.SHARP_WAVES_DMG);
+					if(distance % (EnchantmentConfig.sharpWavesDistancePerLevel.get() / level) <= 1)
+					{
+						if(damage <= level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
+						{
+							tag.putFloat(EnchantmentTags.SHARP_WAVES_DMG, damage + (level * EnchantmentConfig.sharpWavesDamagePerLevel.get()));
+						}
+						if(damage > level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
+						{
+							tag.putFloat(EnchantmentTags.SHARP_WAVES_DMG, level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get());
+						}
+					}
+					t.setEnchantmentData(this, new EnchantmentData(level, tag));
+				}
+			});
+		}
+	}
+	
+	@Override
 	public Pair<Boolean, Float> onLivingDamage(LivingEntity living, DamageSource damageSource, float amount)
 	{
 		if(damageSource.getDirectEntity() != null)
@@ -70,26 +102,11 @@ public class EnchantmentSharpWaves extends AbstractOceanEnchantment implements I
 						IEnchantmentCapability t = projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).orElseGet(null);
 						if(t.hasEnchantment(this))
 						{
-							EnchantmentData data = t.getEnchantmentData(this);
-							CompoundTag tag = data.getData();
 							if(owner.isInWater())
 							{
-								//FIXME not working
-								BlockPos pos = NbtUtils.readBlockPos(tag.getCompound(EnchantmentTags.SHARP_WAVES));
-								double distance = projectile.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
-								int level = data.getEnchantLevel();
-								float damage = 0;
-								if(distance % (EnchantmentConfig.sharpWavesDistancePerLevel.get() / level) == 0)
-								{
-									if(damage <= level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
-									{
-										damage += (level * EnchantmentConfig.sharpWavesDamagePerLevel.get());
-									}
-									if(damage > level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get())
-									{
-										damage = level * EnchantmentConfig.sharpWavesMaxDamagePerLevel.get();
-									}
-								}
+								EnchantmentData data = t.getEnchantmentData(this);
+								CompoundTag tag = data.getData();
+								float damage = tag.getFloat(EnchantmentTags.SHARP_WAVES_DMG);
 								return Pair.of(false, amount + damage);
 							}
 						}

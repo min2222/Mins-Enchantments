@@ -6,8 +6,6 @@ import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.misc.EnchantmentTags;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -62,11 +60,8 @@ public class EnchantmentTide extends AbstractOceanEnchantment
 						{
 							 tag.putFloat(EnchantmentTags.TIDE, tide + speed);
 						}
-						player.setDeltaMovement(player.getDeltaMovement().add(tide, 0, tide));
-						if(player instanceof ServerPlayer serverPlayer)
-						{
-							serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
-						}
+						player.setDeltaMovement(player.getDeltaMovement().multiply(1 + tide, 1, 1 + tide));
+						player.hasImpulse = true;
 					}
 					else
 					{

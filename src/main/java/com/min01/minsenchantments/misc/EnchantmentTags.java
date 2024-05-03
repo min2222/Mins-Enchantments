@@ -14,6 +14,7 @@ public class EnchantmentTags
 	
 	public static final String WATER_BOLT = "WaterBolt";
 	public static final String SHARP_WAVES = "SharpWaves";
+	public static final String SHARP_WAVES_DMG = "SharpWavesDmg";
 	public static final String TIDE = "Tide";
 	public static final String POSEIDONS_GRACE = "PoseidonsGrace";
 	public static final String POSEIDONS_GRACE_ITEM = "PoseidonsGraceItem";

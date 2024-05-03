@@ -53,6 +53,11 @@ public class EventHandlerForge
 			{
 				enchantment.onPlayerRightClickItem(event.getEntity(), event.getItemStack(), event.getHand(), event.getPos(), event.getFace());
 			}
+			
+			if(t instanceof IProjectileEnchantment enchantment)
+			{
+				enchantment.onRightClick(event.getEntity(), event.getItemStack(), event.getHand(), event.getPos(), event.getFace());
+			}
 		});
 	}
 	

@@ -1,14 +1,20 @@
 package com.min01.minsenchantments.api;
 
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -17,6 +23,18 @@ import net.minecraft.world.phys.HitResult;
 
 public interface IProjectileEnchantment
 {
+	default void onRightClick(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos, @Nullable Direction clickDir)
+	{
+		player.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		{
+			int level = stack.getEnchantmentLevel(this.self());
+			if(level > 0)
+			{
+				t.setEnchantmentData(this.self(), new EnchantmentData(level, this.getData(player, stack, 0)));
+			}
+		});
+	}
+	
 	default void onStopUse(LivingEntity entity, @NotNull ItemStack item, int duration)
 	{
 		entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 

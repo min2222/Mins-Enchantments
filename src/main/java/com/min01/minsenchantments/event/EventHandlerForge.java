@@ -210,9 +210,10 @@ public class EventHandlerForge
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
-				//TODO return with pair
-				boolean canBreath = enchantment.onLivingBreath(event.getEntity(), event.canBreathe(), event.getConsumeAirAmount(), event.getRefillAirAmount(), event.canRefillAir());
-				event.setCanBreathe(canBreath);
+				if(!enchantment.onLivingBreath(event.getEntity(), event.canBreathe(), event.getConsumeAirAmount(), event.getRefillAirAmount(), event.canRefillAir()))
+				{
+					event.setCanBreathe(false);
+				}
 			}
 		});
 	}

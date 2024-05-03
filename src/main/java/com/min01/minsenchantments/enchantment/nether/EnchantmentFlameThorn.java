@@ -9,6 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class EnchantmentFlameThorn extends AbstractNetherEnchantment
 {
@@ -45,8 +46,7 @@ public class EnchantmentFlameThorn extends AbstractNetherEnchantment
 		if(source != null && source instanceof LivingEntity attacker && level > 0)
 		{
 			boolean flag = directSource instanceof Projectile proj ? proj.getOwner() != null && proj.getOwner() == living : directSource == living;
-			//FIXME crash with wild fire from friends & foes
-			if(attacker != living && !flag && !(damageSource.getMsgId().equals("thorns")))
+			if(attacker != living && !flag && !(damageSource.getMsgId().equals("thorns")) && ForgeRegistries.ENTITY_TYPES.getKey(attacker.getType()).toString() != "friendsandfoes:wildfire")
 			{
 				attacker.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
 				attacker.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);

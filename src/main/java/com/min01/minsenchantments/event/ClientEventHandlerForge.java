@@ -2,6 +2,7 @@ package com.min01.minsenchantments.event;
 
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.misc.EnchantmentTags;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,8 +41,10 @@ public class ClientEventHandlerForge
     	{
     		if(t.hasEnchantment(CustomEnchantments.CELL_DIVISION.get()))
     		{
-    			//FIXME for some reason scale is 1.0, and doesnt change
-    			float scale = t.getEnchantmentData(CustomEnchantments.CELL_DIVISION.get()).getData().getFloat(EnchantmentTags.CELL_DIVISION_SCALE);
+    			//FIXME for some reason scale is 1.0, and doesn't change
+    			EnchantmentData data = t.getEnchantmentData(CustomEnchantments.CELL_DIVISION.get());
+    			CompoundTag tag = data.getData();
+    			float scale = tag.getFloat(EnchantmentTags.CELL_DIVISION_SCALE);
         		event.getPoseStack().scale(scale, scale, scale);
     		}
     	});

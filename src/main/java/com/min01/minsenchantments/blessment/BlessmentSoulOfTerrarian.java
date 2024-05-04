@@ -1,5 +1,7 @@
 package com.min01.minsenchantments.blessment;
 
+import java.lang.reflect.Method;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
@@ -22,6 +24,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class BlessmentSoulOfTerrarian extends AbstractBlessment implements IProjectileEnchantment
 {
@@ -77,10 +80,23 @@ public class BlessmentSoulOfTerrarian extends AbstractBlessment implements IProj
 		                	t.setEnchantmentData(this, new EnchantmentData(level, tag2));
 		                });
 		                extra.hasImpulse = true;
+		                extra.setNoGravity(true);
 		                if(extra instanceof AbstractArrow arrow)
 		                {
 		                	arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 		                }
+		                CompoundTag projTag = new CompoundTag();
+						Method m = ObfuscationReflectionHelper.findMethod(Projectile.class, "m_7378_", CompoundTag.class);
+						Method m2 = ObfuscationReflectionHelper.findMethod(Projectile.class, "m_7380_", CompoundTag.class);
+						try 
+						{
+							m2.invoke(projectile, projTag);
+							m.invoke(extra, projTag);
+						}
+						catch (Exception e) 
+						{
+							
+						}
 		                projectile.level().addFreshEntity(extra);
 					}
 				}

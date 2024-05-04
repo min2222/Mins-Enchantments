@@ -1,5 +1,7 @@
 package com.min01.minsenchantments.enchantment.normal;
 
+import java.lang.reflect.Method;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
@@ -20,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class EnchantmentCellDivision extends AbstractMinsEnchantment implements IProjectileEnchantment
 {
@@ -67,18 +70,20 @@ public class EnchantmentCellDivision extends AbstractMinsEnchantment implements 
 				Projectile cell = (Projectile) projectile.getType().create(projectile.level());
 				cell.setOwner(owner);
 				cell.setPos(projectile.position().add(0, 0.5, 0));
-				if(projectile instanceof AbstractArrow arrow && cell instanceof AbstractArrow cellArrow)
-				{
-					cellArrow.setBaseDamage(arrow.getBaseDamage());
-					cellArrow.setKnockback(arrow.getKnockback());
-					cellArrow.setPierceLevel(arrow.getPierceLevel());
-					if(arrow.isOnFire())
-					{
-						cellArrow.setSecondsOnFire(100);
-					}
-				}
 				Level world = projectile.level();
 				cell.setDeltaMovement(world.random.nextGaussian() * 0.2D, 0.4D, world.random.nextGaussian() * 0.2D);
+                CompoundTag projTag = new CompoundTag();
+				Method m = ObfuscationReflectionHelper.findMethod(Projectile.class, "m_7378_", CompoundTag.class);
+				Method m2 = ObfuscationReflectionHelper.findMethod(Projectile.class, "m_7380_", CompoundTag.class);
+				try 
+				{
+					m2.invoke(projectile, projTag);
+					m.invoke(cell, projTag);
+				}
+				catch (Exception e) 
+				{
+					
+				}
 				world.addFreshEntity(cell);
 				cell.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
 				{

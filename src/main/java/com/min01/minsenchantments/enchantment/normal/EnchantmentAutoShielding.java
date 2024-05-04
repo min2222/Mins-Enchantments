@@ -1,5 +1,7 @@
 package com.min01.minsenchantments.enchantment.normal;
 
+import java.lang.reflect.Method;
+
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
@@ -18,6 +20,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class EnchantmentAutoShielding extends AbstractMinsEnchantment
 {
@@ -110,7 +113,16 @@ public class EnchantmentAutoShielding extends AbstractMinsEnchantment
 									{
 										if(ev.shieldTakesDamage())
 										{
-											living.hurtCurrentlyUsedShield(amount);
+											//FIXME crash with unable to find method, but method is exist in living entity. wtf
+											/*Method m = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "m_7909_", Float.class);
+											try 
+											{
+												m.invoke(living, amount);
+											}
+											catch (Exception e) 
+											{
+												
+											}*/
 										}
 										am -= ev.getBlockedDamage();
 										if (!source.is(DamageTypeTags.IS_PROJECTILE))
@@ -119,7 +131,15 @@ public class EnchantmentAutoShielding extends AbstractMinsEnchantment
 											if (entity instanceof LivingEntity) 
 											{
 												LivingEntity livingentity = (LivingEntity)entity;
-												living.blockUsingShield(livingentity);
+												Method m = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "m_6728_", LivingEntity.class);
+												try 
+												{
+													m.invoke(living, livingentity);
+												}
+												catch (Exception e) 
+												{
+													
+												}
 											}
 										}
 										

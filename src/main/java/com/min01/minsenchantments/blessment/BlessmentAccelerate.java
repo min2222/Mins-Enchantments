@@ -1,4 +1,4 @@
-package com.min01.minsenchantments.enchantment.normal;
+package com.min01.minsenchantments.blessment;
 
 import java.lang.reflect.Method;
 
@@ -12,23 +12,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
-public class EnchantmentQuickdraw extends AbstractMinsEnchantment
+public class BlessmentAccelerate extends AbstractBlessment
 {
-	public EnchantmentQuickdraw()
+	public BlessmentAccelerate()
 	{
-		super(Rarity.VERY_RARE, CustomEnchantments.PROJECTILE_WEAPON, new EquipmentSlot[] {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+		super(CustomEnchantments.PROJECTILE_WEAPON, new EquipmentSlot[] {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
 	}
 	
 	@Override
 	public int getMaxCost(int p_44691_) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.quickdrawMaxCost.get();
+		return this.getMinCost(p_44691_) + EnchantmentConfig.accelerateMaxCost.get();
 	}
 	
 	@Override
 	public int getMinCost(int p_44679_) 
 	{
-		return EnchantmentConfig.quickdrawMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.quickdrawMaxCost.get();
+		return EnchantmentConfig.accelerateMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.accelerateMaxCost.get();
 	}
 	
 	@Override
@@ -43,7 +43,7 @@ public class EnchantmentQuickdraw extends AbstractMinsEnchantment
 		if(player.isUsingItem())
 		{
 			ItemStack stack = player.getUseItem();
-			int level = stack.getEnchantmentLevel(CustomEnchantments.QUICKDRAW.get());
+			int level = stack.getEnchantmentLevel(CustomEnchantments.ACCELERATE.get());
 			if(level > 0)
 			{
    				for(int i = 0; i < level; i++) 

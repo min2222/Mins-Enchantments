@@ -1,4 +1,4 @@
-package com.min01.minsenchantments.enchantment.normal;
+package com.min01.minsenchantments.blessment;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
 
@@ -8,23 +8,23 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class EnchantmentLeech extends AbstractMinsEnchantment
+public class BlessmentHeartSteal extends AbstractBlessment
 {
-	public EnchantmentLeech()
+	public BlessmentHeartSteal()
 	{
-		super(Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[] {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+		super(EnchantmentCategory.WEAPON, new EquipmentSlot[] {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
 	}
 	
 	@Override
 	public int getMaxCost(int p_44691_) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.leechMaxCost.get();
+		return this.getMinCost(p_44691_) + EnchantmentConfig.heartStealMaxCost.get();
 	}
 	
 	@Override
 	public int getMinCost(int p_44679_) 
 	{
-		return EnchantmentConfig.leechMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.leechMaxCost.get();
+		return EnchantmentConfig.heartStealMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.heartStealMaxCost.get();
 	}
 	
 	@Override
@@ -43,9 +43,9 @@ public class EnchantmentLeech extends AbstractMinsEnchantment
 			int level = attacker.getMainHandItem().getEnchantmentLevel(this);
 			if(level > 0)
 			{
-				if(Math.random() <= (level * EnchantmentConfig.leechChancePerLevel.get()) / 100)
+				if(Math.random() <= (level * EnchantmentConfig.heartStealChancePerLevel.get()) / 100)
 				{
-					attacker.heal(level * EnchantmentConfig.leechHealAmountPerLevel.get());
+					attacker.heal(level * EnchantmentConfig.heartStealHealAmountPerLevel.get());
 				}
 			}
 		}

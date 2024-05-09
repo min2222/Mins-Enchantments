@@ -4,8 +4,8 @@
 	"package": "com.min01.minsenchantments.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"MixinEnchantment",
 		"AbstractArrowInvoker",
+		"MixinEnchantment",
 		"MixinEnchantmentMenu",
 		"MixinPlayer",
 		"MixinLivingEntity",

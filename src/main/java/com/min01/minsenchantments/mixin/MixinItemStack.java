@@ -59,6 +59,7 @@ public class MixinItemStack
 			    	}
 			    }
 			}
+    		return builder.build();
 		}
 		
 		if(slot == EquipmentSlot.MAINHAND)
@@ -88,30 +89,30 @@ public class MixinItemStack
 						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.RAGE);
 					}
 					
-					if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
+					if(stack.getEnchantmentLevel(CustomEnchantments.GRINDING.get()) > 0)
 					{
 						int damage = stack.getDamageValue();
-						int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
-						int count = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL);
-						int currentCount = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL_DMG_COUNT);
-						stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL, damage / (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level));
+						int level = stack.getEnchantmentLevel(CustomEnchantments.GRINDING.get());
+						int count = stack.getOrCreateTag().getInt(EnchantmentTags.GRINDING);
+						int currentCount = stack.getOrCreateTag().getInt(EnchantmentTags.GRINDING_DMG_COUNT);
+						stack.getOrCreateTag().putInt(EnchantmentTags.GRINDING, damage / (EnchantmentConfig.grindingDurabilityPerLevel.get() / level));
 						if(currentCount < count)
 						{
-							float dmg = stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_DMG);
+							float dmg = stack.getOrCreateTag().getFloat(EnchantmentTags.GRINDING_DMG);
 							
-							if(dmg < level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
+							if(dmg < level * EnchantmentConfig.grindingMaxDamagePerLevel.get())
 							{
-								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_DMG, dmg + (level * EnchantmentConfig.skillfulDamagePerLevel.get()));
+								stack.getOrCreateTag().putFloat(EnchantmentTags.GRINDING_DMG, dmg + (level * EnchantmentConfig.grindingDamagePerLevel.get()));
 							}
 							
-							if(dmg > level * EnchantmentConfig.skillfulMaxDamagePerLevel.get())
+							if(dmg > level * EnchantmentConfig.grindingMaxDamagePerLevel.get())
 							{
-								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_DMG, level * EnchantmentConfig.skillfulMaxDamagePerLevel.get());
+								stack.getOrCreateTag().putFloat(EnchantmentTags.GRINDING_DMG, level * EnchantmentConfig.grindingMaxDamagePerLevel.get());
 							}
-							stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL_DMG_COUNT, currentCount + 1);
+							stack.getOrCreateTag().putInt(EnchantmentTags.GRINDING_DMG_COUNT, currentCount + 1);
 						}
 						
-						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_DMG);
+						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.GRINDING_DMG);
 					}
 
 		    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41374_");
@@ -121,34 +122,34 @@ public class MixinItemStack
 		    	else if(entry.getKey() == Attributes.ATTACK_SPEED)
 		    	{
 		    		float amount = 0;
-					if(stack.getEnchantmentLevel(CustomEnchantments.ACCELERATE.get()) > 0)
+					if(stack.getEnchantmentLevel(CustomEnchantments.RAGE.get()) > 0)
 					{
-						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.ACCELERATE);
+						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.RAGE_SPEED);
 					}
 					
-					if(stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get()) > 0)
+					if(stack.getEnchantmentLevel(CustomEnchantments.GRINDING.get()) > 0)
 					{
 						int damage = stack.getDamageValue();
-						int level = stack.getEnchantmentLevel(CustomEnchantments.SKILLFUL.get());
-						int count = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL);
-						int currentCount = stack.getOrCreateTag().getInt(EnchantmentTags.SKILLFUL_SPEED_COUNT);
-						stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL, damage / (EnchantmentConfig.skillfulDurabilityPerLevel.get() / level));
+						int level = stack.getEnchantmentLevel(CustomEnchantments.GRINDING.get());
+						int count = stack.getOrCreateTag().getInt(EnchantmentTags.GRINDING);
+						int currentCount = stack.getOrCreateTag().getInt(EnchantmentTags.GRINDING_SPEED_COUNT);
+						stack.getOrCreateTag().putInt(EnchantmentTags.GRINDING, damage / (EnchantmentConfig.grindingDurabilityPerLevel.get() / level));
 						if(currentCount < count)
 						{
-							float speed = stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_SPEED);
-							if(speed < level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
+							float speed = stack.getOrCreateTag().getFloat(EnchantmentTags.GRINDING_SPEED);
+							if(speed < level * EnchantmentConfig.grindingMaxSpeedPerLevel.get())
 							{
-								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_SPEED, speed + (level * EnchantmentConfig.skillfulSpeedPerLevel.get()));
+								stack.getOrCreateTag().putFloat(EnchantmentTags.GRINDING_SPEED, speed + (level * EnchantmentConfig.grindingSpeedPerLevel.get()));
 							}
 							
-							if(speed > level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get())
+							if(speed > level * EnchantmentConfig.grindingMaxSpeedPerLevel.get())
 							{
-								stack.getOrCreateTag().putFloat(EnchantmentTags.SKILLFUL_SPEED, level * EnchantmentConfig.skillfulMaxSpeedPerLevel.get());
+								stack.getOrCreateTag().putFloat(EnchantmentTags.GRINDING_SPEED, level * EnchantmentConfig.grindingMaxSpeedPerLevel.get());
 							}
-							stack.getOrCreateTag().putInt(EnchantmentTags.SKILLFUL_SPEED_COUNT, currentCount + 1);
+							stack.getOrCreateTag().putInt(EnchantmentTags.GRINDING_SPEED_COUNT, currentCount + 1);
 						}
 						
-						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.SKILLFUL_SPEED);
+						amount += stack.getOrCreateTag().getFloat(EnchantmentTags.GRINDING_SPEED);
 					}
 					
 		    		UUID uuid = ObfuscationReflectionHelper.getPrivateValue(Item.class, item, "f_41375_");

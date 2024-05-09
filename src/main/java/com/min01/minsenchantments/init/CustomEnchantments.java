@@ -1,9 +1,14 @@
 package com.min01.minsenchantments.init;
 
 import com.min01.minsenchantments.MinsEnchantments;
+import com.min01.minsenchantments.blessment.BlessmentAccelerate;
+import com.min01.minsenchantments.blessment.BlessmentAutoShielding;
 import com.min01.minsenchantments.blessment.BlessmentBarrier;
+import com.min01.minsenchantments.blessment.BlessmentCriticalStrike;
 import com.min01.minsenchantments.blessment.BlessmentGodHand;
+import com.min01.minsenchantments.blessment.BlessmentGrinding;
 import com.min01.minsenchantments.blessment.BlessmentHardening;
+import com.min01.minsenchantments.blessment.BlessmentHeartSteal;
 import com.min01.minsenchantments.blessment.BlessmentHoming;
 import com.min01.minsenchantments.blessment.BlessmentMalice;
 import com.min01.minsenchantments.blessment.BlessmentMirror;
@@ -20,19 +25,13 @@ import com.min01.minsenchantments.enchantment.nether.EnchantmentDry;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentFlameThorn;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentLavaWalker;
 import com.min01.minsenchantments.enchantment.nether.EnchantmentSoulFire;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentAccelerate;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentArmorCrack;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentAutoShielding;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentCellDivision;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentClimb;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentCriticalStrike;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentLeech;
+import com.min01.minsenchantments.enchantment.normal.EnchantmentHitscan;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentMagnet;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentMiner;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentQuickdraw;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentRecochet;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentSkillful;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentSnipe;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentTakeoff;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentWallbreak;
 import com.min01.minsenchantments.enchantment.ocean.EnchantmentAbyssCurse;
@@ -88,6 +87,11 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> SOUL_OF_TERRARIAN = ENCHANTMENTS.register("soul_of_terrarian", () -> new BlessmentSoulOfTerrarian());
 	public static final RegistryObject<Enchantment> GOD_HAND = ENCHANTMENTS.register("god_hand", () -> new BlessmentGodHand());
 	public static final RegistryObject<Enchantment> MALICE = ENCHANTMENTS.register("malice", () -> new BlessmentMalice());
+	public static final RegistryObject<Enchantment> AUTO_SHIELDING = ENCHANTMENTS.register("auto_shielding", () -> new BlessmentAutoShielding());
+	public static final RegistryObject<Enchantment> GRINDING = ENCHANTMENTS.register("grinding", () -> new BlessmentGrinding());
+	public static final RegistryObject<Enchantment> ACCELERATE = ENCHANTMENTS.register("accelerate", () -> new BlessmentAccelerate());
+	public static final RegistryObject<Enchantment> CRITICAL_STRIKE = ENCHANTMENTS.register("critical_strike", () -> new BlessmentCriticalStrike());
+	public static final RegistryObject<Enchantment> HEART_STEAL = ENCHANTMENTS.register("heart_steal", () -> new BlessmentHeartSteal());
 	
 	//ocean
 	public static final RegistryObject<Enchantment> WATERBOLT = ENCHANTMENTS.register("waterbolt", () -> new EnchantmentWaterbolt());
@@ -119,18 +123,12 @@ public class CustomEnchantments
 	//normal
 	public static final RegistryObject<Enchantment> RECOCHET = ENCHANTMENTS.register("recochet", () -> new EnchantmentRecochet());
 	public static final RegistryObject<Enchantment> CLIMB = ENCHANTMENTS.register("climb", () -> new EnchantmentClimb());
-	public static final RegistryObject<Enchantment> CRITICAL_STRIKE = ENCHANTMENTS.register("critical_strike", () -> new EnchantmentCriticalStrike());
-	public static final RegistryObject<Enchantment> LEECH = ENCHANTMENTS.register("leech", () -> new EnchantmentLeech());
 	public static final RegistryObject<Enchantment> WALLBREAK = ENCHANTMENTS.register("wallbreak", () -> new EnchantmentWallbreak());
-	public static final RegistryObject<Enchantment> SNIPE = ENCHANTMENTS.register("snipe", () -> new EnchantmentSnipe());
+	public static final RegistryObject<Enchantment> HITSCAN = ENCHANTMENTS.register("hitscan", () -> new EnchantmentHitscan());
 	public static final RegistryObject<Enchantment> MAGNET = ENCHANTMENTS.register("magnet", () -> new EnchantmentMagnet());
-	public static final RegistryObject<Enchantment> AUTO_SHIELDING = ENCHANTMENTS.register("auto_shielding", () -> new EnchantmentAutoShielding());
-	public static final RegistryObject<Enchantment> SKILLFUL = ENCHANTMENTS.register("skillful", () -> new EnchantmentSkillful());
 	public static final RegistryObject<Enchantment> CELL_DIVISION = ENCHANTMENTS.register("cell_division", () -> new EnchantmentCellDivision());
-	public static final RegistryObject<Enchantment> QUICKDRAW = ENCHANTMENTS.register("quickdraw", () -> new EnchantmentQuickdraw());
 	public static final RegistryObject<Enchantment> TAKEOFF = ENCHANTMENTS.register("takeoff", () -> new EnchantmentTakeoff());
 	public static final RegistryObject<Enchantment> ARMOR_CRACK = ENCHANTMENTS.register("armor_crack", () -> new EnchantmentArmorCrack());
-	public static final RegistryObject<Enchantment> ACCELERATE = ENCHANTMENTS.register("accelerate", () -> new EnchantmentAccelerate());
 	public static final RegistryObject<Enchantment> MINER = ENCHANTMENTS.register("miner", () -> new EnchantmentMiner());
 	
 	//curse

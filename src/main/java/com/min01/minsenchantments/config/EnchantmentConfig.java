@@ -34,6 +34,9 @@ public class EnchantmentConfig
 	public static ConfigValue<Float> rageDamagePerLevel;
 	public static ConfigValue<Float> rageMaxDamagePerLevel;
 	
+	public static ConfigValue<Float> rageSpeedPerLevel;
+	public static ConfigValue<Float> rageMaxSpeedPerLevel;
+	
 	public static ConfigValue<Integer> returningMinCost;
 	public static ConfigValue<Integer> returningMaxCost;
 	
@@ -65,6 +68,34 @@ public class EnchantmentConfig
 
 	public static ConfigValue<Float> maliceDamagePerLevel;
 	public static ConfigValue<Float> malicePercentagePerLevel;
+	
+	public static ConfigValue<Integer> autoShieldingMinCost;
+	public static ConfigValue<Integer> autoShieldingMaxCost;
+	
+	public static ConfigValue<Float> autoShieldingChancePerLevel;
+	
+	public static ConfigValue<Integer> grindingMinCost;
+	public static ConfigValue<Integer> grindingMaxCost;
+	
+	public static ConfigValue<Float> grindingMaxDamagePerLevel;
+	public static ConfigValue<Float> grindingMaxSpeedPerLevel;
+	public static ConfigValue<Integer> grindingDurabilityPerLevel;
+	public static ConfigValue<Float> grindingSpeedPerLevel;
+	public static ConfigValue<Float> grindingDamagePerLevel;
+	
+	public static ConfigValue<Integer> accelerateMinCost;
+	public static ConfigValue<Integer> accelerateMaxCost;
+	
+	public static ConfigValue<Integer> criticalStrikeMinCost;
+	public static ConfigValue<Integer> criticalStrikeMaxCost;
+	
+	public static ConfigValue<Float> criticalStrikeChancePerLevel;
+	
+	public static ConfigValue<Integer> heartStealMinCost;
+	public static ConfigValue<Integer> heartStealMaxCost;
+	
+	public static ConfigValue<Float> heartStealHealAmountPerLevel;
+	public static ConfigValue<Float> heartStealChancePerLevel;
 	
     //enchantment
     
@@ -218,45 +249,18 @@ public class EnchantmentConfig
 	
 	public static ConfigValue<Double> climbSpeedPerLevel;
 	
-	public static ConfigValue<Integer> criticalStrikeMinCost;
-	public static ConfigValue<Integer> criticalStrikeMaxCost;
-	
-	public static ConfigValue<Float> criticalStrikeChancePerLevel;
-	
-	public static ConfigValue<Integer> leechMinCost;
-	public static ConfigValue<Integer> leechMaxCost;
-	
-	public static ConfigValue<Float> leechHealAmountPerLevel;
-	public static ConfigValue<Float> leechChancePerLevel;
-	
 	public static ConfigValue<Integer> wallbreakMinCost;
 	public static ConfigValue<Integer> wallbreakMaxCost;
 	
-	public static ConfigValue<Integer> snipeMinCost;
-	public static ConfigValue<Integer> snipeMaxCost;
+	public static ConfigValue<Integer> hitscanMinCost;
+	public static ConfigValue<Integer> hitscanMaxCost;
 	
-	public static ConfigValue<Integer> snipeProjectileSpeedPerLevel;
-	public static ConfigValue<Float> snipeAdditionalDamagePerLevel;
-	public static ConfigValue<Float> snipeChargeSpeedPerLevel;
+	public static ConfigValue<Integer> hitscanSpeedPerLevel;
 	
 	public static ConfigValue<Integer> magnetMinCost;
 	public static ConfigValue<Integer> magnetMaxCost;
 	
 	public static ConfigValue<Float> magnetRadiusPerLevel;
-	
-	public static ConfigValue<Integer> autoShieldingMinCost;
-	public static ConfigValue<Integer> autoShieldingMaxCost;
-	
-	public static ConfigValue<Float> autoShieldingChancePerLevel;
-	
-	public static ConfigValue<Integer> skillfulMinCost;
-	public static ConfigValue<Integer> skillfulMaxCost;
-	
-	public static ConfigValue<Float> skillfulMaxDamagePerLevel;
-	public static ConfigValue<Float> skillfulMaxSpeedPerLevel;
-	public static ConfigValue<Integer> skillfulDurabilityPerLevel;
-	public static ConfigValue<Float> skillfulSpeedPerLevel;
-	public static ConfigValue<Float> skillfulDamagePerLevel;
 	
 	public static ConfigValue<Integer> cellDivisionMinCost;
 	public static ConfigValue<Integer> cellDivisionMaxCost;
@@ -265,9 +269,6 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> cellDivisionMaxSplitPerLevel;
 	public static ConfigValue<Integer> cellDivisionSplitAmountPerLevel;
 	
-	public static ConfigValue<Integer> quickdrawMinCost;
-	public static ConfigValue<Integer> quickdrawMaxCost;
-	
 	public static ConfigValue<Integer> takeoffMinCost;
 	public static ConfigValue<Integer> takeoffMaxCost;
 	
@@ -275,9 +276,6 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> armorCrackMaxCost;
 	
 	public static ConfigValue<Float> armorCrackDamagePerLevel;
-	
-	public static ConfigValue<Integer> accelerateMinCost;
-	public static ConfigValue<Integer> accelerateMaxCost;
 	
 	public static ConfigValue<Float> accelerateMaxSpeedPerLevel;
 	public static ConfigValue<Float> accelerateSpeedPerLevel;
@@ -345,6 +343,9 @@ public class EnchantmentConfig
     	EnchantmentConfig.rageDamagePerLevel = config.comment("damage increase amount for each level of rage blessment").define("rageDamagePerLevel", 0.05F);
     	EnchantmentConfig.rageMaxDamagePerLevel = config.comment("maximum damage for each level of rage blessment").define("rageMaxDamagePerLevel", 2.0F);
     	
+    	EnchantmentConfig.rageSpeedPerLevel = config.comment("speed increase amount for each level of rage blessment").define("rageSpeedPerLevel", 0.05F);
+    	EnchantmentConfig.rageMaxSpeedPerLevel = config.comment("maximum speed for each level of rage blessment").define("rageMaxSpeedPerLevel", 2.0F);
+    	
     	EnchantmentConfig.returningMinCost = config.comment("minimum enchantability for returning blessment").define("returningMinCost", 1);
     	EnchantmentConfig.returningMaxCost = config.comment("maximum enchantability for returning blessment").define("returningMaxCost", 11);
     	
@@ -376,6 +377,34 @@ public class EnchantmentConfig
     	
     	EnchantmentConfig.maliceDamagePerLevel = config.comment("damage decrease amount for each level of malice blessment").define("maliceDamagePerLevel", 2.0F);
     	EnchantmentConfig.malicePercentagePerLevel = config.comment("health percentage for each level of malice blessment").define("malicePercentagePerLevel", 0.4F);
+    	
+    	EnchantmentConfig.autoShieldingMinCost = config.comment("minimum enchantability for auto shielding blessment").define("autoShieldingMinCost", 1);
+    	EnchantmentConfig.autoShieldingMaxCost = config.comment("maximum enchantability for auto shielding blessment").define("autoShieldingMaxCost", 11);
+    	
+    	EnchantmentConfig.autoShieldingChancePerLevel = config.comment("shielding change for each level of auto shielding blessment").define("autoShieldingChancePerLevel", 5.0F);
+    	
+    	EnchantmentConfig.grindingMinCost = config.comment("minimum enchantability for grinding blessment").define("grindingMinCost", 1);
+    	EnchantmentConfig.grindingMaxCost = config.comment("maximum enchantability for grinding blessment").define("grindingMaxCost", 11);
+
+    	EnchantmentConfig.grindingMaxDamagePerLevel = config.comment("maximum additional damage for each level of grinding blessment").define("grindingMaxDamagePerLevel", 3.0F);
+    	EnchantmentConfig.grindingMaxSpeedPerLevel = config.comment("maximum additional mining speed for each level of grinding blessment").define("grindingMaxSpeedPerLevel", 3.0F);
+    	EnchantmentConfig.grindingDurabilityPerLevel = config.comment("minimum durability required to increase damage for each level of grinding blessment").define("grindingDurabilityPerLevel", 900);
+    	EnchantmentConfig.grindingDamagePerLevel = config.comment("additional damage when enough durability used for each level of grinding blessment").define("grindingDamagePerLevel", 2.0F);
+    	EnchantmentConfig.grindingSpeedPerLevel = config.comment("additional mining speed when enough durability used for each level of grinding blessment").define("grindingSpeedPerLevel", 2.0F);
+    	
+    	EnchantmentConfig.accelerateMinCost = config.comment("minimum enchantability for accelerate blessment").define("accelerateMinCost", 1);
+    	EnchantmentConfig.accelerateMaxCost = config.comment("maximum enchantability for accelerate blessment").define("accelerateMaxCost", 11);
+    	
+    	EnchantmentConfig.criticalStrikeMinCost = config.comment("minimum enchantability for critical strike enchantment").define("criticalStrikeMinCost", 1);
+    	EnchantmentConfig.criticalStrikeMaxCost = config.comment("maximum enchantability for critical strike enchantment").define("criticalStrikeMaxCost", 11);
+    	
+    	EnchantmentConfig.criticalStrikeChancePerLevel = config.comment("critical chance for each level of critical strike enchantment").define("criticalStrikeChancePerLevel", 10.0F);
+    	
+    	EnchantmentConfig.heartStealMinCost = config.comment("minimum enchantability for heart steal blessment").define("heartStealMinCost", 1);
+    	EnchantmentConfig.heartStealMaxCost = config.comment("maximum enchantability for heart steal blessment").define("heartStealMaxCost", 11);
+    	
+    	EnchantmentConfig.heartStealHealAmountPerLevel = config.comment("heal amount for each level of heart steal blessment").define("heartStealHealAmountPerLevel", 0.5F);
+    	EnchantmentConfig.heartStealChancePerLevel = config.comment("heal change for each level of heart steal blessment").define("heartStealChancePerLevel", 5.0F);
     	
     	config.pop();
     	
@@ -524,45 +553,18 @@ public class EnchantmentConfig
     	
     	EnchantmentConfig.climbSpeedPerLevel = config.comment("climb speed for each level of climb enchantment").define("climbSpeedPerLevel", 0.05D);
     	
-    	EnchantmentConfig.criticalStrikeMinCost = config.comment("minimum enchantability for critical strike enchantment").define("criticalStrikeMinCost", 1);
-    	EnchantmentConfig.criticalStrikeMaxCost = config.comment("maximum enchantability for critical strike enchantment").define("criticalStrikeMaxCost", 11);
-    	
-    	EnchantmentConfig.criticalStrikeChancePerLevel = config.comment("critical chance for each level of critical strike enchantment").define("criticalStrikeChancePerLevel", 10.0F);
-    	
-    	EnchantmentConfig.leechMinCost = config.comment("minimum enchantability for leech enchantment").define("leechMinCost", 1);
-    	EnchantmentConfig.leechMaxCost = config.comment("maximum enchantability for leech enchantment").define("leechMaxCost", 11);
-    	
-    	EnchantmentConfig.leechHealAmountPerLevel = config.comment("heal amount for each level of leech enchantment").define("leechHealAmountPerLevel", 0.5F);
-    	EnchantmentConfig.leechChancePerLevel = config.comment("heal change for each level of leech enchantment").define("leechChancePerLevel", 5.0F);
-    	
     	EnchantmentConfig.wallbreakMinCost = config.comment("minimum enchantability for wallbreak enchantment").define("wallbreakMinCost", 25);
     	EnchantmentConfig.wallbreakMaxCost = config.comment("maximum enchantability for wallbreak enchantment").define("wallbreakMaxCost", 50);
     	
-    	EnchantmentConfig.snipeMinCost = config.comment("minimum enchantability for snipe enchantment").define("snipeMinCost", 1);
-    	EnchantmentConfig.snipeMaxCost = config.comment("maximum enchantability for snipe enchantment").define("snipeMaxCost", 11);
+    	EnchantmentConfig.hitscanMinCost = config.comment("minimum enchantability for hitscan enchantment").define("hitscanMinCost", 1);
+    	EnchantmentConfig.hitscanMaxCost = config.comment("maximum enchantability for hitscan enchantment").define("hitscanMaxCost", 11);
     	
-    	EnchantmentConfig.snipeProjectileSpeedPerLevel = config.comment("speed of projectile for each level of snipe enchantment").define("snipeProjectileSpeedPerLevel", 10);
-    	EnchantmentConfig.snipeAdditionalDamagePerLevel = config.comment("additional damage for each level of snipe enchantment").define("snipeAdditionalDamagePerLevel", 5F);
-    	EnchantmentConfig.snipeChargeSpeedPerLevel = config.comment("decrease amount of charge speed for each level of snipe enchantment").define("snipeChargeSpeedPerLevel", 1F);
+    	EnchantmentConfig.hitscanSpeedPerLevel = config.comment("speed of projectile for each level of hitscan enchantment").define("hitscanSpeedPerLevel", 10);
     	
     	EnchantmentConfig.magnetMinCost = config.comment("minimum enchantability for magnet enchantment").define("magnetMinCost", 1);
     	EnchantmentConfig.magnetMaxCost = config.comment("maximum enchantability for magnet enchantment").define("magnetMaxCost", 11);
     	
     	EnchantmentConfig.magnetRadiusPerLevel = config.comment("attract range for each level of magnet enchantment").define("magnetRadiusPerLevel", 3.0F);
-    	
-    	EnchantmentConfig.autoShieldingMinCost = config.comment("minimum enchantability for auto shielding enchantment").define("autoShieldingMinCost", 1);
-    	EnchantmentConfig.autoShieldingMaxCost = config.comment("maximum enchantability for auto shielding enchantment").define("autoShieldingMaxCost", 11);
-    	
-    	EnchantmentConfig.autoShieldingChancePerLevel = config.comment("shielding change for each level of auto shielding enchantment").define("autoShieldingChancePerLevel", 5.0F);
-    	
-    	EnchantmentConfig.skillfulMinCost = config.comment("minimum enchantability for skillful enchantment").define("skillfulMinCost", 1);
-    	EnchantmentConfig.skillfulMaxCost = config.comment("maximum enchantability for skillful enchantment").define("skillfulMaxCost", 11);
-
-    	EnchantmentConfig.skillfulMaxDamagePerLevel = config.comment("maximum additional damage for each level of skillful enchantment").define("skillfulMaxDamagePerLevel", 3.0F);
-    	EnchantmentConfig.skillfulMaxSpeedPerLevel = config.comment("maximum additional mining speed for each level of skillful enchantment").define("skillfulMaxSpeedPerLevel", 3.0F);
-    	EnchantmentConfig.skillfulDurabilityPerLevel = config.comment("minimum durability required to increase damage for each level of skillful enchantment").define("skillfulDurabilityPerLevel", 900);
-    	EnchantmentConfig.skillfulDamagePerLevel = config.comment("additional damage when enough durability used for each level of skillful enchantment").define("skillfulDamagePerLevel", 2.0F);
-    	EnchantmentConfig.skillfulSpeedPerLevel = config.comment("additional mining speed when enough durability used for each level of skillful enchantment").define("skillfulSpeedPerLevel", 2.0F);
     	
     	EnchantmentConfig.cellDivisionMinCost = config.comment("minimum enchantability for cell division enchantment").define("cellDivisionMinCost", 1);
     	EnchantmentConfig.cellDivisionMaxCost = config.comment("maximum enchantability for cell division enchantment").define("cellDivisionMaxCost", 11);
@@ -570,9 +572,6 @@ public class EnchantmentConfig
     	EnchantmentConfig.cellDivisionScalePerSplit = config.comment("scale decrease amount for each split of cell division enchantment").define("cellDivisionScalePerSplit", 0.3F);
     	EnchantmentConfig.cellDivisionMaxSplitPerLevel = config.comment("maximum split amount for each level of cell division enchantment").define("cellDivisionMaxSplitPerLevel", 1);
     	EnchantmentConfig.cellDivisionSplitAmountPerLevel = config.comment("amount for additional projectile of each split for each level of cell division enchantment").define("cellDivisionSplitAmountPerLevel", 1);
-
-    	EnchantmentConfig.quickdrawMinCost = config.comment("minimum enchantability for quickdraw enchantment").define("quickdrawMinCost", 1);
-    	EnchantmentConfig.quickdrawMaxCost = config.comment("maximum enchantability for quickdraw enchantment").define("quickdrawMaxCost", 11);
     	
     	EnchantmentConfig.takeoffMinCost = config.comment("minimum enchantability for takeoff enchantment").define("takeoffMinCost", 25);
     	EnchantmentConfig.takeoffMaxCost = config.comment("maximum enchantability for takeoff enchantment").define("takeoffMaxCost", 50);
@@ -581,12 +580,6 @@ public class EnchantmentConfig
     	EnchantmentConfig.armorCrackMaxCost = config.comment("maximum enchantability for armor crack enchantment").define("armorCrackMaxCost", 11);
     	
     	EnchantmentConfig.armorCrackDamagePerLevel = config.comment("additional damage percentage for each level of armor crack enchantment").define("armorCrackDamagePerLevel", 10.0F);
-    	
-    	EnchantmentConfig.accelerateMinCost = config.comment("minimum enchantability for accelerate enchantment").define("accelerateMinCost", 1);
-    	EnchantmentConfig.accelerateMaxCost = config.comment("maximum enchantability for accelerate enchantment").define("accelerateMaxCost", 11);
-    	
-    	EnchantmentConfig.accelerateMaxSpeedPerLevel = config.comment("maximum attack speed for each level of accelerate enchantment").define("accelerateMaxSpeedPerLevel", 0.1F);
-    	EnchantmentConfig.accelerateSpeedPerLevel = config.comment("attack speed increase amount of each hit for each level of accelerate enchantment").define("accelerateSpeedPerLevel", 0.03F);
     	
     	EnchantmentConfig.minerMinCost = config.comment("minimum enchantability for accelerate enchantment").define("minerMinCost", 1);
     	EnchantmentConfig.minerMaxCost = config.comment("maximum enchantability for accelerate enchantment").define("minerMaxCost", 11);

@@ -69,6 +69,27 @@ public class BlessmentRage extends AbstractBlessment
 					}
 				}
 			}
+			
+			if(player.getMainHandItem().getOrCreateTag().contains(EnchantmentTags.RAGE_SPEED))
+			{
+				float speed = player.getMainHandItem().getOrCreateTag().getFloat(EnchantmentTags.RAGE_SPEED);
+				if(speed + player.getMainHandItem().getOrCreateTag().getFloat(EnchantmentTags.RAGE_SPEED_ORIGINAL) > player.getMainHandItem().getOrCreateTag().getFloat(EnchantmentTags.RAGE_SPEED_ORIGINAL))
+				{
+					player.getMainHandItem().getOrCreateTag().putFloat(EnchantmentTags.RAGE_SPEED, speed - 0.002F);
+				}
+			}
+			else if(!player.getMainHandItem().getOrCreateTag().contains(EnchantmentTags.RAGE_SPEED_ORIGINAL))
+			{
+				player.getMainHandItem().getOrCreateTag().putFloat(EnchantmentTags.RAGE_SPEED, 0);
+				Multimap<Attribute, AttributeModifier> map = player.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND);
+				for(Entry<Attribute, AttributeModifier> entry : map.entries())
+				{
+					if(entry.getKey() == Attributes.ATTACK_SPEED)
+					{
+						player.getMainHandItem().getOrCreateTag().putFloat(EnchantmentTags.RAGE_SPEED_ORIGINAL, (float) (entry.getValue().getAmount()));
+					}
+				}
+			}
 		}
 	}
 	
@@ -90,6 +111,16 @@ public class BlessmentRage extends AbstractBlessment
 					if(original + damage < original + (level * EnchantmentConfig.rageMaxDamagePerLevel.get()))
 					{
 						stack.getTag().putFloat(EnchantmentTags.RAGE, damage + (level * EnchantmentConfig.rageDamagePerLevel.get()));
+					}
+				}
+				
+				if(stack.getTag().contains(EnchantmentTags.RAGE_SPEED))
+				{
+					float speed = stack.getTag().getFloat(EnchantmentTags.RAGE_SPEED);
+					float original = stack.getTag().getFloat(EnchantmentTags.RAGE_SPEED_ORIGINAL);
+					if(original + speed < original + (level * EnchantmentConfig.rageMaxSpeedPerLevel.get()))
+					{
+						stack.getTag().putFloat(EnchantmentTags.RAGE_SPEED, speed + (level * EnchantmentConfig.rageSpeedPerLevel.get()));
 					}
 				}
 			}

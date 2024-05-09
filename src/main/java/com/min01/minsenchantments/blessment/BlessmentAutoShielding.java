@@ -1,4 +1,4 @@
-package com.min01.minsenchantments.enchantment.normal;
+package com.min01.minsenchantments.blessment;
 
 import java.lang.reflect.Method;
 
@@ -22,11 +22,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
-public class EnchantmentAutoShielding extends AbstractMinsEnchantment
+public class BlessmentAutoShielding extends AbstractBlessment
 {
-	public EnchantmentAutoShielding()
+	public BlessmentAutoShielding()
 	{
-		super(Rarity.VERY_RARE, CustomEnchantments.SHIELD, new EquipmentSlot[] {EquipmentSlot.OFFHAND});
+		super(CustomEnchantments.SHIELD, new EquipmentSlot[] {EquipmentSlot.OFFHAND});
 	}
 	
 	@Override

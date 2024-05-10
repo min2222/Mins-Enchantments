@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -54,24 +55,28 @@ public class EnchantmentMiner extends AbstractMinsEnchantment implements IProjec
 
 	@Override
 	public void onImpact(Projectile projectile, Entity owner, HitResult ray, EnchantmentData data, IEnchantmentCapability cap) 
-	{	
-		int level = data.getEnchantLevel();
-		CompoundTag tag = data.getData();
-		int count = tag.getInt(EnchantmentTags.MINER_COUNT);
-		
-		if(count < level * EnchantmentConfig.minerMaxBlockPerLevel.get() && ray.getType() == HitResult.Type.BLOCK)
-		{
-			BlockPos pos = ((BlockHitResult) ray).getBlockPos();
-			BlockState state = projectile.level().getBlockState(pos);
-			if(state.getDestroySpeed(projectile.level(), pos) > -1.0F)
-			{
-				if(projectile.level().destroyBlock(pos, true, owner))
-				{	
-					tag.putInt(EnchantmentTags.MINER_COUNT, count + 1);
-					cap.setEnchantmentData(this, new EnchantmentData(level, tag));
-				}
-			}
-		}
+	{
+		Level world = projectile.level();
+    	if(!world.isClientSide)
+    	{
+    		int level = data.getEnchantLevel();
+    		CompoundTag tag = data.getData();
+    		int count = tag.getInt(EnchantmentTags.MINER_COUNT);
+    		
+    		if(count < level * EnchantmentConfig.minerMaxBlockPerLevel.get() && ray.getType() == HitResult.Type.BLOCK)
+    		{
+    			BlockPos pos = ((BlockHitResult) ray).getBlockPos();
+    			BlockState state = projectile.level().getBlockState(pos);
+    			if(state.getDestroySpeed(projectile.level(), pos) > -1.0F)
+    			{
+    				if(projectile.level().destroyBlock(pos, true, owner))
+    				{
+    					tag.putInt(EnchantmentTags.MINER_COUNT, count + 1);
+    					cap.setEnchantmentData(this, new EnchantmentData(level, tag));
+    				}
+    			}
+    		}
+    	}
 	}
 
 	@Override

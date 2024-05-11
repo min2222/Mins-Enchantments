@@ -45,6 +45,7 @@ public class EnchantmentHitscan extends AbstractMinsEnchantment implements IProj
 	@Override
 	public void onJoin(Projectile projectile, Entity owner, EnchantmentData data, IEnchantmentCapability cap)
 	{
+		projectile.setNoGravity(true);
 		TimerUtil.setTickrate(projectile, 20 + (data.getEnchantLevel() * EnchantmentConfig.hitscanSpeedPerLevel.get()));
 	}
 

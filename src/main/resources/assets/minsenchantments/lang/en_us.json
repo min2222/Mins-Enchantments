@@ -40,7 +40,7 @@
 	"enchantment.minsenchantments.auto_shielding": "Auto Shielding",
 	"enchantment.minsenchantments.auto_shielding.desc": "chance to automatically use shield in offhand",
 	"enchantment.minsenchantments.grinding": "Grinding",
-	"enchantment.minsenchantments.grinding.desc": "increases attack damage, attack speed, mining speed, projectile speed depending on durability",
+	"enchantment.minsenchantments.grinding.desc": "increases attack damage, attack speed, mining speed, projectile damage depending on durability",
 	"enchantment.minsenchantments.accelerate": "Accelerate",
 	"enchantment.minsenchantments.accelerate.desc": "increase pulling speed of weapons",
 	"enchantment.minsenchantments.critical_strike": "Critical Strike",

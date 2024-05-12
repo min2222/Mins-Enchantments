@@ -255,7 +255,7 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> hitscanMinCost;
 	public static ConfigValue<Integer> hitscanMaxCost;
 	
-	public static ConfigValue<Integer> hitscanSpeedPerLevel;
+	public static ConfigValue<Integer> hitscanSpeed;
 	
 	public static ConfigValue<Integer> magnetMinCost;
 	public static ConfigValue<Integer> magnetMaxCost;
@@ -558,8 +558,8 @@ public class EnchantmentConfig
     	
     	EnchantmentConfig.hitscanMinCost = config.comment("minimum enchantability for hitscan enchantment").define("hitscanMinCost", 1);
     	EnchantmentConfig.hitscanMaxCost = config.comment("maximum enchantability for hitscan enchantment").define("hitscanMaxCost", 11);
-    	
-    	EnchantmentConfig.hitscanSpeedPerLevel = config.comment("speed of projectile for each level of hitscan enchantment").define("hitscanSpeedPerLevel", 10);
+
+    	EnchantmentConfig.hitscanSpeed = config.comment("speed of projectile for hitscan enchantment, 20 = 1 second").define("hitscanSpeed", 500);
     	
     	EnchantmentConfig.magnetMinCost = config.comment("minimum enchantability for magnet enchantment").define("magnetMinCost", 1);
     	EnchantmentConfig.magnetMaxCost = config.comment("maximum enchantability for magnet enchantment").define("magnetMaxCost", 11);

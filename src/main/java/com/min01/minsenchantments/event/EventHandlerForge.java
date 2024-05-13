@@ -51,7 +51,7 @@ public class EventHandlerForge
 	public static void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event)
 	{
 		//this event only fire in client side, so don't need to check isClientSide
-		EnchantmentNetwork.CHANNEL.sendToServer(new PlayerLeftClickPacket(event.getEntity(), event.getItemStack(), event.getHand(), event.getPos()));
+		EnchantmentNetwork.CHANNEL.sendToServer(new PlayerLeftClickPacket());
 	}
 	
 	@SubscribeEvent

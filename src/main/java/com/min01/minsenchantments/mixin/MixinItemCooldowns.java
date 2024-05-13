@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.min01.minsenchantments.blessment.BlessmentGodHand;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 
@@ -20,14 +21,16 @@ import net.minecraft.world.item.ItemStack;
 public class MixinItemCooldowns 
 {
 	@Shadow
-	private @Final Map<Item, ItemCooldowns.CooldownInstance> cooldowns;
+	@Final
+	private Map<Item, ItemCooldowns.CooldownInstance> cooldowns;
+	
 	@Shadow
 	private int tickCount;
-	   
+	
 	@Inject(at = @At("HEAD"), method = "addCooldown", cancellable = true)
 	private void addCooldown(Item p_41525_, int p_41526_, CallbackInfo ci)
 	{
-		ItemStack stack = new ItemStack(p_41525_);
+		ItemStack stack = BlessmentGodHand.ITEM_MAP.get(p_41525_);
 		if(stack != null)
 		{
 			if(stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get()) > 0)

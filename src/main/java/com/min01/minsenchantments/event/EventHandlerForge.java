@@ -7,6 +7,8 @@ import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.api.IMinsEnchantment;
 import com.min01.minsenchantments.api.IProjectileEnchantment;
 import com.min01.minsenchantments.config.EnchantmentConfig;
+import com.min01.minsenchantments.network.EnchantmentNetwork;
+import com.min01.minsenchantments.network.PlayerLeftClickPacket;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.nbt.CompoundTag;
@@ -44,6 +46,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = MinsEnchantments.MODID, bus = Bus.FORGE)
 public class EventHandlerForge
 {
+	
+	@SubscribeEvent
+	public static void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event)
+	{
+		//this event only fire in client side, so don't need to check isClientSide
+		EnchantmentNetwork.CHANNEL.sendToServer(new PlayerLeftClickPacket(event.getEntity(), event.getItemStack(), event.getHand(), event.getPos(), event.getFace()));
+	}
+	
 	@SubscribeEvent
 	public static void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event)
 	{

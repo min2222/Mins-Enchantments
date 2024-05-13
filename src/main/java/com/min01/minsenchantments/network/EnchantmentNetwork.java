@@ -20,6 +20,7 @@ public class EnchantmentNetwork
 	public static void registerMessages()
 	{
 		CHANNEL.registerMessage(ID++, EnchantmentCapabilityUpdatePacket.class, EnchantmentCapabilityUpdatePacket::encode, EnchantmentCapabilityUpdatePacket::new, EnchantmentCapabilityUpdatePacket.Handler::onMessage);
+		CHANNEL.registerMessage(ID++, PlayerLeftClickPacket.class, PlayerLeftClickPacket::encode, PlayerLeftClickPacket::new, PlayerLeftClickPacket.Handler::onMessage);
 	}
 	
     public static <MSG> void sendToAll(MSG message) 

@@ -43,7 +43,7 @@ public class BlessmentGodHand extends AbstractBlessment
 	}
 	
 	@Override
-	public void onPlayerLeftClickEmpty(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos, Direction clickDir) 
+	public void onPlayerLeftClickEmpty(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos) 
 	{
 		int level = stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get());
 		if(level > 0)

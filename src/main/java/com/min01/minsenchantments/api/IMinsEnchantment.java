@@ -25,7 +25,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 
 public interface IMinsEnchantment
 {
-	default void onPlayerLeftClickEmpty(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos, @Nullable Direction clickDir)
+	default void onPlayerLeftClickEmpty(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos)
 	{
 		
 	}

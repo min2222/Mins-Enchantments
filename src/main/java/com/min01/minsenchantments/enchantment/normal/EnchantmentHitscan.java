@@ -2,7 +2,6 @@ package com.min01.minsenchantments.enchantment.normal;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.min01.entitytimer.TimerUtil;
 import com.min01.minsenchantments.api.IProjectileEnchantment;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
@@ -46,7 +45,7 @@ public class EnchantmentHitscan extends AbstractMinsEnchantment implements IProj
 	public void onJoin(Projectile projectile, Entity owner, EnchantmentData data, IEnchantmentCapability cap)
 	{
 		projectile.setNoGravity(true);
-		TimerUtil.setTickrate(projectile, EnchantmentConfig.hitscanSpeed.get());
+		projectile.setDeltaMovement(projectile.getDeltaMovement().multiply(EnchantmentConfig.hitscanSpeed.get(), 1, EnchantmentConfig.hitscanSpeed.get()));
 	}
 
 	@Override

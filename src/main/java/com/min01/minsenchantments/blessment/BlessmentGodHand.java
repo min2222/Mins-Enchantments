@@ -3,6 +3,8 @@ package com.min01.minsenchantments.blessment;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 
@@ -10,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -40,6 +43,21 @@ public class BlessmentGodHand extends AbstractBlessment
 	public int getMaxLevel() 
 	{
 		return 5;
+	}
+	
+	@Override
+	public int onLivingEntityStopUseItem(LivingEntity entity, @NotNull ItemStack stack, int duration)
+	{
+		int level = stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get());
+		if(level > 0)
+		{
+			ITEM_MAP.put(stack.getItem(), stack);
+		}
+		else if(ITEM_MAP.containsValue(stack))
+		{
+			ITEM_MAP.remove(stack.getItem(), stack);
+		}
+		return super.onLivingEntityStopUseItem(entity, stack, duration);
 	}
 	
 	@Override

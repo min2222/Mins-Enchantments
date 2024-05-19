@@ -2,12 +2,12 @@ package com.min01.minsenchantments.menu;
 
 import com.min01.minsenchantments.blessment.IBlessment;
 import com.min01.minsenchantments.init.CustomBlocks;
+import com.min01.minsenchantments.init.CustomItems;
 import com.min01.minsenchantments.init.CustomMenuType;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 
@@ -32,7 +32,7 @@ public class BlessmentMenu extends AbstractCustomEnchantmentMenu
 	@Override
 	public boolean is(ItemStack stack)
 	{
-		return stack.getItem() == Items.NETHER_STAR;
+		return stack.getItem() == CustomItems.HOLY_EMBLEM.get();
 	}
 
 	@Override

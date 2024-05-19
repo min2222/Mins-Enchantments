@@ -2,6 +2,7 @@ package com.min01.minsenchantments.event;
 
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.init.CustomBlocks;
+import com.min01.minsenchantments.init.CustomItems;
 
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -22,6 +23,11 @@ public class EventHandler
             event.accept(CustomBlocks.END_ENCHANTMENT_TABLE.get());
             event.accept(CustomBlocks.SCULK_ENCHANTMENT_TABLE.get());
             event.accept(CustomBlocks.BLESSMENT_TABLE.get());
+        }
+        
+        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) 
+        {
+        	event.accept(CustomItems.HOLY_EMBLEM.get());
         }
     }
 }

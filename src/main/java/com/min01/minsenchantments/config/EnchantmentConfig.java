@@ -252,11 +252,6 @@ public class EnchantmentConfig
 	public static ConfigValue<Integer> wallbreakMinCost;
 	public static ConfigValue<Integer> wallbreakMaxCost;
 	
-	public static ConfigValue<Integer> hitscanMinCost;
-	public static ConfigValue<Integer> hitscanMaxCost;
-	
-	public static ConfigValue<Integer> hitscanSpeed;
-	
 	public static ConfigValue<Integer> magnetMinCost;
 	public static ConfigValue<Integer> magnetMaxCost;
 	
@@ -555,11 +550,6 @@ public class EnchantmentConfig
     	
     	EnchantmentConfig.wallbreakMinCost = config.comment("minimum enchantability for wallbreak enchantment").define("wallbreakMinCost", 25);
     	EnchantmentConfig.wallbreakMaxCost = config.comment("maximum enchantability for wallbreak enchantment").define("wallbreakMaxCost", 50);
-    	
-    	EnchantmentConfig.hitscanMinCost = config.comment("minimum enchantability for hitscan enchantment").define("hitscanMinCost", 1);
-    	EnchantmentConfig.hitscanMaxCost = config.comment("maximum enchantability for hitscan enchantment").define("hitscanMaxCost", 11);
-
-    	EnchantmentConfig.hitscanSpeed = config.comment("speed of projectile for hitscan enchantment").define("hitscanSpeed", 10);
     	
     	EnchantmentConfig.magnetMinCost = config.comment("minimum enchantability for magnet enchantment").define("magnetMinCost", 1);
     	EnchantmentConfig.magnetMaxCost = config.comment("maximum enchantability for magnet enchantment").define("magnetMaxCost", 11);

@@ -28,7 +28,6 @@ import com.min01.minsenchantments.enchantment.nether.EnchantmentSoulFire;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentArmorCrack;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentCellDivision;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentClimb;
-import com.min01.minsenchantments.enchantment.normal.EnchantmentHitscan;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentMagnet;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentMiner;
 import com.min01.minsenchantments.enchantment.normal.EnchantmentRecochet;
@@ -124,7 +123,6 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> RECOCHET = ENCHANTMENTS.register("recochet", () -> new EnchantmentRecochet());
 	public static final RegistryObject<Enchantment> CLIMB = ENCHANTMENTS.register("climb", () -> new EnchantmentClimb());
 	public static final RegistryObject<Enchantment> WALLBREAK = ENCHANTMENTS.register("wallbreak", () -> new EnchantmentWallbreak());
-	public static final RegistryObject<Enchantment> HITSCAN = ENCHANTMENTS.register("hitscan", () -> new EnchantmentHitscan());
 	public static final RegistryObject<Enchantment> MAGNET = ENCHANTMENTS.register("magnet", () -> new EnchantmentMagnet());
 	public static final RegistryObject<Enchantment> CELL_DIVISION = ENCHANTMENTS.register("cell_division", () -> new EnchantmentCellDivision());
 	public static final RegistryObject<Enchantment> TAKEOFF = ENCHANTMENTS.register("takeoff", () -> new EnchantmentTakeoff());

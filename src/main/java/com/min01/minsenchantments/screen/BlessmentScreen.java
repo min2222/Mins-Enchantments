@@ -83,6 +83,6 @@ public class BlessmentScreen extends AbstractCustomEnchantmentScreen<BlessmentMe
 	@Override
 	public String getTransltateStringForRequiredItem(boolean one)
 	{
-		return one ? "container.bless.nether_star.one" : "container.bless.nether_star.many";
+		return one ? "container.bless.holy_emblem.one" : "container.bless.holy_emblem.many";
 	}
 }

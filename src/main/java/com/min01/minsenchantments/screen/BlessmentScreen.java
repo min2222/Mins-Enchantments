@@ -1,13 +1,12 @@
 package com.min01.minsenchantments.screen;
 
-import org.joml.Quaternionf;
-
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.blockentity.renderer.BlessmentTableRenderer;
 import com.min01.minsenchantments.menu.BlessmentMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -52,23 +51,23 @@ public class BlessmentScreen extends AbstractCustomEnchantmentScreen<BlessmentMe
 		stack.pushPose();
 		float f1 = ((float)this.time + partialTick) * 3.0F;
 		VertexConsumer vertexConsumer = multibuffersource$buffersource.getBuffer(RenderType.entityCutout(new ResourceLocation(MinsEnchantments.MODID, "textures/block/bless_core.png")));
-		stack.translate(0, 0.6D, 0);
+		stack.translate(0, 0.05, 0);
 		stack.scale(0.7F, 0.7F, 0.7F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
+		stack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		stack.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.core.render(stack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
+		stack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		stack.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.out.render(stack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
+		stack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		stack.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.line.render(stack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
+		stack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		stack.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.line2.render(stack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY);
 		stack.scale(1.1F, 1.1F, 1.1F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
+		stack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		stack.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.line3.render(stack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY);
 		stack.popPose();
 	}

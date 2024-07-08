@@ -55,8 +55,8 @@ public class BlessmentBarrier extends AbstractBlessment
 				float f2 = living.getRandom().nextFloat() * ((float)Math.PI * 2F);
 				float f3 = Mth.sqrt(living.getRandom().nextFloat()) * radius;
 				
-	            List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3));
-	            List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3));
+	            List<LivingEntity> list = living.level.getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3));
+	            List<Projectile> projList = living.level.getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3));
 	            projList.removeIf((proj) -> proj.getOwner() != null && proj.getOwner() == living);
 	            projList.forEach((entity) ->
 	            {

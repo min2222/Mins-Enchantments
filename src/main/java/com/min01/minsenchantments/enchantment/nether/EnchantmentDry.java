@@ -43,9 +43,9 @@ public class EnchantmentDry extends AbstractNetherEnchantment
 		{
 			int radius = level * EnchantmentConfig.dryRadiusPerLevel.get();
 			
-			if(EnchantmentUtil.removeWaterBreadthFirstSearch(living.level(), living.blockPosition(), radius))
+			if(EnchantmentUtil.removeWaterBreadthFirstSearch(living.level, living.blockPosition(), radius))
 			{
-				living.level().levelEvent(2001, living.blockPosition(), Block.getId(Blocks.WATER.defaultBlockState()));
+				living.level.levelEvent(2001, living.blockPosition(), Block.getId(Blocks.WATER.defaultBlockState()));
 			}
 		}
 	}

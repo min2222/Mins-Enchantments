@@ -87,12 +87,12 @@ public class EnchantmentPoseidonsGrace extends AbstractOceanEnchantment implemen
 								for(int i = 0; i < level * 2; i++)
 								{
 									double spawnRange = level * 5;
-				                    double x = (double)owner.getX() + (projectile.level().getRandom().nextDouble() - projectile.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
-				                    double z = (double)owner.getZ() + (projectile.level().getRandom().nextDouble() - projectile.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+				                    double x = (double)owner.getX() + (projectile.level.getRandom().nextDouble() - projectile.level.getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+				                    double z = (double)owner.getZ() + (projectile.level.getRandom().nextDouble() - projectile.level.getRandom().nextDouble()) * (double)spawnRange + 0.5D;
 				                    
-				                    if(projectile.level().getFluidState(BlockPos.containing(x, living.getY() - 1, z)).is(Fluids.WATER) || projectile.level().getFluidState(BlockPos.containing(x, living.getY() - 1, z)).is(Fluids.FLOWING_WATER))
+				                    if(projectile.level.getFluidState(new BlockPos(x, living.getY() - 1, z)).is(Fluids.WATER) || projectile.level.getFluidState(new BlockPos(x, living.getY() - 1, z)).is(Fluids.FLOWING_WATER))
 				                    {
-				                    	Projectile summonedTrident = (Projectile) projectile.getType().create(projectile.level());
+				                    	Projectile summonedTrident = (Projectile) projectile.getType().create(projectile.level);
 										summonedTrident.setOwner(projectile.getOwner());
 										summonedTrident.setPos(x, living.getY() - 1, z);
 										summonedTrident.setDeltaMovement(0, 0.35, 0);
@@ -105,7 +105,7 @@ public class EnchantmentPoseidonsGrace extends AbstractOceanEnchantment implemen
 										{
 											ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, trident, ItemStack.of(tag.getCompound(EnchantmentTags.POSEIDONS_GRACE_ITEM)), "f_37555_");
 										}
-										projectile.level().addFreshEntity(summonedTrident);
+										projectile.level.addFreshEntity(summonedTrident);
 										summonedTrident.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t2 -> 
 										{
 											CompoundTag tag2 = new CompoundTag();
@@ -143,7 +143,7 @@ public class EnchantmentPoseidonsGrace extends AbstractOceanEnchantment implemen
 					{
 						if(trident.tickCount >= 20)
 						{
-							if(trident.level() instanceof ServerLevel level)
+							if(trident.level instanceof ServerLevel level)
 							{
 								Entity target = level.getEntity(tag.getUUID(EnchantmentTags.POSEIDONS_GRACE_TARGET));
 								if(target != null)

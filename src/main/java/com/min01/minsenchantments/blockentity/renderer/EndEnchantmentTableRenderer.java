@@ -1,11 +1,10 @@
 package com.min01.minsenchantments.blockentity.renderer;
 
-import org.joml.Quaternionf;
-
 import com.min01.minsenchantments.blockentity.EndEnchantmentTableBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
@@ -44,17 +43,17 @@ public class EndEnchantmentTableRenderer implements BlockEntityRenderer<EndEncha
 		p_112309_.translate(0.5F, 0.5F, 0.5F);
 		int i = OverlayTexture.NO_OVERLAY;
 
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
+		p_112309_.mulPose(Vector3f.YP.rotationDegrees(f1));
 		p_112309_.translate(0.0F, 1.5F + f / 2.0F, 0.0F);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
+		p_112309_.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
 		this.glass.render(p_112309_, vertexconsumer, p_112311_, i);
 		p_112309_.scale(0.875F, 0.875F, 0.875F);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
+		p_112309_.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		p_112309_.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.glass.render(p_112309_, vertexconsumer, p_112311_, i);
 		p_112309_.scale(0.875F, 0.875F, 0.875F);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
+		p_112309_.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		p_112309_.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.cube.render(p_112309_, vertexconsumer, p_112311_, i);
 		p_112309_.popPose();
 		p_112309_.popPose();

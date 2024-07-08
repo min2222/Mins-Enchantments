@@ -48,7 +48,7 @@ public class EnchantmentFlameThorn extends AbstractNetherEnchantment
 			boolean flag = directSource instanceof Projectile proj ? proj.getOwner() != null && proj.getOwner() == living : directSource == living;
 			if(attacker != living && !flag && !(damageSource.getMsgId().equals("thorns")) && ForgeRegistries.ENTITY_TYPES.getKey(attacker.getType()).toString() != "friendsandfoes:wildfire")
 			{
-				attacker.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
+				attacker.hurt(DamageSource.thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
 				attacker.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);
 			}
 		}

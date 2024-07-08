@@ -1,0 +1,68 @@
+//Blessment (Custom Foil Colors?)
+Barrier : 반경내의 투사체 및 적을 밀쳐냄
+Hardening : 피해를 입을 수록 방어력 증가 (최대치 존재)
+Rage : 타격 할수록 공속과 뎀지가 증가 (최대치 존재)
+Returning : 사망시 죽은 위치에서 부활, 단 갑옷의 내구도를 크게 소모
+Homing : 투사체가 가장 가까운 적을 따라감 (최대 추적 시간 존재)
+Mirror : 방패로 막을시 확률적으로 투사체 및 데미지를 적에게 반사
+Soul of Terrarian : 투사체 적중시 추가 투사체가 날라옴
+God Hand : 아이템의 쿨타임을 감소시킴
+Malice : 무기의 데미지를 대폭 감소하는 대신 체력 비례 퍼센트 데미지를 입힘
+Auto Shielding : 방패를 왼손에 들시 뎀지를 입으면 일정 확률로 방패를 사용함
+Grinding : 내구도가 낮을수록 데미지 및 공속, 채굴 속도, 투사체 뎀지 증가 (최대치 존재)
+Accelerate : 활 종류 무기 차징시간 감소
+Critical Strike : 일정 확률로 크리티컬 발동
+Heart Steal : 타격시 일정 확률로 체력을 회복
+Healing Cutter : 확률적으로 일정 시간 동안 타격한 적의 체력 재생을 막음
+Air Swimming : 공중에서 수영 가능, 대신 수영 할때 마다 갑옷의 내구도를 소모함
+Multi Strike : 타격시 확률적으로 추가 타를 입힘
+Solaria : 해가 떠있을때 도구의 내구도를 천천히 회복
+ : 낚싯대로 끌어온 적의 방어구 중 하나, 혹은 손에 든 아이템을 확률적으로 훔침
+Time Break : 확률적으로 일정 시간 동안 타격한 적의 시간을 멈춤
+
+//Curse
+Curse of Mermaid : 수영하고 있을때 잡몹들뿐만 아니라 중립적 몹들에게도 선제 타격을 받음
+Curse of Floating : 물 속에 가만히 있으면 계속 위로 떠오름
+Curse of Abyss : 물속에서 시야 범위 감소
+Rusty : 물 속에 있는 동안 내구도가 조금씩 깎임
+Overgravity : 낙하속도 및 낙뎀 증가
+Curse of Undead : 햇빛을 받을시 언데드 처럼 불에탐
+Curse of Enderman : 물에 접촉시 데미지 입음
+Curse of Sinking : 물속에서 빠른 속도로 가라 앉음
+
+//Ocean Theme (Completed)
+Waterbolt : 투사체가 액체의 영향을 받지 않음
+Mermaid's Blessing : 수영하고 있을때 잡몹들에게 선제타격을 받지 않음 (최대 몹 체력 및 데미지 존재)
+Sharp Waves : 물속에서 삼지창을 던지면 이동한 거리에 따라 약간의 추가피해를 입힘 (최대치 존재)
+Tide : 멈추지 않고 수영시 수영속도가 천천히 증가
+Poseidon's Grace : 삼지창으로 타격시 물에서 추가 삼지창이 날라옴 (비호환 : 충절, Sharp Waves)
+Wave's Protection : 적에게 공격받을시 잠시동안 수영속도가 급상승 (비호환 : Tide)
+Lord of the Sea : 적을 타격 혹은 피해를 입을시 주위의 물고기때들이 같이 공격해줌 (최대 수 존재)
+Sailing : 타고있는 몹의 이속을 증가
+Water Jet : 물속에서 화살 무한, 쏠때 물 파티클이 직선으로, 석궁의 경우 물밖에서 물약으로 장전 가능
+Aquatic Aura : 주위의 적이 숨을 쉴수 없게되며 적이 쏜 투사체의 탄속이 현저히 느려짐
+
+//Nether Theme (5 More)
+Lava Walker : 용암위를 걸어다닐수 있음
+Auto Smelt : 캔 블록이 자동으로 구워져서 나옴
+Flame Thorn : 가시 + 화염
+Dry : 쉬프트시 스폰지 처럼 주변 물 흡수
+Soul Fire : 발화 인첸트 영혼 불 버전 (뎀지 2)
+
+//End Theme (9 More)
+Teleportation : 투사체가 적중한 곳으로 이동
+
+//Sculk Theme (7 More)
+Sonic Boom : 투사체를 워든 소닉 붐으로 바꿈 (인첸 레벨에 따른 거리 및 뎀지)
+Infection : 블록을 캤을때 추가 경험치 오브를 생성
+Concealment : 스컬크 블록 및 워든에게 감지 되지 않음 (플레이어가 내는소리를 차단)
+
+//Normal
+Ricochet : 투사체가 벽에 튕김 (최대 튕김 수 존재)
+Climb : 벽타기 가능
+Wallbreak : 투사체가 벽을 투과함
+Magnet : 웅크리기 시 주변의 경험치와 아이템을 끌어옴
+Cell Division : 투사체가 적중시 더 작은 투사체로 분열함 (최대치 존재)
+Takeoff : 겉날개가 높은 곳이 아니어도 비행 가능
+Armor Crack : 방어력에 비례한 추가 데미지
+Miner : 투사체가 명중한곳의 블록을 파괴 레벨이 높을수록 블록 파괴 횟수가 증가

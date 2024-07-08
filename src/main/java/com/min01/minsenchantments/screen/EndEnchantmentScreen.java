@@ -1,12 +1,11 @@
 package com.min01.minsenchantments.screen;
 
-import org.joml.Quaternionf;
-
 import com.min01.minsenchantments.event.ClientEventHandlerForge;
 import com.min01.minsenchantments.menu.EndEnchantmentMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -54,20 +53,20 @@ public class EndEnchantmentScreen extends AbstractCustomEnchantmentScreen<EndEnc
 		VertexConsumer vertexconsumer = multibuffersource$buffersource.getBuffer(RENDER_TYPE);
 		stack.pushPose();
 		stack.scale(0.875F, 0.875F, 0.875F);
-		stack.translate(0.0F, -0.5F, 0.0F);
+		stack.translate(0.0F, -0.8F, 0.0F);
 		int i = OverlayTexture.NO_OVERLAY;
 
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
+		stack.mulPose(Vector3f.YP.rotationDegrees(f1));
 		stack.translate(0.0F, 1.5F + f / 2.0F, 0.0F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
+		stack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
 		this.glass.render(stack, vertexconsumer, 15728880, i);
 		stack.scale(0.875F, 0.875F, 0.875F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
+		stack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		stack.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.glass.render(stack, vertexconsumer, 15728880, i);
 		stack.scale(0.875F, 0.875F, 0.875F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
+		stack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+		stack.mulPose(Vector3f.YP.rotationDegrees(f1));
 		this.cube.render(stack, vertexconsumer, 15728880, i);
 		stack.popPose();
 		stack.popPose();

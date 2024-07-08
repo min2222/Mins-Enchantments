@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -40,7 +39,7 @@ public interface IMinsEnchantment
 		
 	}
 	
-	default boolean onPlaySoundAtEntity(Entity entity, Holder<SoundEvent> sound, SoundSource source, float volume, float pitch)
+	default boolean onPlaySoundAtEntity(Entity entity, SoundEvent sound, SoundSource source, float volume, float pitch)
 	{
 		return false;
 	}
@@ -115,9 +114,9 @@ public interface IMinsEnchantment
 		return Pair.of(false, amount);
 	}
 	
-	default void onProjectileImpact(Projectile projectile, HitResult ray)
+	default boolean onProjectileImpact(Projectile projectile, HitResult ray)
 	{
-		
+		return false;
 	}
 	
 	default void onEntityTick(Entity entity)

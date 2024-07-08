@@ -67,10 +67,10 @@ public class EnchantmentCellDivision extends AbstractMinsEnchantment implements 
 		{
 			for(int i = 0; i < (level * EnchantmentConfig.cellDivisionSplitAmountPerLevel.get()); i++)
 			{
-				Projectile cell = (Projectile) projectile.getType().create(projectile.level());
+				Projectile cell = (Projectile) projectile.getType().create(projectile.level);
 				cell.setOwner(owner);
 				cell.setPos(projectile.position().add(0, 0.5, 0));
-				Level world = projectile.level();
+				Level world = projectile.level;
 				cell.setDeltaMovement(world.random.nextGaussian() * 0.2D, 0.4D, world.random.nextGaussian() * 0.2D);
                 CompoundTag projTag = new CompoundTag();
 				Method m = ObfuscationReflectionHelper.findMethod(Projectile.class, "m_7378_", CompoundTag.class);

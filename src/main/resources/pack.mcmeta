@@ -1,8 +1,8 @@
 {
-  "pack": {
-    "description": {
-      "text": "min's enchantments resources"
-    },
-    "pack_format": 15
-  }
+    "pack": {
+        "description": "min's enchantments resources",
+        "pack_format": 9,
+        "forge:resource_pack_format": 9,
+        "forge:data_pack_format": 10
+    }
 }

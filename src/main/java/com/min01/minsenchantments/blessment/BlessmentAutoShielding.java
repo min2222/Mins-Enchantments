@@ -12,7 +12,6 @@ import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -125,7 +124,7 @@ public class BlessmentAutoShielding extends AbstractBlessment
 											}*/
 										}
 										am -= ev.getBlockedDamage();
-										if (!source.is(DamageTypeTags.IS_PROJECTILE))
+										if (!source.isProjectile())
 										{
 											Entity entity = source.getDirectEntity();
 											if (entity instanceof LivingEntity) 
@@ -145,7 +144,7 @@ public class BlessmentAutoShielding extends AbstractBlessment
 										
 										if(amount <= 0)
 										{
-											living.level().broadcastEntityEvent(living, (byte)29);
+											living.level.broadcastEntityEvent(living, (byte)29);
 										}
 										tag.putInt(EnchantmentTags.AUTO_SHIELDING, 10);
 										tag.putBoolean(EnchantmentTags.IS_AUTO_SHIELDING, true);

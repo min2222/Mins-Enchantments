@@ -2,12 +2,13 @@ package com.min01.minsenchantments.screen;
 
 import com.min01.minsenchantments.menu.SculkEnchantmentMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -30,9 +31,10 @@ public class SculkEnchantmentScreen extends AbstractCustomEnchantmentScreen<Scul
 	@Override
 	public void renderCustom(PoseStack stack, float partialTick, BufferSource multibuffersource$buffersource)
 	{
-		stack.translate(0, 0.75, 0);
-		stack.scale(0.8F, -0.8F, 0.8F);
-		this.minecraft.getItemRenderer().renderStatic(new ItemStack(Items.SCULK_SHRIEKER), ItemDisplayContext.GUI, 15728880, OverlayTexture.NO_OVERLAY, stack, multibuffersource$buffersource, this.minecraft.level, 0);
+		stack.translate(0, 0.05, 0);
+		stack.scale(0.8F, 0.8F, 0.8F);
+		stack.mulPose(Vector3f.XP.rotationDegrees(10));
+		this.minecraft.getItemRenderer().renderStatic(new ItemStack(Items.SCULK_SHRIEKER), ItemTransforms.TransformType.GUI, 15728880, OverlayTexture.NO_OVERLAY, stack, multibuffersource$buffersource, 0);
 		
 		if(this.isActive)
 		{

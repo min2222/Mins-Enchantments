@@ -56,13 +56,13 @@ public class BlessmentHoming extends AbstractBlessment implements IProjectileEnc
 			{
 				if(t.hasEnchantment(this))
 				{
-					if(!projectile.onGround() && projectile.getOwner() != null)
+					if(!projectile.isOnGround() && projectile.getOwner() != null)
 					{
 						Entity owner = projectile.getOwner();
 						EnchantmentData data = t.getEnchantmentData(this);
 						CompoundTag tag = data.getData();
 						int level = data.getEnchantLevel();
-						List<LivingEntity> list = projectile.level().getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(level));
+						List<LivingEntity> list = projectile.level.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(level));
 						list.removeIf((living) -> living == owner);
 						list.removeIf((living) -> living instanceof Player && EnchantmentConfig.disableHomingPlayers.get());
 						list.forEach((living) ->

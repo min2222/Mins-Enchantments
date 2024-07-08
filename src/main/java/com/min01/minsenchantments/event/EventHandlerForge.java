@@ -28,7 +28,6 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingBreatheEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -46,7 +45,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = MinsEnchantments.MODID, bus = Bus.FORGE)
 public class EventHandlerForge
 {
-	
 	@SubscribeEvent
 	public static void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event)
 	{
@@ -223,7 +221,8 @@ public class EventHandlerForge
 		});
 	}
 	
-	@SubscribeEvent
+	//TODO event not exist in 1.19.2
+	/*@SubscribeEvent
 	public static void onLivingBreath(LivingBreatheEvent event)
 	{
 		ForgeRegistries.ENCHANTMENTS.forEach(t -> 
@@ -236,7 +235,7 @@ public class EventHandlerForge
 				}
 			}
 		});
-	}
+	}*/
 	
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event)
@@ -306,7 +305,10 @@ public class EventHandlerForge
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
-				enchantment.onProjectileImpact(event.getProjectile(), event.getRayTraceResult());
+				if(enchantment.onProjectileImpact(event.getProjectile(), event.getRayTraceResult()))
+				{
+					event.setCanceled(true);
+				}
 			}
 			
 			if(t instanceof IProjectileEnchantment enchantment)
@@ -495,7 +497,7 @@ public class EventHandlerForge
                     book.getOrCreateTag().put("StoredEnchantments", newTags);
 
                     Player player = event.getEntity();
-                    Containers.dropItemStack(player.level(), player.getX(), player.getY(), player.getZ(), book);
+                    Containers.dropItemStack(player.level, player.getX(), player.getY(), player.getZ(), book);
                 }
             }
     	}

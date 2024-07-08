@@ -1,11 +1,9 @@
 package com.min01.minsenchantments.screen;
 
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-
 import com.min01.minsenchantments.menu.OceanEnchantmentMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -71,8 +69,8 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 			float f5 = this.getActiveRotation(0.0F);
 			VertexConsumer vertexconsumer1 = multibuffersource$buffersource.getBuffer(RenderType.entitySolid(SHELL_TEXTURE));
 			stack.pushPose();
-			stack.translate(0, 0.8, 0);
-			stack.mulPose((new Quaternionf()).rotationY(f5 * ((float)Math.PI / 180F)));
+			stack.mulPose(Vector3f.XP.rotationDegrees(10));
+			stack.mulPose(Vector3f.YP.rotationDegrees(f5));
 			this.shell.render(stack, vertexconsumer1, 15728880, OverlayTexture.NO_OVERLAY);
 			stack.popPose();
 		} 
@@ -82,17 +80,16 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 			float f2 = Mth.sin(f * 0.1F) / 2.0F + 0.5F;
 			f2 = f2 * f2 + f2;
 			stack.pushPose();
-			stack.translate(0, 0.25, 0);
 			stack.translate(0, (double)(0.1F + f2 * 0.2F), 0);
 			Vector3f vector3f = new Vector3f(0.5F, 1.0F, 0.5F);
-			stack.mulPose((new Quaternionf()).rotationAxis(f1 * ((float)Math.PI / 180F), vector3f));
+			vector3f.normalize();
+			stack.mulPose(vector3f.rotationDegrees(f1));
 			this.cage.render(stack, multibuffersource$buffersource.getBuffer(RenderType.entityCutoutNoCull(ACTIVE_SHELL_TEXTURE)), 15728880, OverlayTexture.NO_OVERLAY);
 			stack.popPose();
-			
 			stack.pushPose();
-			stack.translate(0, 0.25, 0);
 			stack.translate(0D, (double)(0.1F + f2 * 0.2F), 0D);
 			stack.scale(0.5F, 0.5F, 0.5F);
+			stack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 			stack.scale(1.3333334F, 1.3333334F, 1.3333334F);
 			this.eye.render(stack, multibuffersource$buffersource.getBuffer(RenderType.entityCutoutNoCull(OPEN_EYE_TEXTURE)), 15728880, OverlayTexture.NO_OVERLAY);
 			stack.popPose();

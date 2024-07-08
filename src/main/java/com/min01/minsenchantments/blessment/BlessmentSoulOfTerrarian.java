@@ -64,11 +64,11 @@ public class BlessmentSoulOfTerrarian extends AbstractBlessment implements IProj
 					int level = data.getEnchantLevel();
 					for(int i = 0; i < level * EnchantmentConfig.soulOfTerrarianProjAmountPerLevel.get(); i++)
 					{
-						Projectile extra = (Projectile) projectile.getType().create(projectile.level());
+						Projectile extra = (Projectile) projectile.getType().create(projectile.level);
 						double spawnRange = living.getBbWidth() + level;
-		                double x = (double)living.getX() + (projectile.level().getRandom().nextDouble() - projectile.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
-		                double y = (double)(living.getY() + living.getEyeHeight() + projectile.level().getRandom().nextInt(2) - 1);
-		                double z = (double)living.getZ() + (projectile.level().getRandom().nextDouble() - projectile.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+		                double x = (double)living.getX() + (projectile.level.getRandom().nextDouble() - projectile.level.getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+		                double y = (double)(living.getY() + living.getEyeHeight() + projectile.level.getRandom().nextInt(2) - 1);
+		                double z = (double)living.getZ() + (projectile.level.getRandom().nextDouble() - projectile.level.getRandom().nextDouble()) * (double)spawnRange + 0.5D;
 		                extra.setPos(x, y, z);
 		                extra.setOwner(owner);
 		                Vec3 vec = EnchantmentUtil.fromToVector(extra.position(), living.position().add(0, living.getEyeHeight(), 0), 1);
@@ -97,7 +97,7 @@ public class BlessmentSoulOfTerrarian extends AbstractBlessment implements IProj
 						{
 							
 						}
-		                projectile.level().addFreshEntity(extra);
+		                projectile.level.addFreshEntity(extra);
 					}
 				}
 				

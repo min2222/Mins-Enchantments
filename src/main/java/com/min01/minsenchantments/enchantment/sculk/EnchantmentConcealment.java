@@ -2,7 +2,6 @@ package com.min01.minsenchantments.enchantment.sculk;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
 
-import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -31,7 +30,7 @@ public class EnchantmentConcealment extends AbstractSculkEnchantment
 	}
 	
 	@Override
-	public boolean onPlaySoundAtEntity(Entity entity, Holder<SoundEvent> sound, SoundSource source, float volume, float pitch) 
+	public boolean onPlaySoundAtEntity(Entity entity, SoundEvent sound, SoundSource source, float volume, float pitch) 
 	{
 		if(entity instanceof LivingEntity living)
 		{

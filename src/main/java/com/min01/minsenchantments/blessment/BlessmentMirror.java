@@ -37,7 +37,7 @@ public class BlessmentMirror extends AbstractBlessment
 	}
 	
 	@Override
-	public void onProjectileImpact(Projectile projectile, HitResult ray)
+	public boolean onProjectileImpact(Projectile projectile, HitResult ray)
 	{
 		if(ray instanceof EntityHitResult entityHit)
 		{
@@ -52,10 +52,12 @@ public class BlessmentMirror extends AbstractBlessment
 						projectile.setDeltaMovement(projectile.getDeltaMovement().reverse());
 						projectile.setOwner(living);
 						projectile.hasImpulse = true;
+						return true;
 					}
 				}
 			}
 		}
+		return super.onProjectileImpact(projectile, ray);
 	}
 	
 	@Override

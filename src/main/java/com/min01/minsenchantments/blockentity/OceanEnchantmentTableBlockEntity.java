@@ -30,7 +30,7 @@ public class OceanEnchantmentTableBlockEntity extends AbstractCustomEnchantmentT
 			}
 		}
 		
-		if(p_155407_.isActive()) 
+		if (p_155407_.isActive()) 
 		{
 			++p_155407_.activeRotation;
 		}

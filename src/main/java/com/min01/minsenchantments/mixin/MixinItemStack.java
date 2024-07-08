@@ -1,6 +1,5 @@
 package com.min01.minsenchantments.mixin;
 
-import java.util.EnumMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -52,8 +51,8 @@ public class MixinItemStack
 						}
 						
 						//FIXME amount is still increasing, but actual armor point is not changed
-						EnumMap<ArmorItem.Type, UUID> enumMap = ObfuscationReflectionHelper.getPrivateValue(ArmorItem.class, armorItem, "f_265987_");
-						UUID uuid = enumMap.get(armorItem.getType());
+						UUID[] uuidArrays = ObfuscationReflectionHelper.getPrivateValue(ArmorItem.class, armorItem, "f_40380_");
+						UUID uuid = uuidArrays[armorItem.getSlot().getIndex()];
 						AttributeModifier modifier = new AttributeModifier(uuid, "Hardening Modifier", entry.getValue().getAmount() + amount, Operation.ADDITION);
 					    builder.put(Attributes.ARMOR, modifier);
 			    	}

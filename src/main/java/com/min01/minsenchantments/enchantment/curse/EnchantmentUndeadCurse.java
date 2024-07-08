@@ -38,12 +38,12 @@ public class EnchantmentUndeadCurse extends AbstractCurseEnchantment
 	public void onLivingTick(LivingEntity living) 
 	{
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
-		if (level > 0 && living.level().isDay() && !living.level().isClientSide)
+		if (level > 0 && living.level.isDay() && !living.level.isClientSide)
 		{
 			float f = living.getLightLevelDependentMagicValue();
-			BlockPos blockpos = BlockPos.containing(living.getX(), living.getEyeY(), living.getZ());
+			BlockPos blockpos = new BlockPos(living.getX(), living.getEyeY(), living.getZ());
 			boolean flag = living.isInWaterRainOrBubble() || living.isInPowderSnow || living.wasInPowderSnow;
-			if (f > 0.5F && living.level().random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && !flag && living.level().canSeeSky(blockpos)) 
+			if (f > 0.5F && living.level.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && !flag && living.level.canSeeSky(blockpos)) 
 			{
 				living.setSecondsOnFire(level * (EnchantmentConfig.undeadCurseFireDurationPerLevel.get() * 20));
 			}

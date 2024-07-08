@@ -9,7 +9,7 @@ import com.min01.minsenchantments.misc.EnchantmentTags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.material.FogType;
@@ -37,18 +38,21 @@ public class ClientEventHandlerForge
     public static void onRenderEntity(RenderEntityEvent.Pre<? extends Entity> event) 
     {
     	Entity entity = event.getEntity();
-    	entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+    	if(entity instanceof Projectile projectile)
     	{
-    		if(t.hasEnchantment(CustomEnchantments.CELL_DIVISION.get()))
-    		{
-    			//FIXME for some reason scale is 1.0, and doesn't change
-    			EnchantmentData data = t.getEnchantmentData(CustomEnchantments.CELL_DIVISION.get());
-    			CompoundTag tag = data.getData();
-    			float scale = tag.getFloat(EnchantmentTags.CELL_DIVISION_SCALE);
-        		event.getPoseStack().scale(scale, scale, scale);
-    		}
-    	});
-    	if(event.getEntity() instanceof LivingEntity living)
+    		projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+        	{
+        		if(t.hasEnchantment(CustomEnchantments.CELL_DIVISION.get()))
+        		{
+        			//FIXME for some reason scale is 1.0, and doesn't change
+        			EnchantmentData data = t.getEnchantmentData(CustomEnchantments.CELL_DIVISION.get());
+        			CompoundTag tag = data.getData();
+        			float scale = tag.getFloat(EnchantmentTags.CELL_DIVISION_SCALE);
+            		event.getPoseStack().scale(scale, scale, scale);
+        		}
+        	});
+    	}
+    	if(entity instanceof LivingEntity living)
     	{
     		living.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
     		{
@@ -72,7 +76,7 @@ public class ClientEventHandlerForge
 		float f1 = 0.5F;
 		float f3 = p_114456_.getBbHeight() / f;
 		float f4 = 0.0F;
-		p_114454_.mulPose(Axis.YP.rotationDegrees(-MC.gameRenderer.getMainCamera().getYRot()));
+		p_114454_.mulPose(Vector3f.YP.rotationDegrees(-MC.gameRenderer.getMainCamera().getYRot()));
 		p_114454_.translate(0.0F, 0.0F, -0.3F + (float)((int)f3) * 0.02F);
 		float f5 = 0.0F;
 		int i = 0;

@@ -1,11 +1,15 @@
 package com.min01.minsenchantments.util;
 
+import java.util.Queue;
+
+import com.google.common.collect.Lists;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,6 +23,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
 
 public class EnchantmentUtil
@@ -35,7 +40,7 @@ public class EnchantmentUtil
 			}
 		}
 
-		if (!p_21276_.is(DamageTypeTags.BYPASSES_SHIELD) && !flag)
+		if (!p_21276_.isBypassArmor() && !flag)
 		{
 			Vec3 vec32 = p_21276_.getSourcePosition();
 			if (vec32 != null) 
@@ -70,61 +75,66 @@ public class EnchantmentUtil
 	{
 		return (double)(attacker.getBbWidth() * 2.0F * attacker.getBbWidth() * 2.0F + target.getBbWidth());
 	}
-	
-	public static boolean removeWaterBreadthFirstSearch(Level p_56808_, BlockPos p_56809_, int radius)
+		
+	public static boolean removeWaterBreadthFirstSearch(Level p_56808_, BlockPos p_56809_, int radius) 
 	{
-		BlockState spongeState = p_56808_.getBlockState(p_56809_);
-		return BlockPos.breadthFirstTraversal(p_56809_, radius, 65, (p_277519_, p_277492_) -> 
+		Queue<Tuple<BlockPos, Integer>> queue = Lists.newLinkedList();
+		queue.add(new Tuple<>(p_56809_, 0));
+		int i = 0;
+		BlockState state = p_56808_.getBlockState(p_56809_);
+
+		while(!queue.isEmpty())
 		{
+			Tuple<BlockPos, Integer> tuple = queue.poll();
+			BlockPos blockpos = tuple.getA();
+			int j = tuple.getB();
+
 			for(Direction direction : Direction.values())
 			{
-				p_277492_.accept(p_277519_.relative(direction));
-			}
-		},
-		(p_279054_) -> 
-		{
-			if (p_279054_.equals(p_56809_)) 
-			{
-				return true;
-			} 
-			else 
-			{
-				BlockState blockstate = p_56808_.getBlockState(p_279054_);
-				FluidState fluidstate = p_56808_.getFluidState(p_279054_);
-				if (!spongeState.canBeHydrated(p_56808_, p_56809_, fluidstate, p_279054_))
+				BlockPos blockpos1 = blockpos.relative(direction);
+				BlockState blockstate = p_56808_.getBlockState(blockpos1);
+				FluidState fluidstate = p_56808_.getFluidState(blockpos1);
+				Material material = blockstate.getMaterial();
+				if (state.canBeHydrated(p_56808_, p_56809_, fluidstate, blockpos1)) 
 				{
-					return false;
-				} 
-				else 
-				{
-					Block block = blockstate.getBlock();
-					if (block instanceof BucketPickup)
+					if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(p_56808_, blockpos1, blockstate).isEmpty()) 
 					{
-						BucketPickup bucketpickup = (BucketPickup)block;
-						if (!bucketpickup.pickupBlock(p_56808_, p_279054_, blockstate).isEmpty())
+						++i;
+						if (j < radius) 
 						{
-							return true;
+							queue.add(new Tuple<>(blockpos1, j + 1));
 						}
 					}
-
-					if (blockstate.getBlock() instanceof LiquidBlock)
+					else if (blockstate.getBlock() instanceof LiquidBlock) 
 					{
-						p_56808_.setBlock(p_279054_, Blocks.AIR.defaultBlockState(), 3);
+						p_56808_.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
+						++i;
+						if (j < radius) 
+						{
+							queue.add(new Tuple<>(blockpos1, j + 1));
+						}
 					} 
-					else 
+					else if (material == Material.WATER_PLANT || material == Material.REPLACEABLE_WATER_PLANT) 
 					{
-						if (!blockstate.is(Blocks.KELP) && !blockstate.is(Blocks.KELP_PLANT) && !blockstate.is(Blocks.SEAGRASS) && !blockstate.is(Blocks.TALL_SEAGRASS)) {
-							return false;
+						BlockEntity blockentity = blockstate.hasBlockEntity() ? p_56808_.getBlockEntity(blockpos1) : null;
+						Block.dropResources(blockstate, p_56808_, blockpos1, blockentity);
+						p_56808_.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
+						++i;
+						if (j < radius) 
+						{
+							queue.add(new Tuple<>(blockpos1, j + 1));
 						}
-
-						BlockEntity blockentity = blockstate.hasBlockEntity() ? p_56808_.getBlockEntity(p_279054_) : null;
-						Block.dropResources(blockstate, p_56808_, p_279054_, blockentity);
-						p_56808_.setBlock(p_279054_, Blocks.AIR.defaultBlockState(), 3);
 					}
-					return true;
 				}
 			}
-		}) > 1;
+
+			if (i > 64) 
+			{
+				break;
+			}
+		}
+		
+		return i > 0;
 	}
 	
 	public static void addChargedProjectile(ItemStack p_40929_, ItemStack p_40930_)

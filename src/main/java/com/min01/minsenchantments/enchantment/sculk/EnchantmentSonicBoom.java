@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -84,16 +85,16 @@ public class EnchantmentSonicBoom extends AbstractSculkEnchantment
 				            for(int i = 1; i < Mth.floor(vec31.length()) + (level * EnchantmentConfig.sonicBoomDistancePerLevel.get()); ++i)
 				            {
 				            	Vec3 vec33 = vec3.add(vec32.scale((double)i));				            	
-				            	if(living.level() instanceof ServerLevel serverLevel)
+				            	if(living.level instanceof ServerLevel serverLevel)
 				            	{
 				            		serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, vec33.x, vec33.y, vec33.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
 				            	}
 				            	AABB aabb = new AABB(vec3, vec33);
-				            	List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, aabb);
+				            	List<LivingEntity> list = living.level.getEntitiesOfClass(LivingEntity.class, aabb);
 				            	list.removeIf((entity1) -> entity1 == living);
 				            	list.forEach((entity1) ->
 				            	{
-				            		entity1.hurt(arrow.damageSources().sonicBoom(living), level * EnchantmentConfig.sonicBoomDamagePerLevel.get());
+				            		entity1.hurt(DamageSource.sonicBoom(living), level * EnchantmentConfig.sonicBoomDamagePerLevel.get());
 						            double d1 = 0.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
 						            double d0 = 2.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
 						            entity1.push(vec32.x() * d0, vec32.y() * d1, vec32.z() * d0);

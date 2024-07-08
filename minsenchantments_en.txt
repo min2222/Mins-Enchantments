@@ -1,0 +1,67 @@
+//Blessment (Custom Foil Colors?)
+Barrier
+Hardening
+Rage
+Returning
+Homing
+Mirror
+Soul of Terrarian
+God Hand
+Malice
+Auto Shielding
+Grinding
+Accelerate
+Critical Strike
+Heart Steal
+Healing Cutter
+Air Swimming
+Multi Strike
+Solaria
+Time Break
+
+//Curse
+Curse of Mermaid
+Curse of Floating
+Curse of Abyss
+Rusty
+Overgravity
+Curse of Undead
+Curse of Enderman
+Curse of Sinking
+
+//Ocean Theme (Completed)
+Waterbolt
+Mermaid's Blessing
+Sharp Waves
+Tide
+Poseidon's Grace
+Wave's Protection
+Lord of the Sea
+Sailing
+Water Jet
+Aquatic Aura
+
+//Nether Theme (5 More)
+Lava Walker
+Auto Smelt
+Flame Thorn
+Dry
+Soul Fire
+
+//End Theme (9 More)
+Teleportation
+
+//Sculk Theme (7 More)
+Sonic Boom
+Infection
+Concealment
+
+//Normal
+Ricochet
+Climb
+Wallbreak
+Magnet
+Cell Division
+Takeoff
+Armor Crack
+Miner

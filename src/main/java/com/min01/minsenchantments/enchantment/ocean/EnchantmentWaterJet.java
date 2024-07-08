@@ -76,7 +76,7 @@ public class EnchantmentWaterJet extends AbstractOceanEnchantment implements IPr
 			Potion potion = PotionUtils.getPotion(thrownPotion.getItem());
 			List<MobEffectInstance> list = PotionUtils.getMobEffects(thrownPotion.getItem());
 			boolean flag = potion == Potions.WATER && list.isEmpty();
-			List<Player> players = thrownPotion.level().getEntitiesOfClass(Player.class, thrownPotion.getBoundingBox().inflate(1.5));
+			List<Player> players = thrownPotion.level.getEntitiesOfClass(Player.class, thrownPotion.getBoundingBox().inflate(1.5));
 			players.forEach((player) ->
 			{
 				for(InteractionHand hand : InteractionHand.values())

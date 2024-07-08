@@ -42,7 +42,7 @@ public class EnchantmentMermaidCurse extends AbstractCurseEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
 		if(level > 0)
 		{
-			List<Mob> list = living.level().getEntitiesOfClass(Mob.class, living.getBoundingBox().inflate(level * EnchantmentConfig.mermaidsCurseRadiusPerLevel.get()));
+			List<Mob> list = living.level.getEntitiesOfClass(Mob.class, living.getBoundingBox().inflate(level * EnchantmentConfig.mermaidsCurseRadiusPerLevel.get()));
 			list.forEach((mob) ->
 			{
 				if(mob.getTarget() != living || mob.getTarget() == null)

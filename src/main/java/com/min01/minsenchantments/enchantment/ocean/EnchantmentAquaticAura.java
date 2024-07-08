@@ -44,7 +44,7 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 	@Override
 	public boolean onLivingBreath(LivingEntity entity, boolean canBreathe, int consumeAirAmount, int refillAirAmount, boolean canRefillAir) 
 	{
-		List<LivingEntity> list = entity.level().getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(100));
+		List<LivingEntity> list = entity.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(100));
 		list.removeIf(t -> t == entity);
 		for(LivingEntity living : list)
 		{
@@ -67,7 +67,7 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
 		if(level > 0)
 		{
-			List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
+			List<Projectile> projList = living.level.getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
 			projList.removeIf((proj) -> (proj.getOwner() != null && proj.getOwner() == living) || proj instanceof ThrownTrident);
 			projList.forEach((proj) -> 
 			{
@@ -81,7 +81,7 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 					proj.setDeltaMovement(proj.getDeltaMovement().scale(0.6F));
 				}
 				
-				if(proj.getDeltaMovement() != Vec3.ZERO && !proj.onGround())
+				if(proj.getDeltaMovement() != Vec3.ZERO && !proj.isOnGround())
 				{
 					Vec3 vec3 = proj.getDeltaMovement();
 					double d5 = vec3.x;
@@ -94,7 +94,7 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 			         
 		            for(int j = 0; j < 4; ++j) 
 		            {
-		                proj.level().addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
+		                proj.level.addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
 		            }
 				}
 			});

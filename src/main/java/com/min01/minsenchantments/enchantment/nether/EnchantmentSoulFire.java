@@ -53,7 +53,7 @@ public class EnchantmentSoulFire extends AbstractNetherEnchantment
 					{
 			            if (remainingSoulFireTicks % 20 == 0 && !living.isInLava()) 
 			            {
-			            	living.hurt(living.damageSources().onFire(), 2.0F);
+			            	living.hurt(DamageSource.ON_FIRE, 2.0F);
 			            }
 			            
 			            tag.putInt(EnchantmentTags.SOUL_FIRE, remainingSoulFireTicks - 1);

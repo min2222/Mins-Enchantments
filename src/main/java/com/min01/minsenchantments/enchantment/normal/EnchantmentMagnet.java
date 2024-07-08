@@ -43,13 +43,13 @@ public class EnchantmentMagnet extends AbstractMinsEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
 		if(level > 0 && living.isShiftKeyDown())
 		{
-			List<ItemEntity> itemList = living.level().getEntitiesOfClass(ItemEntity.class, living.getBoundingBox().inflate(level * EnchantmentConfig.magnetRadiusPerLevel.get()));
+			List<ItemEntity> itemList = living.level.getEntitiesOfClass(ItemEntity.class, living.getBoundingBox().inflate(level * EnchantmentConfig.magnetRadiusPerLevel.get()));
 			itemList.forEach((item) -> 
 			{
 				item.setDeltaMovement(EnchantmentUtil.fromToVector(item.position(), living.position(), 0.05F));
 			});
 			
-			List<ExperienceOrb> xpList = living.level().getEntitiesOfClass(ExperienceOrb.class, living.getBoundingBox().inflate(level * EnchantmentConfig.magnetRadiusPerLevel.get()));
+			List<ExperienceOrb> xpList = living.level.getEntitiesOfClass(ExperienceOrb.class, living.getBoundingBox().inflate(level * EnchantmentConfig.magnetRadiusPerLevel.get()));
 			xpList.forEach((xp) -> 
 			{
 				xp.setDeltaMovement(EnchantmentUtil.fromToVector(xp.position(), living.position(), 0.1F));

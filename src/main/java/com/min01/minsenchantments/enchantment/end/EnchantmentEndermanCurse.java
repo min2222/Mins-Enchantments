@@ -3,6 +3,7 @@ package com.min01.minsenchantments.enchantment.end;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.enchantment.curse.AbstractCurseEnchantment;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -39,7 +40,7 @@ public class EnchantmentEndermanCurse extends AbstractCurseEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
 		if(level > 0 && living.isInWater())
 		{
-			living.hurt(living.damageSources().drown(), level * EnchantmentConfig.endermanCurseDamagePerLevel.get());
+			living.hurt(DamageSource.DROWN, level * EnchantmentConfig.endermanCurseDamagePerLevel.get());
 		}
 	}
 }

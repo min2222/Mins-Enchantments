@@ -34,8 +34,8 @@ public class EnchantmentLavaWalker extends AbstractNetherEnchantment
 		int level = living.getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(this);
 		if(level > 0)
 		{
-			BlockPos pos = BlockPos.containing(living.getX(), Mth.floor(living.getBoundingBox().minY), living.getZ());
-	        if(living.level().getBlockState(pos).getBlock() == Blocks.LAVA) 
+			BlockPos pos = new BlockPos(living.getX(), Mth.floor(living.getBoundingBox().minY), living.getZ());
+	        if(living.level.getBlockState(pos).getBlock() == Blocks.LAVA) 
 	        {
 	            if(living.getDeltaMovement().y < 0) 
 	            {

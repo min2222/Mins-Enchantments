@@ -9,6 +9,7 @@ import com.min01.minsenchantments.api.IProjectileEnchantment;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.network.EnchantmentNetwork;
 import com.min01.minsenchantments.network.PlayerLeftClickPacket;
+import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.nbt.CompoundTag;
@@ -16,14 +17,17 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.PlayLevelSoundEvent;
+import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -34,6 +38,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -46,7 +51,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = MinsEnchantments.MODID, bus = Bus.FORGE)
 public class EventHandlerForge
 {
-	
 	@SubscribeEvent
 	public static void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event)
 	{
@@ -324,6 +328,35 @@ public class EventHandlerForge
 			if(t instanceof IMinsEnchantment enchantment)
 			{
 				enchantment.onEntityTick(event.getEntity());
+			}
+		});
+	}
+	
+	@SubscribeEvent
+	public static void onLivingHeal(LivingHealEvent event)
+	{
+		ForgeRegistries.ENCHANTMENTS.forEach(t -> 
+		{
+			if(t instanceof IMinsEnchantment enchantment)
+			{
+				float amount = enchantment.onLivingHeal(event.getEntity(), event.getAmount());
+				event.setAmount(amount);
+			}
+		});
+	}
+	
+	@SubscribeEvent
+	public static void onLevelTick(LevelTickEvent event)
+	{
+		ForgeRegistries.ENCHANTMENTS.forEach(t -> 
+		{
+			if(t instanceof IMinsEnchantment enchantment)
+			{
+				Level level = event.level;
+				for(Entity entity : EnchantmentUtil.getAllEntities(level))
+				{
+					enchantment.onLevelTick(entity);
+				}
 			}
 		});
 	}

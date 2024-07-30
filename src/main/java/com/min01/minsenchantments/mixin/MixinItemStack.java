@@ -51,7 +51,6 @@ public class MixinItemStack
 							amount += stack.getOrCreateTag().getFloat(EnchantmentTags.HARDENING);
 						}
 						
-						//FIXME amount is still increasing, but actual armor point is not changed
 						EnumMap<ArmorItem.Type, UUID> enumMap = ObfuscationReflectionHelper.getPrivateValue(ArmorItem.class, armorItem, "f_265987_");
 						UUID uuid = enumMap.get(armorItem.getType());
 						AttributeModifier modifier = new AttributeModifier(uuid, "Hardening Modifier", entry.getValue().getAmount() + amount, Operation.ADDITION);

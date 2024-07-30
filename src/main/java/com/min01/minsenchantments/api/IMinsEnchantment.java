@@ -124,4 +124,14 @@ public interface IMinsEnchantment
 	{
 		
 	}
+	
+	default float onLivingHeal(LivingEntity living, float amount)
+	{
+		return amount;
+	}
+	
+	default void onLevelTick(Entity entity)
+	{
+		
+	}
 }

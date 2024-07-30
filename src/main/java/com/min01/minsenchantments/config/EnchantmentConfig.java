@@ -97,6 +97,34 @@ public class EnchantmentConfig
 	public static ConfigValue<Float> heartStealHealAmountPerLevel;
 	public static ConfigValue<Float> heartStealChancePerLevel;
 	
+	public static ConfigValue<Integer> healingCutterMinCost;
+	public static ConfigValue<Integer> healingCutterMaxCost;
+
+	public static ConfigValue<Float> healingCutterChancePerLevel;
+	public static ConfigValue<Integer> healingCutterDurationPerLevel;
+	public static ConfigValue<Float> healingCutterAmountPerLevel;
+
+	public static ConfigValue<Integer> airSwimmingMinCost;
+	public static ConfigValue<Integer> airSwimmingMaxCost;
+
+	public static ConfigValue<Integer> multiStrikeMinCost;
+	public static ConfigValue<Integer> multiStrikeMaxCost;
+
+	public static ConfigValue<Float> multiStrikeChancePerLevel;
+	public static ConfigValue<Integer> multiStrikeAmountPerLevel;
+
+	public static ConfigValue<Integer> solariaMinCost;
+	public static ConfigValue<Integer> solariaMaxCost;
+
+	public static ConfigValue<Float> solariaIntervalPerLevel;
+	public static ConfigValue<Integer> solariaAmountPerLevel;
+
+	public static ConfigValue<Integer> timeBreakMinCost;
+	public static ConfigValue<Integer> timeBreakMaxCost;
+
+	public static ConfigValue<Float> timeBreakChancePerLevel;
+	public static ConfigValue<Integer> timeBreakDurationPerLevel;
+	
     //enchantment
     
     //ocean
@@ -400,6 +428,34 @@ public class EnchantmentConfig
     	
     	EnchantmentConfig.heartStealHealAmountPerLevel = config.comment("heal amount for each level of heart steal blessment").define("heartStealHealAmountPerLevel", 0.5F);
     	EnchantmentConfig.heartStealChancePerLevel = config.comment("heal change for each level of heart steal blessment").define("heartStealChancePerLevel", 5.0F);
+    	
+    	EnchantmentConfig.healingCutterMinCost = config.comment("minimum enchantability for healing cutter blessment").define("healingCutterMinCost", 1);
+    	EnchantmentConfig.healingCutterMaxCost = config.comment("maximum enchantability for healing cutter blessment").define("healingCutterMaxCost", 11);
+
+    	EnchantmentConfig.healingCutterChancePerLevel = config.comment("active chance for each level of healing cutter blessment").define("healingCutterChancePerLevel", 10.0F);
+    	EnchantmentConfig.healingCutterDurationPerLevel = config.comment("active duration for each level of healing cutter blessment").define("healingCutterDurationPerLevel", 1);
+    	EnchantmentConfig.healingCutterAmountPerLevel = config.comment("reduce amount for each level of healing cutter blessment").define("healingCutterAmountPerLevel", 2.0F);
+
+    	EnchantmentConfig.airSwimmingMinCost = config.comment("minimum enchantability for air swimming blessment").define("airSwimmingMinCost", 1);
+    	EnchantmentConfig.airSwimmingMaxCost = config.comment("maximum enchantability for air swimming blessment").define("airSwimmingMaxCost", 11);
+
+    	EnchantmentConfig.multiStrikeMinCost = config.comment("minimum enchantability for multi strike blessment").define("multiStrikeMinCost", 1);
+    	EnchantmentConfig.multiStrikeMaxCost = config.comment("maximum enchantability for multi strike blessment").define("multiStrikeMaxCost", 11);
+
+    	EnchantmentConfig.multiStrikeChancePerLevel = config.comment("active chance for each level of multi strike blessment").define("multiStrikeChancePerLevel", 2.0F);
+    	EnchantmentConfig.multiStrikeAmountPerLevel = config.comment("additional attack amount for each level of multi strike blessment").define("multiStrikeAmountPerLevel", 1);   
+
+    	EnchantmentConfig.solariaMinCost = config.comment("minimum enchantability for solaria blessment").define("solariaMinCost", 1);
+    	EnchantmentConfig.solariaMaxCost = config.comment("maximum enchantability for solaria blessment").define("solariaMaxCost", 11);
+
+    	EnchantmentConfig.solariaIntervalPerLevel = config.comment("recovery interval for each level of solaria blessment").define("solariaIntervalPerLevel", 1.0F);
+    	EnchantmentConfig.solariaAmountPerLevel = config.comment("recovery amount for each level of solaria blessment").define("solariaAmountPerLevel", 1);
+
+    	EnchantmentConfig.timeBreakMinCost = config.comment("minimum enchantability for time break blessment").define("timeBreakMinCost", 1);
+    	EnchantmentConfig.timeBreakMaxCost = config.comment("maximum enchantability for time break blessment").define("timeBreakMaxCost", 11);
+
+    	EnchantmentConfig.timeBreakChancePerLevel = config.comment("active chance for each level of time break blessment").define("timeBreakChancePerLevel", 1.0F);
+    	EnchantmentConfig.timeBreakDurationPerLevel = config.comment("active duration for each level of time break blessment").define("timeBreakDurationPerLevel", 1);
     	
     	config.pop();
     	

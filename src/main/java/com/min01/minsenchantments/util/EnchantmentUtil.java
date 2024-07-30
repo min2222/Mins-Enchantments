@@ -1,5 +1,6 @@
 package com.min01.minsenchantments.util;
 
+import java.lang.reflect.Method;
 import java.util.Queue;
 
 import com.google.common.collect.Lists;
@@ -22,12 +23,30 @@ import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class EnchantmentUtil
 {
+	@SuppressWarnings("unchecked")
+	public static Iterable<Entity> getAllEntities(Level level)
+	{
+		Method m = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
+		try 
+		{
+			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) m.invoke(level);
+			return entities.getAll();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static boolean isDamageSourceBlocked(LivingEntity living, DamageSource p_21276_) 
 	{
 		Entity entity = p_21276_.getDirectEntity();

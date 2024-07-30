@@ -2,19 +2,24 @@ package com.min01.minsenchantments.init;
 
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.blessment.BlessmentAccelerate;
+import com.min01.minsenchantments.blessment.BlessmentAirSwimming;
 import com.min01.minsenchantments.blessment.BlessmentAutoShielding;
 import com.min01.minsenchantments.blessment.BlessmentBarrier;
 import com.min01.minsenchantments.blessment.BlessmentCriticalStrike;
 import com.min01.minsenchantments.blessment.BlessmentGodHand;
 import com.min01.minsenchantments.blessment.BlessmentGrinding;
 import com.min01.minsenchantments.blessment.BlessmentHardening;
+import com.min01.minsenchantments.blessment.BlessmentHealingCutter;
 import com.min01.minsenchantments.blessment.BlessmentHeartSteal;
 import com.min01.minsenchantments.blessment.BlessmentHoming;
 import com.min01.minsenchantments.blessment.BlessmentMalice;
 import com.min01.minsenchantments.blessment.BlessmentMirror;
+import com.min01.minsenchantments.blessment.BlessmentMultiStrike;
 import com.min01.minsenchantments.blessment.BlessmentRage;
 import com.min01.minsenchantments.blessment.BlessmentReturning;
+import com.min01.minsenchantments.blessment.BlessmentSolaria;
 import com.min01.minsenchantments.blessment.BlessmentSoulOfTerrarian;
+import com.min01.minsenchantments.blessment.BlessmentTimeBreak;
 import com.min01.minsenchantments.enchantment.curse.EnchantmentOvergravity;
 import com.min01.minsenchantments.enchantment.curse.EnchantmentUndeadCurse;
 import com.min01.minsenchantments.enchantment.end.EnchantmentEndermanCurse;
@@ -91,6 +96,11 @@ public class CustomEnchantments
 	public static final RegistryObject<Enchantment> ACCELERATE = ENCHANTMENTS.register("accelerate", () -> new BlessmentAccelerate());
 	public static final RegistryObject<Enchantment> CRITICAL_STRIKE = ENCHANTMENTS.register("critical_strike", () -> new BlessmentCriticalStrike());
 	public static final RegistryObject<Enchantment> HEART_STEAL = ENCHANTMENTS.register("heart_steal", () -> new BlessmentHeartSteal());
+	public static final RegistryObject<Enchantment> HEALING_CUTTER = ENCHANTMENTS.register("healing_cutter", () -> new BlessmentHealingCutter());
+	public static final RegistryObject<Enchantment> AIR_SWIMMING = ENCHANTMENTS.register("air_swimming", () -> new BlessmentAirSwimming());
+	public static final RegistryObject<Enchantment> MULTI_STRIKE = ENCHANTMENTS.register("multi_strike", () -> new BlessmentMultiStrike());
+	public static final RegistryObject<Enchantment> SOLARIA = ENCHANTMENTS.register("solaria", () -> new BlessmentSolaria());
+	public static final RegistryObject<Enchantment> TIME_BREAK = ENCHANTMENTS.register("time_break", () -> new BlessmentTimeBreak());
 	
 	//ocean
 	public static final RegistryObject<Enchantment> WATERBOLT = ENCHANTMENTS.register("waterbolt", () -> new EnchantmentWaterbolt());

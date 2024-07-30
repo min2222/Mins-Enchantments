@@ -39,7 +39,7 @@ public class EnchantmentSailing extends AbstractOceanEnchantment
 	public void onLivingTick(LivingEntity living)
 	{
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
-		if(living.isPassenger())
+		if(living.isPassenger() && level > 0)
 		{
 			Entity entity = living.getVehicle();
 			if(living.zza > 0)

@@ -13,7 +13,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidType;
 
 @Mixin(Entity.class)
 public class MixinEntity
@@ -47,4 +49,30 @@ public class MixinEntity
 			}
 		}
 	}
+
+    @Inject(method = "isInWater", at = @At("TAIL"), cancellable = true)
+    private void isInWater(CallbackInfoReturnable<Boolean> cir)
+    {
+    	if(Entity.class.cast(this) instanceof LivingEntity living)
+    	{
+    		int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.AIR_SWIMMING.get(), living);
+    		if(level > 0)
+    		{
+    			cir.setReturnValue(true);
+    		}
+    	}
+    }
+
+    @Inject(method = "getEyeInFluidType", at = @At("TAIL"), cancellable = true, remap = false)
+    private void getEyeInFluidType(CallbackInfoReturnable<FluidType> cir)
+    {
+    	if(Entity.class.cast(this) instanceof LivingEntity living)
+    	{
+    		int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.AIR_SWIMMING.get(), living);
+    		if(level > 0)
+    		{
+    			cir.setReturnValue(ForgeMod.WATER_TYPE.get());
+    		}
+    	}
+    }
 }

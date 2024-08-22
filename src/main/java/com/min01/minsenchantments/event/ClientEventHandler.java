@@ -25,7 +25,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientEventHandler 
 {
 	@SubscribeEvent
-	public static void onClientSetup(FMLClientSetupEvent event)
+	public static void onFMLClientSetup(FMLClientSetupEvent event)
 	{
 		MenuScreens.register(CustomMenuType.OCEAN_ENCHANTMENT.get(), OceanEnchantmentScreen::new);
 		MenuScreens.register(CustomMenuType.NETHER_ENCHANTMENT.get(), NetherEnchantmentScreen::new);
@@ -40,7 +40,7 @@ public class ClientEventHandler
 	}
 	
 	@SubscribeEvent
-	public static void registerLayerDefinitions(RegisterLayerDefinitions event)
+	public static void onRegisterLayerDefinitions(RegisterLayerDefinitions event)
 	{
 		event.registerLayerDefinition(BlessmentTableRenderer.LAYER_LOCATION, BlessmentTableRenderer::createBodyLayer);
 	}

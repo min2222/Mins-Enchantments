@@ -641,7 +641,7 @@ public class EnchantmentConfig
     	EnchantmentConfig.noEnchantCap = config.comment("able to combine any enchantments in anvil").define("noEnchantCap", true);
     	EnchantmentConfig.noIncreasingRepairCost = config.comment("remove repair cost increasing to prevent too expensive message").define("noIncreasingRepairCost", true);
     	EnchantmentConfig.anvilOverlevelBooks = config.comment("able to merge enchants to get enchant with higher level").define("anvilOverlevelBooks", true);
-    	EnchantmentConfig.anvilAlwaysAllowBooks = config.comment("able to enchant anything that max stack is 1").define("anvilAlwaysAllowBooks", true);
+    	EnchantmentConfig.anvilAlwaysAllowBooks = config.comment("able to enchant anything in anvil").define("anvilAlwaysAllowBooks", true);
     	EnchantmentConfig.disenchanting = config.comment("able to disenchanting with vanilla book").define("disenchanting", true);
         config.pop();
     }

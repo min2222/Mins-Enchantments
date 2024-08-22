@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 public class EventHandler
 {
     @SubscribeEvent
-    public static void registerCreativeTab(BuildCreativeModeTabContentsEvent event)
+    public static void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event)
     {
         if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) 
         {

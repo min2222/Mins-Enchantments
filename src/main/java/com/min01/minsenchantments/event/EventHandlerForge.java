@@ -465,9 +465,9 @@ public class EventHandlerForge
     
     public static boolean canApplyEnchant(ItemStack i, Enchantment e)
     {
-    	if(EnchantmentConfig.anvilAlwaysAllowBooks.get() && i.getMaxStackSize() == 1)
+    	if(EnchantmentConfig.anvilAlwaysAllowBooks.get())
     	{ 
-    		return true; 
+    		return true;
     	}
     	 
         if(Items.ENCHANTED_BOOK == i.getItem()) 

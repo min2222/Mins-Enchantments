@@ -5,6 +5,7 @@ import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.misc.EnchantmentTags;
+import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
@@ -57,26 +58,48 @@ public class BlessmentTimeBreak extends AbstractBlessment
 						t.setEnchantmentData(this, new EnchantmentData(level, tag));
 						TimerUtil.setTickrate(entity, 0);
 					});
+					attacker.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+					{
+						CompoundTag tag = new CompoundTag();
+						tag.putUUID("TimeBreakUUID", entity.getUUID());
+						t.setEnchantmentData(this, new EnchantmentData(level, tag));
+					});
 				}
 			}
 		}
 	}
 	
 	@Override
-	public void onLevelTick(Entity entity) 
+	public void onLivingTick(LivingEntity living)
 	{
-		entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		living.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
 		{
 			if(t.hasEnchantment(this))
 			{
-				entity.invulnerableTime = 0;
 				EnchantmentData data = t.getEnchantmentData(this);
 				CompoundTag tag = data.getData();
-				tag.putFloat(EnchantmentTags.TIME_BREAK_DURATION, tag.getFloat(EnchantmentTags.TIME_BREAK_DURATION) - 1);
-				if(tag.getFloat(EnchantmentTags.TIME_BREAK_DURATION) <= 0)
+				if(tag.contains("TimeBreakUUID"))
 				{
-					TimerUtil.resetTickrate(entity);
-					t.removeEnchantment(this);
+					Entity entity = EnchantmentUtil.getEntityByUUID(living.level(), tag.getUUID("TimeBreakUUID"));
+					if(entity != null)
+					{
+						entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t2 -> 
+						{
+							if(t2.hasEnchantment(this))
+							{
+								entity.invulnerableTime = 0;
+								EnchantmentData data2 = t2.getEnchantmentData(this);
+								CompoundTag tag2 = data2.getData();
+								tag2.putFloat(EnchantmentTags.TIME_BREAK_DURATION, tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) - 1);
+								if(tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) <= 0)
+								{
+									TimerUtil.resetTickrate(entity);
+									t.removeEnchantment(this);
+									t2.removeEnchantment(this);
+								}
+							}
+						});
+					}
 				}
 			}
 		});

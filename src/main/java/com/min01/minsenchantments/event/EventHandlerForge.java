@@ -10,7 +10,6 @@ import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.network.EnchantmentNetwork;
 import com.min01.minsenchantments.network.PlayerLeftClickPacket;
-import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.nbt.CompoundTag;
@@ -18,17 +17,14 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Containers;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.PlayLevelSoundEvent;
-import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -342,22 +338,6 @@ public class EventHandlerForge
 			{
 				float amount = enchantment.onLivingHeal(event.getEntity(), event.getAmount());
 				event.setAmount(amount);
-			}
-		});
-	}
-	
-	@SubscribeEvent
-	public static void onLevelTick(LevelTickEvent event)
-	{
-		CustomEnchantments.LIST.forEach(t -> 
-		{
-			if(t instanceof IMinsEnchantment enchantment)
-			{
-				Level level = event.level;
-				for(Entity entity : EnchantmentUtil.getAllEntities(level))
-				{
-					enchantment.onLevelTick(entity);
-				}
 			}
 		});
 	}

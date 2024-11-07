@@ -7,6 +7,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 
 public class EnchantmentUndeadCurse extends AbstractCurseEnchantment
 {
@@ -40,10 +41,11 @@ public class EnchantmentUndeadCurse extends AbstractCurseEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
 		if (level > 0 && living.level().isDay() && !living.level().isClientSide)
 		{
+			Level world = living.level();
 			float f = living.getLightLevelDependentMagicValue();
 			BlockPos blockpos = BlockPos.containing(living.getX(), living.getEyeY(), living.getZ());
 			boolean flag = living.isInWaterRainOrBubble() || living.isInPowderSnow || living.wasInPowderSnow;
-			if (f > 0.5F && living.level().random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && !flag && living.level().canSeeSky(blockpos)) 
+			if (f > 0.5F && world.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && !flag && living.level().canSeeSky(blockpos)) 
 			{
 				living.setSecondsOnFire(level * (EnchantmentConfig.undeadCurseFireDurationPerLevel.get() * 20));
 			}

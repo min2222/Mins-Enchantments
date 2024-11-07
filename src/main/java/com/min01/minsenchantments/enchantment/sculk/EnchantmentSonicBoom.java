@@ -1,5 +1,6 @@
 package com.min01.minsenchantments.enchantment.sculk;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
@@ -71,7 +72,7 @@ public class EnchantmentSonicBoom extends AbstractSculkEnchantment
 						}
 					}
 					
-					if(projectile instanceof AbstractArrow arrow)
+					if(projectile instanceof AbstractArrow)
 					{
 						int level = stack.getEnchantmentLevel(this);
 						if(level > 0)
@@ -80,6 +81,7 @@ public class EnchantmentSonicBoom extends AbstractSculkEnchantment
 				            Vec3 lookPos = vec3.add(EnchantmentUtil.getLookPos(living.getXRot(), living.getYRot(), 0, 1));
 				            Vec3 vec31 = lookPos.subtract(vec3);
 				            Vec3 vec32 = vec31.normalize();
+							List<LivingEntity> arrayList = new ArrayList<>();
 
 				            for(int i = 1; i < Mth.floor(vec31.length()) + (level * EnchantmentConfig.sonicBoomDistancePerLevel.get()); ++i)
 				            {
@@ -93,12 +95,21 @@ public class EnchantmentSonicBoom extends AbstractSculkEnchantment
 				            	list.removeIf((entity1) -> entity1 == living);
 				            	list.forEach((entity1) ->
 				            	{
-				            		entity1.hurt(arrow.damageSources().sonicBoom(living), level * EnchantmentConfig.sonicBoomDamagePerLevel.get());
-						            double d1 = 0.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
-						            double d0 = 2.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
-						            entity1.push(vec32.x() * d0, vec32.y() * d1, vec32.z() * d0);
+				            		if(!arrayList.contains(entity1))
+				            		{
+				            			arrayList.add(entity1);
+				            		}
 				            	});
 				            }
+				            
+				            arrayList.forEach((entity1) -> 
+				            {
+			            		entity1.hurt(living.damageSources().sonicBoom(living), level * EnchantmentConfig.sonicBoomDamagePerLevel.get());
+					            double d1 = 0.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+					            double d0 = 2.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+					            entity1.push(vec32.x() * d0, vec32.y() * d1, vec32.z() * d0);
+				            });
+
 
 				            living.playSound(SoundEvents.WARDEN_SONIC_BOOM, 3.0F, 1.0F);
 				            return true;

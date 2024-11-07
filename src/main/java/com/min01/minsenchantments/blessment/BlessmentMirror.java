@@ -69,7 +69,7 @@ public class BlessmentMirror extends AbstractBlessment
 			int level = living.getOffhandItem().getEnchantmentLevel(this);
 			if(level > 0 && living.isBlocking())
 			{
-				if(!(directSource instanceof Projectile proj))
+				if(!(directSource instanceof Projectile))
 				{
 					if(Math.random() <= (level * EnchantmentConfig.mirrorReflectChancePerLevel.get()) / 100)
 					{

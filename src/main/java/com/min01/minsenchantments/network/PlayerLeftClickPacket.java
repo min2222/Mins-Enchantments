@@ -3,12 +3,12 @@ package com.min01.minsenchantments.network;
 import java.util.function.Supplier;
 
 import com.min01.minsenchantments.api.IMinsEnchantment;
+import com.min01.minsenchantments.init.CustomEnchantments;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class PlayerLeftClickPacket 
 {
@@ -33,7 +33,7 @@ public class PlayerLeftClickPacket
 		{
 			ctx.get().enqueueWork(() ->
 			{
-				ForgeRegistries.ENCHANTMENTS.forEach(t -> 
+				CustomEnchantments.LIST.forEach(t -> 
 				{
 					if(t instanceof IMinsEnchantment enchantment)
 					{

@@ -2,6 +2,7 @@ package com.min01.minsenchantments.util;
 
 import java.lang.reflect.Method;
 import java.util.Queue;
+import java.util.UUID;
 
 import com.google.common.collect.Lists;
 
@@ -32,13 +33,13 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 public class EnchantmentUtil
 {
 	@SuppressWarnings("unchecked")
-	public static Iterable<Entity> getAllEntities(Level level)
+	public static Entity getEntityByUUID(Level level, UUID uuid)
 	{
 		Method m = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
 		try 
 		{
 			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) m.invoke(level);
-			return entities.getAll();
+			return entities.get(uuid);
 		}
 		catch (Exception e) 
 		{

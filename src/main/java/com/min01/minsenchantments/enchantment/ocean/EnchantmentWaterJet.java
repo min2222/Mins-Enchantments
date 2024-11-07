@@ -84,7 +84,7 @@ public class EnchantmentWaterJet extends AbstractOceanEnchantment implements IPr
 					if(player.getItemInHand(hand).getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0)
 					{
 						ItemStack stack = player.getItemInHand(hand);
-						if(stack.getItem() instanceof CrossbowItem crossbow)
+						if(stack.getItem() instanceof CrossbowItem)
 						{
 							if(flag)
 							{

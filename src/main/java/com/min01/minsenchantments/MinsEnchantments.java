@@ -11,9 +11,10 @@ import com.min01.minsenchantments.network.EnchantmentNetwork;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(MinsEnchantments.MODID)
 public class MinsEnchantments
@@ -23,6 +24,7 @@ public class MinsEnchantments
 	public MinsEnchantments() 
 	{
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext ctx = ModLoadingContext.get();
 		CustomBlocks.BLOCKS.register(bus);
 		CustomBlocks.BLOCK_ENTITIES.register(bus);
 		CustomItems.ITEMS.register(bus);
@@ -32,6 +34,6 @@ public class MinsEnchantments
 		EnchantmentNetwork.registerMessages();
 
 		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EnchantmentCapabilities::attachEntityCapability);
-        EnchantmentConfig.loadConfig(EnchantmentConfig.CONFIG, FMLPaths.CONFIGDIR.get().resolve("mins-enchantments.toml").toString());
+		ctx.registerConfig(Type.COMMON, EnchantmentConfig.CONFIG_SPEC, "mins-enchantments.toml");
 	}
 }

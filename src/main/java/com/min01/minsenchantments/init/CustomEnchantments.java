@@ -1,5 +1,8 @@
 package com.min01.minsenchantments.init;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.blessment.BlessmentAccelerate;
 import com.min01.minsenchantments.blessment.BlessmentAirSwimming;
@@ -73,6 +76,8 @@ public class CustomEnchantments
 {
 	public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, MinsEnchantments.MODID);
 	public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MinsEnchantments.MODID);
+	
+	public static final List<Enchantment> LIST = new ArrayList<>();
 	
 	public static final EnchantmentCategory PROJECTILE_WEAPON = EnchantmentCategory.create("PROJECTILE_WEAPON", (item) -> item instanceof ProjectileWeaponItem);
 	public static final EnchantmentCategory SHIELD = EnchantmentCategory.create("SHIELD", (item) -> item instanceof ShieldItem);

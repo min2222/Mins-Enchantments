@@ -128,9 +128,4 @@ public interface IMinsEnchantment
 	{
 		return amount;
 	}
-
-	default void onLevelTick(Entity entity)
-	{
-
-	}
 }

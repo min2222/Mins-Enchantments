@@ -96,7 +96,7 @@ public class BlessmentTimeBreak extends AbstractBlessment
 									EnchantmentData data2 = t2.getEnchantmentData(this);
 									CompoundTag tag2 = data2.getData();
 									tag2.putFloat(EnchantmentTags.TIME_BREAK_DURATION, tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) - 1);
-									if(tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) <= 0)
+									if(tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) <= 0 || !entity.isAlive())
 									{
 										TimerUtil.resetTickrate(entity);
 										t2.removeEnchantment(this);

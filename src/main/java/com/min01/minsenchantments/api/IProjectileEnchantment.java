@@ -68,14 +68,26 @@ public interface IProjectileEnchantment
 			{
 				owner.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
 				{
+					if(!(owner instanceof Player) && owner instanceof LivingEntity living)
+					{
+						ItemStack stack = living.getMainHandItem();
+						int enchantLevel = stack.getEnchantmentLevel(this.self());
+						if(enchantLevel > 0)
+						{
+							t.setEnchantmentData(this.self(), new EnchantmentData(enchantLevel, this.getData(living, stack, 0)));
+						}
+					}
 					if(t.hasEnchantment(this.self()))
 					{
 						projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t2 -> 
 						{
-							EnchantmentData data = t.getEnchantmentData(this.self());
-							t2.setEnchantmentData(this.self(), t.getEnchantmentData(this.self()));
-							t.removeEnchantment(this.self());
-							this.onJoin(projectile, owner, data, t);
+							if(!t2.hasEnchantment(this.self()))
+							{
+								EnchantmentData data = t.getEnchantmentData(this.self());
+								t2.setEnchantmentData(this.self(), data);
+								t.removeEnchantment(this.self());
+								this.onJoin(projectile, owner, data, t);
+							}
 						});
 					}
 				});

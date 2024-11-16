@@ -2,10 +2,17 @@ package com.min01.minsenchantments.enchantment.ocean;
 
 import java.util.List;
 
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.mixin.AbstractArrowInvoker;
+import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -13,7 +20,6 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class EnchantmentAquaticAura extends AbstractOceanEnchantment
@@ -44,17 +50,25 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 	@Override
 	public boolean onLivingBreath(LivingEntity entity, boolean canBreathe, int consumeAirAmount, int refillAirAmount, boolean canRefillAir) 
 	{
-		List<LivingEntity> list = entity.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(100));
-		list.removeIf(t -> t == entity);
-		for(LivingEntity living : list)
+		if(entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).isPresent())
 		{
-			int level = EnchantmentHelper.getEnchantmentLevel(this, living);
-			if(level > 0)
+			IEnchantmentCapability cap = entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).orElse(new EnchantmentCapabilityHandler());
+			if(cap.hasEnchantment(this))
 			{
-				AABB aabb = living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get());
-				if(aabb.contains(entity.position()))
+				EnchantmentData data = cap.getEnchantmentData(this);
+				int level = data.getEnchantLevel();
+				CompoundTag tag = data.getData();
+				if(tag.contains("AuraOwnerUUID"))
 				{
-					return false;
+					Entity owner = EnchantmentUtil.getEntityByUUID(entity.level, tag.getUUID("AuraOwnerUUID"));
+					if(owner == null || entity.distanceTo(owner) >= level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get())
+					{
+						cap.removeEnchantment(this);
+					}
+					else
+					{
+						return false;
+					}
 				}
 			}
 		}
@@ -97,6 +111,17 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 		                proj.level.addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
 		            }
 				}
+			});
+			List<LivingEntity> list = living.level.getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
+			list.removeIf(t -> t == living || t.isAlliedTo(living));
+			list.forEach(t -> 
+			{
+				t.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(cap -> 
+				{
+					CompoundTag tag = new CompoundTag();
+					tag.putUUID("AuraOwnerUUID", living.getUUID());
+					cap.setEnchantmentData(this, new EnchantmentData(level, tag));
+				});
 			});
 		}
 	}

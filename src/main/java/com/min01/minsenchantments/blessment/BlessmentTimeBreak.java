@@ -1,11 +1,11 @@
 package com.min01.minsenchantments.blessment;
 
-import com.min01.entitytimer.TimerUtil;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.misc.EnchantmentTags;
 import com.min01.minsenchantments.util.EnchantmentUtil;
+import com.min01.tickrateapi.util.TickrateUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -57,7 +57,7 @@ public class BlessmentTimeBreak extends AbstractBlessment
 						CompoundTag tag = new CompoundTag();
 						tag.putFloat(EnchantmentTags.TIME_BREAK_DURATION, level * (EnchantmentConfig.timeBreakDurationPerLevel.get() * 20));
 						t.setEnchantmentData(this, new EnchantmentData(level, tag));
-						TimerUtil.setTickrate(entity, 0);
+						TickrateUtil.setTickrate(entity, 0);
 					});
 					attacker.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
 					{
@@ -116,7 +116,7 @@ public class BlessmentTimeBreak extends AbstractBlessment
 									tag2.putFloat(EnchantmentTags.TIME_BREAK_DURATION, tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) - 1);
 									if(tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) <= 0 || !entity.isAlive())
 									{
-										TimerUtil.resetTickrate(entity);
+										TickrateUtil.resetTickrate(entity);
 										t2.removeEnchantment(this);
 									}
 								}

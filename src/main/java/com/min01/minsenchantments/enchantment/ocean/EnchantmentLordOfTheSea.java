@@ -54,6 +54,7 @@ public class EnchantmentLordOfTheSea extends AbstractOceanEnchantment
 				UUID ownerUUID = waterAnimal.getPersistentData().getUUID(EnchantmentTags.LORD_OF_THE_SEA);
 				float damage = waterAnimal.getPersistentData().getFloat(EnchantmentTags.LORD_OF_THE_SEA_DMG);
 				Entity owner = level.getEntity(ownerUUID);
+				boolean flag = waterAnimal.getTarget() != null && !waterAnimal.getTarget().isAlive();
 				if(owner != null && waterAnimal.getTarget() != null)
 				{
 					Entity target = waterAnimal.getTarget();
@@ -61,7 +62,10 @@ public class EnchantmentLordOfTheSea extends AbstractOceanEnchantment
 					double distance = waterAnimal.distanceTo((LivingEntity) target);
 					if(distance <= EnchantmentUtil.getAttackReachSqr(waterAnimal, target))
 					{
-						target.hurt(DamageSource.mobAttack((LivingEntity) owner), damage);
+						if(waterAnimal.getTarget().isAlive())
+						{
+							target.hurt(DamageSource.mobAttack(waterAnimal), damage);
+						}
 					}
 					else
 					{
@@ -69,7 +73,7 @@ public class EnchantmentLordOfTheSea extends AbstractOceanEnchantment
 					}
 				}
 				
-				if(owner == null || waterAnimal.getTarget() == null)
+				if(owner == null || waterAnimal.getTarget() == null || flag)
 				{
 					waterAnimal.getPersistentData().remove(EnchantmentTags.LORD_OF_THE_SEA);
 					waterAnimal.getPersistentData().remove(EnchantmentTags.LORD_OF_THE_SEA_DMG);

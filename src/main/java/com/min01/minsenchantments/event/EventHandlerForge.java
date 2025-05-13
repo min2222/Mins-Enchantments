@@ -3,6 +3,7 @@ package com.min01.minsenchantments.event;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.api.IMinsEnchantment;
 import com.min01.minsenchantments.api.IProjectileEnchantment;
@@ -10,6 +11,8 @@ import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.network.EnchantmentNetwork;
 import com.min01.minsenchantments.network.PlayerLeftClickPacket;
+import com.min01.minsenchantments.util.EnchantmentUtil;
+import com.min01.tickrateapi.util.TickrateUtil;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +20,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +29,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.PlayLevelSoundEvent;
+import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -48,6 +53,22 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = MinsEnchantments.MODID, bus = Bus.FORGE)
 public class EventHandlerForge
 {
+	@SubscribeEvent
+	public static void onLevelTick(LevelTickEvent event)
+	{
+		Iterable<Entity> all = EnchantmentUtil.getAllEntities(event.level);
+		Lists.newArrayList(all).stream().filter(t -> t.getPersistentData().contains("ForceTickCount")).forEach(t -> 
+		{
+			int time = t.getPersistentData().getInt("ForceTickCount");
+			t.getPersistentData().putInt("ForceTickCount", time - 1);
+			if(time <= 0)
+			{
+				TickrateUtil.resetTickrate(t);
+				t.getPersistentData().remove("ForceTickCount");
+			}
+		});
+	}
+	
 	@SubscribeEvent
 	public static void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event)
 	{

@@ -3,6 +3,8 @@ package com.min01.minsenchantments.util;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
+import com.min01.tickrateapi.util.TickrateUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,6 +30,28 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class EnchantmentUtil
 {
+	public static void setTickrateWithTime(Entity entity, int tickrate, int time)
+	{
+		TickrateUtil.setTickrate(entity, tickrate);
+		entity.getPersistentData().putInt("ForceTickCount", time);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Iterable<Entity> getAllEntities(Level level)
+	{
+		Method m = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
+		try 
+		{
+			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) m.invoke(level);
+			return entities.getAll();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static Entity getEntityByUUID(Level level, UUID uuid)
 	{

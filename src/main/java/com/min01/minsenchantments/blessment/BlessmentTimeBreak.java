@@ -3,12 +3,9 @@ package com.min01.minsenchantments.blessment;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
 import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
-import com.min01.minsenchantments.misc.EnchantmentTags;
 import com.min01.minsenchantments.util.EnchantmentUtil;
-import com.min01.tickrateapi.util.TickrateUtil;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -55,76 +52,11 @@ public class BlessmentTimeBreak extends AbstractBlessment
 					entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
 					{
 						CompoundTag tag = new CompoundTag();
-						tag.putFloat(EnchantmentTags.TIME_BREAK_DURATION, level * (EnchantmentConfig.timeBreakDurationPerLevel.get() * 20));
 						t.setEnchantmentData(this, new EnchantmentData(level, tag));
-						TickrateUtil.setTickrate(entity, 0);
-					});
-					attacker.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
-					{
-						if(t.hasEnchantment(this))
-						{
-							EnchantmentData data = t.getEnchantmentData(this);
-							CompoundTag tag = data.getData();
-							CompoundTag newTag = new CompoundTag();
-							ListTag list = tag.getList("TimeBreakers", 10);
-							newTag.putUUID("TimeBreakUUID", entity.getUUID());
-							list.add(newTag);
-							tag.put("TimeBreakers", list);
-							t.setEnchantmentData(this, new EnchantmentData(level, tag));
-						}
-						else
-						{
-							CompoundTag tag = new CompoundTag();
-							CompoundTag newTag = new CompoundTag();
-							ListTag list = new ListTag();
-							newTag.putUUID("TimeBreakUUID", entity.getUUID());
-							list.add(newTag);
-							tag.put("TimeBreakers", list);
-							t.setEnchantmentData(this, new EnchantmentData(level, tag));
-						}
+						EnchantmentUtil.setTickrateWithTime(entity, 0, level * (EnchantmentConfig.timeBreakDurationPerLevel.get() * 20));
 					});
 				}
 			}
 		}
-	}
-	
-	@Override
-	public void onLivingTick(LivingEntity living)
-	{
-		living.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
-		{
-			if(t.hasEnchantment(this))
-			{
-				EnchantmentData data = t.getEnchantmentData(this);
-				CompoundTag tag = data.getData();
-				if(tag.contains("TimeBreakers", 9))
-				{
-					ListTag list = tag.getList("TimeBreakers", 10);
-					for(int i = 0; i < list.size(); ++i)
-					{
-						CompoundTag compoundTag = list.getCompound(i);
-						Entity entity = EnchantmentUtil.getEntityByUUID(living.level(), compoundTag.getUUID("TimeBreakUUID"));
-						if(entity != null)
-						{
-							entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t2 -> 
-							{
-								if(t2.hasEnchantment(this))
-								{
-									entity.invulnerableTime = 0;
-									EnchantmentData data2 = t2.getEnchantmentData(this);
-									CompoundTag tag2 = data2.getData();
-									tag2.putFloat(EnchantmentTags.TIME_BREAK_DURATION, tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) - 1);
-									if(tag2.getFloat(EnchantmentTags.TIME_BREAK_DURATION) <= 0 || !entity.isAlive())
-									{
-										TickrateUtil.resetTickrate(entity);
-										t2.removeEnchantment(this);
-									}
-								}
-							});
-						}
-					}
-				}
-			}
-		});
 	}
 }

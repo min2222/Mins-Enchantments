@@ -3,6 +3,7 @@ package com.min01.minsenchantments.network;
 import java.util.function.Supplier;
 
 import com.min01.minsenchantments.api.IMinsEnchantment;
+import com.min01.minsenchantments.api.IProjectileEnchantment;
 import com.min01.minsenchantments.init.CustomEnchantments;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,12 +36,17 @@ public class PlayerLeftClickPacket
 			{
 				CustomEnchantments.LIST.forEach(t -> 
 				{
-					if(t instanceof IMinsEnchantment enchantment)
+					ServerPlayer player = ctx.get().getSender();
+					if(player != null)
 					{
-						ServerPlayer player = ctx.get().getSender();
-						if(player != null)
+						if(t instanceof IMinsEnchantment enchantment)
 						{
 							enchantment.onPlayerLeftClickEmpty(player, player.getMainHandItem(), InteractionHand.MAIN_HAND, player.blockPosition());
+						}
+						
+						if(t instanceof IProjectileEnchantment enchantment)
+						{
+							enchantment.onLeftClickEmpty(player, player.getMainHandItem(), InteractionHand.MAIN_HAND, player.blockPosition());
 						}
 					}
 				});

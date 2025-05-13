@@ -25,7 +25,6 @@ public class EnchantmentTags
 	public static final String GRINDING_PROJECTILE_COUNT = "GrindingProjCount";
 	public static final String GRINDING_MINING_COUNT = "GrindingMiningCount";
 	public static final String HEALING_CUTTER_DURATION = "HealingCutterDuration";
-	public static final String TIME_BREAK_DURATION = "TimeBreakDuration";
 	
 	public static final String WATER_BOLT = "WaterBolt";
 	public static final String SHARP_WAVES = "SharpWaves";

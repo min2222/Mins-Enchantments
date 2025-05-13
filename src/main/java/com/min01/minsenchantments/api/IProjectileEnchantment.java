@@ -35,6 +35,18 @@ public interface IProjectileEnchantment
 		});
 	}
 	
+	default void onLeftClickEmpty(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos)
+	{
+		player.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		{
+			int level = stack.getEnchantmentLevel(this.self());
+			if(level > 0)
+			{
+				t.setEnchantmentData(this.self(), new EnchantmentData(level, this.getData(player, stack, 0)));
+			}
+		});
+	}
+	
 	default void onRightClick(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos, @Nullable Direction clickDir)
 	{
 		player.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 

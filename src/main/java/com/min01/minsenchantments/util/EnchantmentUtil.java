@@ -3,8 +3,6 @@ package com.min01.minsenchantments.util;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-import com.min01.tickrateapi.util.TickrateUtil;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,19 +28,20 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class EnchantmentUtil
 {
+	public static final Method GET_ENTITY = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
+	
 	public static void setTickrateWithTime(Entity entity, int tickrate, int time)
 	{
-		TickrateUtil.setTickrate(entity, tickrate);
 		entity.getPersistentData().putInt("ForceTickCount", time);
+		entity.getPersistentData().putInt("TickrateME", tickrate);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static Iterable<Entity> getAllEntities(Level level)
 	{
-		Method m = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
 		try 
 		{
-			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) m.invoke(level);
+			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) GET_ENTITY.invoke(level);
 			return entities.getAll();
 		}
 		catch (Exception e) 
@@ -55,10 +54,9 @@ public class EnchantmentUtil
 	@SuppressWarnings("unchecked")
 	public static Entity getEntityByUUID(Level level, UUID uuid)
 	{
-		Method m = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
 		try 
 		{
-			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) m.invoke(level);
+			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) GET_ENTITY.invoke(level);
 			return entities.get(uuid);
 		}
 		catch (Exception e) 

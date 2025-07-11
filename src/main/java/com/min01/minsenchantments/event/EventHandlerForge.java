@@ -3,7 +3,6 @@ package com.min01.minsenchantments.event;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.collect.Lists;
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.api.IMinsEnchantment;
 import com.min01.minsenchantments.api.IProjectileEnchantment;
@@ -21,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
@@ -57,16 +57,20 @@ public class EventHandlerForge
 	public static void onLevelTick(LevelTickEvent event)
 	{
 		Iterable<Entity> all = EnchantmentUtil.getAllEntities(event.level);
-		Lists.newArrayList(all).stream().filter(t -> t.getPersistentData().contains("ForceTickCount")).forEach(t -> 
+		for(Entity entity : all)
 		{
-			int time = t.getPersistentData().getInt("ForceTickCount");
-			t.getPersistentData().putInt("ForceTickCount", time - 1);
+			if(!(entity instanceof LivingEntity) || !entity.getPersistentData().contains("ForceTickCount"))
+			{
+				continue;
+			}
+			int time = entity.getPersistentData().getInt("ForceTickCount");
+			entity.getPersistentData().putInt("ForceTickCount", time - 1);
+			TickrateUtil.setTickrate(entity, entity.getPersistentData().getInt("TickrateME"));
 			if(time <= 0)
 			{
-				TickrateUtil.resetTickrate(t);
-				t.getPersistentData().remove("ForceTickCount");
+				entity.getPersistentData().remove("ForceTickCount");
 			}
-		});
+		}
 	}
 	
 	@SubscribeEvent

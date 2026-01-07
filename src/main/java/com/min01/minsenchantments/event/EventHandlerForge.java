@@ -65,11 +65,14 @@ public class EventHandlerForge
 			}
 			int time = entity.getPersistentData().getInt("ForceTickCount");
 			entity.getPersistentData().putInt("ForceTickCount", time - 1);
+			TickrateUtil.changeSubEntities(entity, false);
 			TickrateUtil.setTickrate(entity, entity.getPersistentData().getInt("TickrateME"));
-			if(time <= 0)
+			if(time <= 0 || !entity.isAlive())
 			{
 				entity.getPersistentData().remove("ForceTickCount");
 				entity.getPersistentData().remove("TickrateME");
+				TickrateUtil.changeSubEntities(entity, true);
+				TickrateUtil.resetTickrate(entity);
 			}
 		}
 	}

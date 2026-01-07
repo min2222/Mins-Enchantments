@@ -49,14 +49,11 @@ public class EnchantmentMermaidsBlessing extends AbstractOceanEnchantment
 					int level = EnchantmentHelper.getEnchantmentLevel(this, livingTarget);
 					if(level > 0)
 					{
-						if(livingTarget.isInWater() && livingTarget instanceof Player player)
+						if(livingTarget.isInWater() && livingTarget instanceof Player)
 						{
-							if(player.isSwimming())
+							if(mob.getHealth() <= level * EnchantmentConfig.mermaidsBlessingMaxMobHealthPerLevel.get() && mob.getAttribute(Attributes.ATTACK_DAMAGE) != null && mob.getAttributeBaseValue(Attributes.ATTACK_DAMAGE) <= level * EnchantmentConfig.mermaidsBlessingMaxMobDamagePerLevel.get())
 							{
-								if(mob.getHealth() <= level * EnchantmentConfig.mermaidsBlessingMaxMobHealthPerLevel.get() && mob.getAttribute(Attributes.ATTACK_DAMAGE) != null && mob.getAttributeBaseValue(Attributes.ATTACK_DAMAGE) <= level * EnchantmentConfig.mermaidsBlessingMaxMobDamagePerLevel.get())
-								{
-									mob.setTarget(null);
-								}
+								mob.setTarget(null);
 							}
 						}
 					}

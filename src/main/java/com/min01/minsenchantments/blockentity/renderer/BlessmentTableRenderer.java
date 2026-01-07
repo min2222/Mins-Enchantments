@@ -24,7 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class BlessmentTableRenderer implements BlockEntityRenderer<BlessmentTableBlockEntity>
 {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MinsEnchantments.MODID, "bless_core"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "bless_core"), "main");
 	private static final float SIN_45 = (float)Math.sin((Math.PI / 4D));
 	private final ModelPart core;
 	private final ModelPart out;
@@ -74,7 +74,7 @@ public class BlessmentTableRenderer implements BlockEntityRenderer<BlessmentTabl
 	{
 		p_112309_.pushPose();
 		float f1 = ((float)p_112307_.time + p_112308_) * 3.0F;
-		VertexConsumer vertexConsumer = p_112310_.getBuffer(RenderType.entityCutout(new ResourceLocation(MinsEnchantments.MODID, "textures/block/bless_core.png")));
+		VertexConsumer vertexConsumer = p_112310_.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "textures/block/bless_core.png")));
 		p_112309_.translate(0.5, 1.5D, 0.5);
 		p_112309_.scale(0.7F, 0.7F, 0.7F);
 		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));

@@ -21,9 +21,9 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<OceanEnchantmentMenu>
 {
-	public static final ResourceLocation SHELL_TEXTURE = new ResourceLocation("textures/entity/conduit/base.png");
-	public static final ResourceLocation ACTIVE_SHELL_TEXTURE = new ResourceLocation("textures/entity/conduit/cage.png");
-	public static final ResourceLocation OPEN_EYE_TEXTURE = new ResourceLocation("textures/entity/conduit/open_eye.png");
+	public static final ResourceLocation SHELL_TEXTURE = ResourceLocation.parse("textures/entity/conduit/base.png");
+	public static final ResourceLocation ACTIVE_SHELL_TEXTURE = ResourceLocation.parse("textures/entity/conduit/cage.png");
+	public static final ResourceLocation OPEN_EYE_TEXTURE = ResourceLocation.parse("textures/entity/conduit/open_eye.png");
 	
 	private final ModelPart eye;
 	private final ModelPart shell;

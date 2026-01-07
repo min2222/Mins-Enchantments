@@ -14,7 +14,7 @@ public class EnchantmentNetwork
 	public static int ID;
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel CHANNEL = 
-    		NetworkRegistry.newSimpleChannel(new ResourceLocation(MinsEnchantments.MODID, "enchantment_channel"), 
+    		NetworkRegistry.newSimpleChannel(ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, MinsEnchantments.MODID), 
     				() -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 	
 	public static void registerMessages()

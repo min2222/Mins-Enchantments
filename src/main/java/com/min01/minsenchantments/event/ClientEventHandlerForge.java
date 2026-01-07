@@ -20,10 +20,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderBlockScreenEffectEvent;
+import net.minecraftforge.client.event.RenderBlockScreenEffectEvent.OverlayType;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -60,10 +63,24 @@ public class ClientEventHandlerForge
     	}
     }
     
+    @SubscribeEvent
+    public static void onRenderBlockScreenEffect(RenderBlockScreenEffectEvent event)
+    {
+    	Player player = event.getPlayer();
+    	if(event.getOverlayType() == OverlayType.WATER)
+    	{
+    		int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.AIR_SWIMMING.get(), player);
+    		if(level > 0)
+    		{
+        		event.setCanceled(true);
+    		}
+    	}
+    }
+    
 	private static void renderSoulFlame(PoseStack p_114454_, MultiBufferSource p_114455_, Entity p_114456_)
 	{
-		Material soulfire = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("block/soul_fire_0"));
-		Material soulfire1 = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("block/soul_fire_1"));
+		Material soulfire = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("block/soul_fire_0"));
+		Material soulfire1 = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("block/soul_fire_1"));
 		TextureAtlasSprite textureatlassprite = soulfire.sprite();
 		TextureAtlasSprite textureatlassprite1 = soulfire1.sprite();
 		p_114454_.pushPose();

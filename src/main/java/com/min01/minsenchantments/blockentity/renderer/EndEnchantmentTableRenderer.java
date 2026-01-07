@@ -19,7 +19,7 @@ import net.minecraft.util.Mth;
 
 public class EndEnchantmentTableRenderer implements BlockEntityRenderer<EndEnchantmentTableBlockEntity>
 {
-	private static final ResourceLocation END_CRYSTAL_LOCATION = new ResourceLocation("textures/entity/end_crystal/end_crystal.png");
+	private static final ResourceLocation END_CRYSTAL_LOCATION = ResourceLocation.parse("textures/entity/end_crystal/end_crystal.png");
 	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(END_CRYSTAL_LOCATION);
 	private static final float SIN_45 = (float)Math.sin((Math.PI / 4D));
 	private final ModelPart cube;

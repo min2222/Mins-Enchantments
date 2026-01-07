@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface IEnchantmentCapability extends INBTSerializable<CompoundTag>
 {
-	ResourceLocation ID = new ResourceLocation(MinsEnchantments.MODID, "mins_enchantment");
+	ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "mins_enchantment");
 
 	void setEntity(Entity entity);
 

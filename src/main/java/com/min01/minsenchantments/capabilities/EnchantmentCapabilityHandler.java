@@ -38,7 +38,7 @@ public class EnchantmentCapabilityHandler implements IEnchantmentCapability
 	@Override
 	public void deserializeNBT(CompoundTag nbt)
 	{
-		this.enchantMap.put(ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(nbt.getString("Enchantment"))), EnchantmentData.read(nbt));
+		this.enchantMap.put(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.parse(nbt.getString("Enchantment"))), EnchantmentData.read(nbt));
 	}
 
 	@Override

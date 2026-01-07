@@ -2,7 +2,9 @@ package com.min01.minsenchantments.blessment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.config.EnchantmentConfig;
@@ -14,13 +16,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class BlessmentGodHand extends AbstractBlessment
 {
-	public static final Map<Item, ItemStack> ITEM_MAP = new HashMap<>();
+	public static final Map<UUID, Pair<ItemStack, Integer>> ITEM_MAP = new HashMap<>();
 	
 	public BlessmentGodHand()
 	{
@@ -51,11 +52,7 @@ public class BlessmentGodHand extends AbstractBlessment
 		int level = stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get());
 		if(level > 0)
 		{
-			ITEM_MAP.put(stack.getItem(), stack);
-		}
-		else if(ITEM_MAP.containsValue(stack))
-		{
-			ITEM_MAP.remove(stack.getItem(), stack);
+			ITEM_MAP.put(entity.getUUID(), Pair.of(stack, level));
 		}
 		return super.onLivingEntityStopUseItem(entity, stack, duration);
 	}
@@ -66,11 +63,7 @@ public class BlessmentGodHand extends AbstractBlessment
 		int level = stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get());
 		if(level > 0)
 		{
-			ITEM_MAP.put(stack.getItem(), stack);
-		}
-		else if(ITEM_MAP.containsValue(stack))
-		{
-			ITEM_MAP.remove(stack.getItem(), stack);
+			ITEM_MAP.put(player.getUUID(), Pair.of(stack, level));
 		}
 	}
 	
@@ -80,11 +73,7 @@ public class BlessmentGodHand extends AbstractBlessment
 		int level = stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get());
 		if(level > 0)
 		{
-			ITEM_MAP.put(stack.getItem(), stack);
-		}
-		else if(ITEM_MAP.containsValue(stack))
-		{
-			ITEM_MAP.remove(stack.getItem(), stack);
+			ITEM_MAP.put(player.getUUID(), Pair.of(stack, level));
 		}
 	}
 	
@@ -94,11 +83,7 @@ public class BlessmentGodHand extends AbstractBlessment
 		int level = stack.getEnchantmentLevel(CustomEnchantments.GOD_HAND.get());
 		if(level > 0)
 		{
-			ITEM_MAP.put(stack.getItem(), stack);
-		}
-		else if(ITEM_MAP.containsValue(stack))
-		{
-			ITEM_MAP.remove(stack.getItem(), stack);
+			ITEM_MAP.put(player.getUUID(), Pair.of(stack, level));
 		}
 	}
 }

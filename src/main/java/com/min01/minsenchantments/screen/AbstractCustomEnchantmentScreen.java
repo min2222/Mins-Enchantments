@@ -33,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEnchantmentMenu> extends AbstractContainerScreen<T>
 {
-	private static final ResourceLocation ENCHANTING_BOOK_LOCATION = new ResourceLocation("textures/entity/enchanting_table_book.png");
+	private static final ResourceLocation ENCHANTING_BOOK_LOCATION = ResourceLocation.parse("textures/entity/enchanting_table_book.png");
 	private final RandomSource random = RandomSource.create();
 	private BookModel bookModel;
 	public int time;
@@ -259,7 +259,7 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 	
 	public ResourceLocation getBackgroundLocation()
 	{
-		return new ResourceLocation("textures/gui/container/enchanting_table.png");
+		return ResourceLocation.parse("textures/gui/container/enchanting_table.png");
 	}
 	
 	private void renderBook(GuiGraphics p_289697_, int p_289667_, int p_289669_, float p_289670_) 

@@ -51,7 +51,7 @@ public class BlessmentScreen extends AbstractCustomEnchantmentScreen<BlessmentMe
 	{
 		stack.pushPose();
 		float f1 = ((float)this.time + partialTick) * 3.0F;
-		VertexConsumer vertexConsumer = multibuffersource$buffersource.getBuffer(RenderType.entityCutout(new ResourceLocation(MinsEnchantments.MODID, "textures/block/bless_core.png")));
+		VertexConsumer vertexConsumer = multibuffersource$buffersource.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "textures/block/bless_core.png")));
 		stack.translate(0, 0.6D, 0);
 		stack.scale(0.7F, 0.7F, 0.7F);
 		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));

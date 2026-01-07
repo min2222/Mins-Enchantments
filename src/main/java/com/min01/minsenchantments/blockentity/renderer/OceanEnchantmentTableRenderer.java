@@ -22,11 +22,11 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 public class OceanEnchantmentTableRenderer implements BlockEntityRenderer<OceanEnchantmentTableBlockEntity>
 {
-	public static final Material SHELL_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("entity/conduit/base"));
-	public static final Material ACTIVE_SHELL_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("entity/conduit/cage"));
-	public static final Material WIND_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("entity/conduit/wind"));
-	public static final Material VERTICAL_WIND_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("entity/conduit/wind_vertical"));
-	public static final Material OPEN_EYE_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("entity/conduit/open_eye"));
+	public static final Material SHELL_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/base"));
+	public static final Material ACTIVE_SHELL_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/cage"));
+	public static final Material WIND_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/wind"));
+	public static final Material VERTICAL_WIND_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/wind_vertical"));
+	public static final Material OPEN_EYE_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/open_eye"));
 	private final ModelPart eye;
 	private final ModelPart wind;
 	private final ModelPart shell;

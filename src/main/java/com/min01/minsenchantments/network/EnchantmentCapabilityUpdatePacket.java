@@ -50,7 +50,7 @@ public class EnchantmentCapabilityUpdatePacket
 				Entity entity = ClientEventHandlerForge.MC.level.getEntity(message.entityId);
 				entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
 				{
-					t.setEnchantmentData(ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(message.enchant)), EnchantmentData.read(message.tag));
+					t.setEnchantmentData(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.parse(message.enchant)), EnchantmentData.read(message.tag));
 				});
 			});
 			ctx.get().setPacketHandled(true);

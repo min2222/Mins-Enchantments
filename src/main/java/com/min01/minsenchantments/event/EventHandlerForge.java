@@ -69,6 +69,7 @@ public class EventHandlerForge
 			if(time <= 0)
 			{
 				entity.getPersistentData().remove("ForceTickCount");
+				entity.getPersistentData().remove("TickrateME");
 			}
 		}
 	}
@@ -76,7 +77,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event)
 	{
-		//this event only fire in client side, so don't need to check isClientSide
+		//this event only fire in client side, so no need to check isClientSide
 		EnchantmentNetwork.CHANNEL.sendToServer(new PlayerLeftClickPacket());
 	}
 	
@@ -423,7 +424,7 @@ public class EventHandlerForge
                     int level = entry.getValue();
                     if(null == ench || 0 == level) { continue; }
                     
-                    if(canApplyEnchant(left, ench)) 
+                    if(canApplyEnchant(left, ench) && right.is(Items.ENCHANTED_BOOK)) 
                     {
                         int currentLevel = 0;
                         if(currentEnchants.containsKey(ench))
@@ -512,7 +513,6 @@ public class EventHandlerForge
             if(Items.BOOK == event.getRight().getItem())
             {
                 ItemStack left = event.getLeft();
-
                 boolean isEnchantedBook = false;
                 ListTag enchTags;
                 if(left.getItem() instanceof EnchantedBookItem) 

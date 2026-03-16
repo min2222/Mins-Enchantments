@@ -17,15 +17,15 @@ public class EnchantmentUndeadCurse extends AbstractCurseEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.undeadCurseMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.undeadCurseMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.undeadCurseMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.undeadCurseMaxCost.get();
+		return EnchantmentConfig.undeadCurseMinCost.get() + (pLevel - 1) * EnchantmentConfig.undeadCurseMaxCost.get();
 	}
 	
 	@Override
@@ -39,13 +39,13 @@ public class EnchantmentUndeadCurse extends AbstractCurseEnchantment
 	public void onLivingTick(LivingEntity living) 
 	{
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
-		if (level > 0 && living.level().isDay() && !living.level().isClientSide)
+		if(level > 0 && living.level.isDay() && !living.level.isClientSide)
 		{
-			Level world = living.level();
+			Level world = living.level;
 			float f = living.getLightLevelDependentMagicValue();
 			BlockPos blockpos = BlockPos.containing(living.getX(), living.getEyeY(), living.getZ());
 			boolean flag = living.isInWaterRainOrBubble() || living.isInPowderSnow || living.wasInPowderSnow;
-			if (f > 0.5F && world.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && !flag && living.level().canSeeSky(blockpos)) 
+			if(f > 0.5F && world.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && !flag && living.level.canSeeSky(blockpos)) 
 			{
 				living.setSecondsOnFire(level * (EnchantmentConfig.undeadCurseFireDurationPerLevel.get() * 20));
 			}

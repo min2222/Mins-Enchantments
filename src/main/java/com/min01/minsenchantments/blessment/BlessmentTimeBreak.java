@@ -1,7 +1,7 @@
 package com.min01.minsenchantments.blessment;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.util.EnchantmentUtil;
 
@@ -20,15 +20,15 @@ public class BlessmentTimeBreak extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.timeBreakMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.timeBreakMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.timeBreakMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.timeBreakMaxCost.get();
+		return EnchantmentConfig.timeBreakMinCost.get() + (pLevel - 1) * EnchantmentConfig.timeBreakMaxCost.get();
 	}
 	
 	@Override
@@ -38,18 +38,17 @@ public class BlessmentTimeBreak extends AbstractBlessment
 	}
 	
 	@Override
-	public void onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount)
+	public boolean onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount)
 	{
 		Entity source = damageSource.getEntity();
-		
-		if(source != null && source instanceof LivingEntity attacker)
+		if(source instanceof LivingEntity attacker)
 		{
 			int level = attacker.getMainHandItem().getEnchantmentLevel(this);
 			if(level > 0)
 			{
 				if(Math.random() <= (level * EnchantmentConfig.timeBreakChancePerLevel.get()) / 100)
 				{
-					entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+					entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 					{
 						CompoundTag tag = new CompoundTag();
 						t.setEnchantmentData(this, new EnchantmentData(level, tag));
@@ -58,5 +57,6 @@ public class BlessmentTimeBreak extends AbstractBlessment
 				}
 			}
 		}
+		return super.onLivingAttack(entity, damageSource, amount);
 	}
 }

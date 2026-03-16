@@ -16,15 +16,15 @@ public class BlessmentHeartSteal extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.heartStealMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.heartStealMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.heartStealMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.heartStealMaxCost.get();
+		return EnchantmentConfig.heartStealMinCost.get() + (pLevel - 1) * EnchantmentConfig.heartStealMaxCost.get();
 	}
 	
 	@Override
@@ -34,11 +34,10 @@ public class BlessmentHeartSteal extends AbstractBlessment
 	}
 	
 	@Override
-	public void onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount) 
+	public boolean onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount) 
 	{
 		Entity source = damageSource.getEntity();
-		
-		if(source != null && source instanceof LivingEntity attacker)
+		if(source instanceof LivingEntity attacker)
 		{
 			int level = attacker.getMainHandItem().getEnchantmentLevel(this);
 			if(level > 0)
@@ -49,5 +48,6 @@ public class BlessmentHeartSteal extends AbstractBlessment
 				}
 			}
 		}
+		return super.onLivingAttack(entity, damageSource, amount);
 	}
 }

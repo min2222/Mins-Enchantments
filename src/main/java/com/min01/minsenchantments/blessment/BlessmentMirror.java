@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -19,15 +20,15 @@ public class BlessmentMirror extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.mirrorMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.mirrorMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.mirrorMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.mirrorMaxCost.get();
+		return EnchantmentConfig.mirrorMinCost.get() + (pLevel - 1) * EnchantmentConfig.mirrorMaxCost.get();
 	}
 	
 	@Override
@@ -42,16 +43,16 @@ public class BlessmentMirror extends AbstractBlessment
 		if(ray instanceof EntityHitResult entityHit)
 		{
 			Entity entity = entityHit.getEntity();
-			if(entity instanceof LivingEntity living)
+			if(entity instanceof LivingEntity living && living.isBlocking())
 			{
-				int level = living.getOffhandItem().getEnchantmentLevel(this);
-				if(level > 0 && living.isBlocking())
+				int level = living.getUseItem().getEnchantmentLevel(this);
+				if(level > 0)
 				{
 					if(Math.random() <= (level * EnchantmentConfig.mirrorReflectChancePerLevel.get()) / 100)
 					{
 						projectile.setDeltaMovement(projectile.getDeltaMovement().reverse());
 						projectile.setOwner(living);
-						projectile.hasImpulse = true;
+						projectile.hurtMarked= true;
 					}
 				}
 			}
@@ -59,15 +60,19 @@ public class BlessmentMirror extends AbstractBlessment
 	}
 	
 	@Override
-	public void onLivingAttack(LivingEntity living, DamageSource damageSource, float amount)
+	public void onShieldBlock(LivingEntity living, DamageSource damageSource, float amount)
 	{
 		Entity source = damageSource.getEntity();
 		Entity directSource = damageSource.getDirectEntity();
-		
-		if(source != null && source instanceof LivingEntity attacker)
+		if(source instanceof LivingEntity attacker)
 		{
-			int level = living.getOffhandItem().getEnchantmentLevel(this);
-			if(level > 0 && living.isBlocking())
+			ItemStack stack = living.getOffhandItem();
+			if(stack.isEmpty())
+			{
+				stack = living.getMainHandItem();
+			}
+			int level = stack.getEnchantmentLevel(this);
+			if(level > 0)
 			{
 				if(!(directSource instanceof Projectile))
 				{

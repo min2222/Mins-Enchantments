@@ -1,7 +1,7 @@
 package com.min01.minsenchantments.enchantment.nether;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.misc.EnchantmentTags;
 
@@ -20,15 +20,15 @@ public class EnchantmentSoulFire extends AbstractNetherEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.soulFireMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.soulFireMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.soulFireMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.soulFireMaxCost.get();
+		return EnchantmentConfig.soulFireMinCost.get() + (pLevel - 1) * EnchantmentConfig.soulFireMaxCost.get();
 	}
 	
 	@Override
@@ -40,22 +40,21 @@ public class EnchantmentSoulFire extends AbstractNetherEnchantment
 	@Override
 	public void onLivingTick(LivingEntity living) 
 	{
-		living.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t ->
+		living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t ->
 		{
 			if(t.hasEnchantment(this))
 			{
 				EnchantmentData data = t.getEnchantmentData(this);
 				CompoundTag tag = data.getData();
 				int remainingSoulFireTicks = tag.getInt(EnchantmentTags.SOUL_FIRE);
-				if (remainingSoulFireTicks > 0) 
+				if(remainingSoulFireTicks > 0) 
 				{
-					if (!living.fireImmune())
+					if(!living.fireImmune())
 					{
-			            if (remainingSoulFireTicks % 20 == 0 && !living.isInLava()) 
+			            if(remainingSoulFireTicks % 20 == 0 && !living.isInLava()) 
 			            {
 			            	living.hurt(living.damageSources().onFire(), 2.0F);
 			            }
-			            
 			            tag.putInt(EnchantmentTags.SOUL_FIRE, remainingSoulFireTicks - 1);
 					}
 					t.setEnchantmentData(this, new EnchantmentData(data.getEnchantLevel(), tag));
@@ -69,7 +68,7 @@ public class EnchantmentSoulFire extends AbstractNetherEnchantment
 	}
 	
 	@Override
-	public void onLivingAttack(LivingEntity living, DamageSource damageSource, float amount)
+	public boolean onLivingAttack(LivingEntity living, DamageSource damageSource, float amount)
 	{
 		Entity source = damageSource.getEntity();
 		if(source != null && source instanceof LivingEntity attacker)
@@ -77,7 +76,7 @@ public class EnchantmentSoulFire extends AbstractNetherEnchantment
 			int level = attacker.getMainHandItem().getEnchantmentLevel(this);
 			if(!living.isOnFire() && level > 0)
 			{
-				living.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t ->
+				living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t ->
 				{
 					CompoundTag tag = new CompoundTag();
 					tag.putInt(EnchantmentTags.SOUL_FIRE, level * (EnchantmentConfig.soulFireDurationPerLevel.get() * 20));
@@ -85,5 +84,6 @@ public class EnchantmentSoulFire extends AbstractNetherEnchantment
 				});
 			}
 		}
+		return super.onLivingAttack(living, damageSource, amount);
 	}
 }

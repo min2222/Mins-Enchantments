@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -22,9 +23,9 @@ public class NetherEnchantmentScreen extends AbstractCustomEnchantmentScreen<Net
 	private boolean isActive;
 	public int tickCount;
 	
-	public NetherEnchantmentScreen(NetherEnchantmentMenu p_98754_, Inventory p_98755_, Component p_98756_)
+	public NetherEnchantmentScreen(NetherEnchantmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
-		super(p_98754_, p_98755_, p_98756_);
+		super(pMenu, pPlayerInventory, pTitle);
 	}
 	
 	@Override
@@ -42,53 +43,52 @@ public class NetherEnchantmentScreen extends AbstractCustomEnchantmentScreen<Net
 	}
 	
 	@Override
-	public void renderCustom(PoseStack stack, float partialTick, BufferSource multibuffersource$buffersource)
+	public void renderCustom(PoseStack stack, float partialTick, BufferSource buffersource)
 	{		
 		stack.pushPose();
 		stack.translate(0, 0.5, 0);
 		stack.mulPose(Axis.YP.rotationDegrees(this.tickCount));
 		stack.scale(1, -1, 1);
-		this.minecraft.getItemRenderer().renderStatic(new ItemStack(Items.WITHER_SKELETON_SKULL), ItemDisplayContext.HEAD, 15728880, OverlayTexture.NO_OVERLAY, stack, multibuffersource$buffersource, this.minecraft.level, 0);
+		this.minecraft.getItemRenderer().renderStatic(new ItemStack(Items.WITHER_SKELETON_SKULL), ItemDisplayContext.HEAD, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, stack, buffersource, this.minecraft.level, 0);
 		stack.popPose();
 		
 		if(this.isActive)
 		{
 			stack.scale(0.5F, 0.5F, 0.5F);
 			stack.translate(0, 2, 0);
-			this.renderFlame(stack, multibuffersource$buffersource);
+			this.renderFlame(stack, buffersource);
 		}
 	}
 	
-	private void renderFlame(PoseStack p_114454_, MultiBufferSource p_114455_)
+	private void renderFlame(PoseStack pPoseStack, MultiBufferSource pBuffer)
 	{
 		TextureAtlasSprite textureatlassprite = ModelBakery.FIRE_0.sprite();
 		TextureAtlasSprite textureatlassprite1 = ModelBakery.FIRE_1.sprite();
-		p_114454_.pushPose();
-		float f = 1 * 1.4F;
-		p_114454_.scale(f, f, f);
+		pPoseStack.pushPose();
+		float f = 1.4F;
+		pPoseStack.scale(f, f, f);
 		float f1 = 0.5F;
 		float f3 = 1 / f;
 		float f4 = 0.0F;
-		p_114454_.mulPose(Axis.ZP.rotationDegrees(180));
-		p_114454_.translate(0.0F, 0.0F, -0.3F + (float)((int)f3) * 0.02F);
+		pPoseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+		pPoseStack.translate(0.0F, 0.0F, -0.3F + (float)((int)f3) * 0.02F);
 		float f5 = 0.0F;
 		int i = 0;
-		VertexConsumer vertexconsumer = p_114455_.getBuffer(Sheets.cutoutBlockSheet());
+		VertexConsumer vertexconsumer = pBuffer.getBuffer(Sheets.cutoutBlockSheet());
 
-		for(PoseStack.Pose posestack$pose = p_114454_.last(); f3 > 0.0F; ++i) 
+		for(PoseStack.Pose posestack$pose = pPoseStack.last(); f3 > 0.0F; ++i)
 		{
 			TextureAtlasSprite textureatlassprite2 = i % 2 == 0 ? textureatlassprite : textureatlassprite1;
 			float f6 = textureatlassprite2.getU0();
 			float f7 = textureatlassprite2.getV0();
 			float f8 = textureatlassprite2.getU1();
 			float f9 = textureatlassprite2.getV1();
-			if (i / 2 % 2 == 0)
+			if(i / 2 % 2 == 0) 
 			{
 				float f10 = f8;
 				f8 = f6;
 				f6 = f10;
 			}
-			
 			fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 0.0F - f4, f5, f8, f9);
 			fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 0.0F - f4, f5, f6, f9);
 			fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 1.4F - f4, f5, f6, f7);
@@ -98,13 +98,12 @@ public class NetherEnchantmentScreen extends AbstractCustomEnchantmentScreen<Net
 			f1 *= 0.9F;
 			f5 += 0.03F;
 		}
-		
-		p_114454_.popPose();
+		pPoseStack.popPose();
 	}
-	
-	private static void fireVertex(PoseStack.Pose p_114415_, VertexConsumer p_114416_, float p_114417_, float p_114418_, float p_114419_, float p_114420_, float p_114421_)
+
+	private static void fireVertex(PoseStack.Pose pMatrixEntry, VertexConsumer pBuffer, float pX, float pY, float pZ, float pTexU, float pTexV)
 	{
-		p_114416_.vertex(p_114415_.pose(), p_114417_, p_114418_, p_114419_).color(255, 255, 255, 255).uv(p_114420_, p_114421_).overlayCoords(0, 10).uv2(240).normal(p_114415_.normal(), 0.0F, 1.0F, 0.0F).endVertex();
+		pBuffer.vertex(pMatrixEntry.pose(), pX, pY, pZ).color(255, 255, 255, 255).uv(pTexU, pTexV).overlayCoords(0, 10).uv2(240).normal(pMatrixEntry.normal(), 0.0F, 1.0F, 0.0F).endVertex();
 	}
 	
 	@Override

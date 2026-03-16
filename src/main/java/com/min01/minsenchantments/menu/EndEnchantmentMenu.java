@@ -13,14 +13,14 @@ import net.minecraft.world.level.block.Block;
 
 public class EndEnchantmentMenu extends AbstractCustomEnchantmentMenu
 {
-	public EndEnchantmentMenu(int p_39454_, Inventory p_39455_) 
+	public EndEnchantmentMenu(int pId, Inventory pPlayerInventory) 
 	{
-		this(p_39454_, p_39455_, ContainerLevelAccess.NULL);
+		this(pId, pPlayerInventory, ContainerLevelAccess.NULL);
 	}
 	
-	public EndEnchantmentMenu(int p_39457_, Inventory p_39458_, ContainerLevelAccess p_39459_) 
+	public EndEnchantmentMenu(int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess pAccess) 
 	{
-		super(CustomMenuType.END_ENCHANTMENT.get(), p_39457_, p_39458_, p_39459_);
+		super(CustomMenuType.END_ENCHANTMENT.get(), pContainerId, pPlayerInventory, pAccess);
 	}
 
 	@Override

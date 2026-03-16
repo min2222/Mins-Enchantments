@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -15,17 +16,17 @@ import net.minecraft.world.item.Items;
 
 public class NetherEnchantmentTableRenderer implements BlockEntityRenderer<NetherEnchantmentTableBlockEntity>
 {
-	public NetherEnchantmentTableRenderer(BlockEntityRendererProvider.Context p_173613_) 
+	public NetherEnchantmentTableRenderer(BlockEntityRendererProvider.Context ctx) 
 	{
 		
 	}
 	
 	@Override
-	public void render(NetherEnchantmentTableBlockEntity p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_)
+	public void render(NetherEnchantmentTableBlockEntity pBlockEntity, float p_112308_, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay)
 	{
 		Minecraft mc = Minecraft.getInstance();
-		p_112309_.translate(0.5, 1.5, 0.5);
-		p_112309_.mulPose(Axis.YP.rotationDegrees(p_112307_.tickCount));
-		mc.getItemRenderer().renderStatic(new ItemStack(Items.WITHER_SKELETON_SKULL), ItemDisplayContext.HEAD, 15728880, OverlayTexture.NO_OVERLAY, p_112309_, p_112310_, p_112307_.getLevel(), 0);
+		pPoseStack.translate(0.5F, 1.5F, 0.5F);
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.tickCount));
+		mc.getItemRenderer().renderStatic(new ItemStack(Items.WITHER_SKELETON_SKULL), ItemDisplayContext.HEAD, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, pPoseStack, pBuffer, pBlockEntity.getLevel(), 0);
 	}
 }

@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 
 import net.minecraft.core.BlockPos;
@@ -25,7 +25,7 @@ public interface IProjectileEnchantment
 {
 	default void onUseTick(LivingEntity entity, @NotNull ItemStack item, int duration)
 	{
-		entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 		{
 			int level = item.getEnchantmentLevel(this.self());
 			if(level > 0)
@@ -37,7 +37,7 @@ public interface IProjectileEnchantment
 	
 	default void onLeftClickEmpty(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos)
 	{
-		player.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		player.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 		{
 			int level = stack.getEnchantmentLevel(this.self());
 			if(level > 0)
@@ -49,7 +49,7 @@ public interface IProjectileEnchantment
 	
 	default void onRightClick(Player player, ItemStack stack, InteractionHand hand, BlockPos clickPos, @Nullable Direction clickDir)
 	{
-		player.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		player.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 		{
 			int level = stack.getEnchantmentLevel(this.self());
 			if(level > 0)
@@ -61,7 +61,7 @@ public interface IProjectileEnchantment
 	
 	default void onStopUse(LivingEntity entity, @NotNull ItemStack item, int duration)
 	{
-		entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 		{
 			int level = item.getEnchantmentLevel(this.self());
 			if(level > 0)
@@ -78,7 +78,7 @@ public interface IProjectileEnchantment
 			Entity owner = projectile.getOwner();
 			if(owner != null)
 			{
-				owner.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+				owner.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 				{
 					if(!(owner instanceof Player) && owner instanceof LivingEntity living)
 					{
@@ -91,7 +91,7 @@ public interface IProjectileEnchantment
 					}
 					if(t.hasEnchantment(this.self()))
 					{
-						projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t2 -> 
+						projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t2 -> 
 						{
 							if(!t2.hasEnchantment(this.self()))
 							{
@@ -112,7 +112,7 @@ public interface IProjectileEnchantment
 		Entity owner = projectile.getOwner();
 		if(owner != null)
 		{
-			projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+			projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 			{
 				if(t.hasEnchantment(this.self()))
 				{

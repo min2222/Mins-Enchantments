@@ -3,7 +3,7 @@ package com.min01.minsenchantments.blessment;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -31,15 +31,15 @@ public class BlessmentGrinding extends AbstractBlessment implements IProjectileE
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.grindingMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.grindingMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.grindingMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.grindingMaxCost.get();
+		return EnchantmentConfig.grindingMinCost.get() + (pLevel - 1) * EnchantmentConfig.grindingMaxCost.get();
 	}
 	
 	@Override
@@ -115,9 +115,9 @@ public class BlessmentGrinding extends AbstractBlessment implements IProjectileE
 		
 		if(entity instanceof Projectile projectile)
 		{
-			if(projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).isPresent())
+			if(projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).isPresent())
 			{
-				IEnchantmentCapability t = projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).orElseGet(null);
+				IEnchantmentCapability t = projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElseGet(null);
 				if(t.hasEnchantment(this))
 				{
 					float damage = t.getEnchantmentData(this).getData().getFloat(EnchantmentTags.GRINDING_PROJECTILE);

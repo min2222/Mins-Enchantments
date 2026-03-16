@@ -3,7 +3,7 @@ package com.min01.minsenchantments.enchantment.normal;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -28,15 +28,15 @@ public class EnchantmentRecochet extends AbstractMinsEnchantment implements IPro
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.recochetMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.recochetMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.recochetMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.recochetMaxCost.get();
+		return EnchantmentConfig.recochetMinCost.get() + (pLevel - 1) * EnchantmentConfig.recochetMaxCost.get();
 	}
 	
 	@Override

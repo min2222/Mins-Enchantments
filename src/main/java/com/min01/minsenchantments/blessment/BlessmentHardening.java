@@ -28,15 +28,15 @@ public class BlessmentHardening extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.hardeningMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.hardeningMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.hardeningMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.hardeningMaxCost.get();
+		return EnchantmentConfig.hardeningMinCost.get() + (pLevel - 1) * EnchantmentConfig.hardeningMaxCost.get();
 	}
 	
 	@Override

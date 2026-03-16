@@ -362,7 +362,7 @@ public class EnchantmentConfig
     	EnchantmentConfig.returningMinCost = config.comment("minimum enchantability for returning blessment").define("returningMinCost", 1);
     	EnchantmentConfig.returningMaxCost = config.comment("maximum enchantability for returning blessment").define("returningMaxCost", 11);
     	
-    	EnchantmentConfig.returningDurabilityPerLevel = config.comment("minimum durability required for each level of returning blessment").define("returningDurabilityPerLevel", 1000);
+    	EnchantmentConfig.returningDurabilityPerLevel = config.comment("minimum durability required for each level of returning blessment").define("returningDurabilityPerLevel", 10);
     	
     	EnchantmentConfig.homingMinCost = config.comment("minimum enchantability for homing blessment").define("homingMinCost", 1);
     	EnchantmentConfig.homingMaxCost = config.comment("maximum enchantability for homing blessment").define("homingMaxCost", 11);
@@ -469,8 +469,8 @@ public class EnchantmentConfig
     	EnchantmentConfig.tideMinCost = config.comment("minimum enchantability for tide enchantment").define("tideMinCost", 1);
     	EnchantmentConfig.tideMaxCost = config.comment("maximum enchantability for tide enchantment").define("tideMaxCost", 11);
     	
-    	EnchantmentConfig.tideMaxSpeedPerLevel = config.comment("maximum speed for each level of tide enchantment").define("tideMaxSpeedPerLevel", 0.01F);
-    	EnchantmentConfig.tideSpeedPerLevel = config.comment("tide speed for each level of tide enchantment").define("tideSpeedPerLevel", 0.002F);
+    	EnchantmentConfig.tideMaxSpeedPerLevel = config.comment("maximum speed for each level of tide enchantment").define("tideMaxSpeedPerLevel", 0.5F);
+    	EnchantmentConfig.tideSpeedPerLevel = config.comment("tide speed for each level of tide enchantment").define("tideSpeedPerLevel", 0.05F);
     	
     	EnchantmentConfig.poseidonsGraceMinCost = config.comment("minimum enchantability for poseidon's grace enchantment").define("poseidonsGraceMinCost", 1);
     	EnchantmentConfig.poseidonsGraceMaxCost = config.comment("maximum enchantability for poseidon's grace enchantment").define("poseidonsGraceMaxCost", 11);
@@ -480,7 +480,7 @@ public class EnchantmentConfig
     	EnchantmentConfig.wavesProtectionMinCost = config.comment("minimum enchantability for wave's protection enchantment").define("wavesProtectionMinCost", 1);
     	EnchantmentConfig.wavesProtectionMaxCost = config.comment("maximum enchantability for wave's protection enchantment").define("wavesProtectionMaxCost", 11);
     	
-    	EnchantmentConfig.wavesProtectionSpeedPerLevel = config.comment("effect speed for each level of wave's protection enchantment").define("wavesProtectionSpeedPerLevel", 0.1F);
+    	EnchantmentConfig.wavesProtectionSpeedPerLevel = config.comment("effect speed for each level of wave's protection enchantment").define("wavesProtectionSpeedPerLevel", 0.5F);
     	EnchantmentConfig.wavesProtectionDurationPerLevel = config.comment("effect duration for each level of wave's protection enchantment").define("wavesProtectionDurationPerLevel", 1);
     	
     	EnchantmentConfig.lordoftheseaMinCost = config.comment("minimum enchantability for lord of the sea enchantment").define("lordoftheseaMinCost", 1);
@@ -493,7 +493,7 @@ public class EnchantmentConfig
     	EnchantmentConfig.sailingMinCost = config.comment("minimum enchantability for sailing enchantment").define("sailingMinCost", 1);
     	EnchantmentConfig.sailingMaxCost = config.comment("maximum enchantability for sailing enchantment").define("sailingMaxCost", 11);
     	
-    	EnchantmentConfig.sailingSpeedPerLevel = config.comment("additional speed of vehicle for each level of sailing enchantment").define("sailingSpeedPerLevel", 0.1F);
+    	EnchantmentConfig.sailingSpeedPerLevel = config.comment("additional speed of vehicle for each level of sailing enchantment").define("sailingSpeedPerLevel", 0.05F);
     	
     	EnchantmentConfig.waterJetMinCost = config.comment("minimum enchantability for water jet enchantment").define("waterJetMinCost", 25);
     	EnchantmentConfig.waterJetMaxCost = config.comment("maximum enchantability for water jet enchantment").define("waterJetMaxCost", 50);

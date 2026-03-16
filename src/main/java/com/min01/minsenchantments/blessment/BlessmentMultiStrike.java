@@ -16,15 +16,15 @@ public class BlessmentMultiStrike extends AbstractBlessment
 	}
 
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.multiStrikeMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.multiStrikeMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.multiStrikeMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.multiStrikeMaxCost.get();
+		return EnchantmentConfig.multiStrikeMinCost.get() + (pLevel - 1) * EnchantmentConfig.multiStrikeMaxCost.get();
 	}
 	
 	@Override
@@ -34,11 +34,10 @@ public class BlessmentMultiStrike extends AbstractBlessment
 	}
 	
 	@Override
-	public void onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount)
+	public boolean onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount)
 	{
 		Entity source = damageSource.getEntity();
-		
-		if(source != null && source instanceof LivingEntity attacker)
+		if(source instanceof LivingEntity attacker)
 		{
 			int level = attacker.getMainHandItem().getEnchantmentLevel(this);
 			if(level > 0)
@@ -47,11 +46,14 @@ public class BlessmentMultiStrike extends AbstractBlessment
 				{
 					for(int i = 0; i < level * EnchantmentConfig.multiStrikeAmountPerLevel.get(); i++)
 					{
-						entity.invulnerableTime = 0;
-						entity.hurt(damageSource, amount);
+						if(entity.hurt(damageSource, amount))
+						{
+							entity.invulnerableTime = 0;
+						}
 					}
 				}
 			}
 		}
+		return super.onLivingAttack(entity, damageSource, amount);
 	}
 }

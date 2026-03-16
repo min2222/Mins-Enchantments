@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -32,15 +32,15 @@ public class EnchantmentCellDivision extends AbstractMinsEnchantment implements 
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.cellDivisionMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.cellDivisionMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.cellDivisionMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.cellDivisionMaxCost.get();
+		return EnchantmentConfig.cellDivisionMinCost.get() + (pLevel - 1) * EnchantmentConfig.cellDivisionMaxCost.get();
 	}
 	
 	@Override
@@ -67,10 +67,10 @@ public class EnchantmentCellDivision extends AbstractMinsEnchantment implements 
 		{
 			for(int i = 0; i < (level * EnchantmentConfig.cellDivisionSplitAmountPerLevel.get()); i++)
 			{
-				Projectile cell = (Projectile) projectile.getType().create(projectile.level());
+				Projectile cell = (Projectile) projectile.getType().create(projectile.level);
 				cell.setOwner(owner);
 				cell.setPos(projectile.position().add(0, 0.5, 0));
-				Level world = projectile.level();
+				Level world = projectile.level;
 				cell.setDeltaMovement(world.random.nextGaussian() * 0.2D, 0.4D, world.random.nextGaussian() * 0.2D);
                 CompoundTag projTag = new CompoundTag();
 				Method m = ObfuscationReflectionHelper.findMethod(Projectile.class, "m_7378_", CompoundTag.class);
@@ -85,7 +85,7 @@ public class EnchantmentCellDivision extends AbstractMinsEnchantment implements 
 					
 				}
 				world.addFreshEntity(cell);
-				cell.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+				cell.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 				{
 					CompoundTag cellTag = new CompoundTag();
 					cellTag.putInt(EnchantmentTags.CELL_DIVISION_NUMBER, number + 1);

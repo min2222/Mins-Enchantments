@@ -1,8 +1,8 @@
 package com.min01.minsenchantments.blessment;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.misc.EnchantmentTags;
 
@@ -21,15 +21,15 @@ public class BlessmentHealingCutter extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.healingCutterMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.healingCutterMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.healingCutterMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.healingCutterMaxCost.get();
+		return EnchantmentConfig.healingCutterMinCost.get() + (pLevel - 1) * EnchantmentConfig.healingCutterMaxCost.get();
 	}
 	
 	@Override
@@ -39,18 +39,17 @@ public class BlessmentHealingCutter extends AbstractBlessment
 	}
 	
 	@Override
-	public void onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount)
+	public boolean onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount)
 	{
 		Entity source = damageSource.getEntity();
-		
-		if(source != null && source instanceof LivingEntity attacker)
+		if(source instanceof LivingEntity attacker)
 		{
 			int level = attacker.getMainHandItem().getEnchantmentLevel(this);
 			if(level > 0)
 			{
 				if(Math.random() <= (level * EnchantmentConfig.healingCutterChancePerLevel.get()) / 100)
 				{
-					entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+					entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 					{
 						CompoundTag tag = new CompoundTag();
 						tag.putFloat(EnchantmentTags.HEALING_CUTTER_DURATION, level * (EnchantmentConfig.healingCutterDurationPerLevel.get() * 20));
@@ -59,12 +58,13 @@ public class BlessmentHealingCutter extends AbstractBlessment
 				}
 			}
 		}
+		return super.onLivingAttack(entity, damageSource, amount);
 	}
 	
 	@Override
 	public void onLivingTick(LivingEntity living) 
 	{
-		living.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 		{
 			if(t.hasEnchantment(this))
 			{
@@ -82,9 +82,9 @@ public class BlessmentHealingCutter extends AbstractBlessment
 	@Override
 	public float onLivingHeal(LivingEntity living, float amount) 
 	{
-		if(living.getCapability(EnchantmentCapabilities.ENCHANTMENT).isPresent())
+		if(living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).isPresent())
 		{
-			IEnchantmentCapability t = living.getCapability(EnchantmentCapabilities.ENCHANTMENT).orElse(null);
+			IEnchantmentCapability t = living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl());
 			if(t.hasEnchantment(this))
 			{
 				EnchantmentData data = t.getEnchantmentData(this);

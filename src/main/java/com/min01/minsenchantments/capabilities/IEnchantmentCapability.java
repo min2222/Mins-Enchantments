@@ -1,21 +1,23 @@
 package com.min01.minsenchantments.capabilities;
 
 import com.min01.minsenchantments.MinsEnchantments;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
-public interface IEnchantmentCapability extends INBTSerializable<CompoundTag>
+@AutoRegisterCapability
+public interface IEnchantmentCapability extends ICapabilitySerializable<CompoundTag>
 {
 	ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "mins_enchantment");
 
 	void setEntity(Entity entity);
 
-	void update();
+	void tick();
 	
 	boolean hasEnchantment(Enchantment enchantment);
 	

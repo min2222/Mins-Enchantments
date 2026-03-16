@@ -26,7 +26,7 @@ public class CustomBlocks
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MinsEnchantments.MODID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MinsEnchantments.MODID);
     
-    public static final BlockBehaviour.Properties TABLE_PROPERITES = BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).requiresCorrectToolForDrops().lightLevel((p_152692_) ->
+    public static final BlockBehaviour.Properties TABLE_PROPERITES = BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).requiresCorrectToolForDrops().lightLevel((state) ->
     {
     	return 7;
     }).strength(5.0F, 1200.0F);

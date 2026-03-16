@@ -1,3 +1,3 @@
 # Mins-Enchantments
- add various unique enchantments with tables
+Add various unique enchantments and tables
 

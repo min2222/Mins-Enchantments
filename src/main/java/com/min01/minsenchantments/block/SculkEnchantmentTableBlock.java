@@ -20,9 +20,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class SculkEnchantmentTableBlock extends AbstractCustomEnchantmentTableBlock
 {
-	public SculkEnchantmentTableBlock(Properties p_52953_) 
+	public SculkEnchantmentTableBlock(Properties pProperties) 
 	{
-		super(p_52953_);
+		super(pProperties);
 	}
 
 	@Override
@@ -32,16 +32,16 @@ public class SculkEnchantmentTableBlock extends AbstractCustomEnchantmentTableBl
 	}
 	
 	@Override
-	public BlockEntity newBlockEntity(BlockPos p_153186_, BlockState p_153187_)
+	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState)
 	{
-		return new SculkEnchantmentTableBlockEntity(p_153186_, p_153187_);
+		return new SculkEnchantmentTableBlockEntity(pPos, pState);
 	}
 	
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153094_, BlockState p_153095_, BlockEntityType<T> p_153096_)
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pType)
 	{
-		return createTickerHelper(p_153096_, CustomBlocks.SCULK_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), p_153094_.isClientSide ? SculkEnchantmentTableBlockEntity::clientTick : SculkEnchantmentTableBlockEntity::serverTick);
+		return createTickerHelper(pType, CustomBlocks.SCULK_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), pLevel.isClientSide ? SculkEnchantmentTableBlockEntity::clientTick : SculkEnchantmentTableBlockEntity::serverTick);
 	}
 
 	@Override

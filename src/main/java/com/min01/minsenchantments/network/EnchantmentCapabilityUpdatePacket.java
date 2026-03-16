@@ -2,8 +2,8 @@ package com.min01.minsenchantments.network;
 
 import java.util.function.Supplier;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.event.ClientEventHandlerForge;
 
 import net.minecraft.nbt.CompoundTag;
@@ -20,41 +20,38 @@ public class EnchantmentCapabilityUpdatePacket
 	private final String enchant;
 	private final CompoundTag tag;
 	
-	public EnchantmentCapabilityUpdatePacket(Entity entity, Enchantment enchantment, EnchantmentData data) 
+	public EnchantmentCapabilityUpdatePacket(int entityId, String name, CompoundTag tag) 
 	{
-		this.entityId = entity.getId();
-		this.enchant = ForgeRegistries.ENCHANTMENTS.getKey(enchantment).toString();
-		this.tag = data.save();
+		this.entityId = entityId;
+		this.enchant = name;
+		this.tag = tag;
 	}
 
-	public EnchantmentCapabilityUpdatePacket(FriendlyByteBuf buf)
+	public static EnchantmentCapabilityUpdatePacket read(FriendlyByteBuf buf)
 	{
-		this.entityId = buf.readInt();
-		this.enchant = buf.readUtf();
-		this.tag = buf.readNbt();
+		return new EnchantmentCapabilityUpdatePacket(buf.readInt(), buf.readUtf(), buf.readNbt());
 	}
 
-	public void encode(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(this.entityId);
 		buf.writeUtf(this.enchant);
 		buf.writeNbt(this.tag);
 	}
 	
-	public static class Handler 
+	public static boolean handle(EnchantmentCapabilityUpdatePacket message, Supplier<NetworkEvent.Context> ctx) 
 	{
-		public static boolean onMessage(EnchantmentCapabilityUpdatePacket message, Supplier<NetworkEvent.Context> ctx) 
+		ctx.get().enqueueWork(() ->
 		{
-			ctx.get().enqueueWork(() ->
+			Entity entity = ClientEventHandlerForge.MC.level.getEntity(message.entityId);
+			EnchantmentData data = EnchantmentData.read(message.tag);
+			Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.parse(message.enchant));
+			entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 			{
-				Entity entity = ClientEventHandlerForge.MC.level.getEntity(message.entityId);
-				entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
-				{
-					t.setEnchantmentData(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.parse(message.enchant)), EnchantmentData.read(message.tag));
-				});
+				t.setEnchantmentData(enchantment, data);
 			});
-			ctx.get().setPacketHandled(true);
-			return true;
-		}
+		});
+		ctx.get().setPacketHandled(true);
+		return true;
 	}
 }

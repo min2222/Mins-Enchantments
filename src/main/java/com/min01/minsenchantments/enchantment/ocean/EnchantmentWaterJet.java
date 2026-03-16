@@ -5,8 +5,8 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -41,13 +41,13 @@ public class EnchantmentWaterJet extends AbstractOceanEnchantment implements IPr
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
 		return EnchantmentConfig.waterJetMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
 		return EnchantmentConfig.waterJetMinCost.get();
 	}
@@ -57,7 +57,7 @@ public class EnchantmentWaterJet extends AbstractOceanEnchantment implements IPr
 	{
 		if(entity instanceof AbstractArrow arrow)
 		{
-			arrow.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+			arrow.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 			{
 				if(t.hasEnchantment(this) && arrow.isInWater())
 				{
@@ -76,7 +76,7 @@ public class EnchantmentWaterJet extends AbstractOceanEnchantment implements IPr
 			Potion potion = PotionUtils.getPotion(thrownPotion.getItem());
 			List<MobEffectInstance> list = PotionUtils.getMobEffects(thrownPotion.getItem());
 			boolean flag = potion == Potions.WATER && list.isEmpty();
-			List<Player> players = thrownPotion.level().getEntitiesOfClass(Player.class, thrownPotion.getBoundingBox().inflate(1.5));
+			List<Player> players = thrownPotion.level.getEntitiesOfClass(Player.class, thrownPotion.getBoundingBox().inflate(1.5F));
 			players.forEach((player) ->
 			{
 				for(InteractionHand hand : InteractionHand.values())
@@ -96,7 +96,6 @@ public class EnchantmentWaterJet extends AbstractOceanEnchantment implements IPr
 				}
 			});
 		}
-		
 		if(projectile instanceof AbstractArrow arrow)
 		{
 			arrow.pickup = Pickup.DISALLOWED;

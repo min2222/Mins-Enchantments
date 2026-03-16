@@ -17,7 +17,7 @@ license="GPLv3 License"
 # The modid of the mod
 modId="minsenchantments" #mandatory
 # The version number of the mod
-version="1.0.0" #mandatory
+version="1.0.1" #mandatory
 # A display name for the mod
 displayName="Min's Enchantments" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
@@ -39,7 +39,7 @@ authors="min01" #optional
 #displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
 
 # The description text for the mod (multi line!) (#mandatory)
-description='''add various unique enchantments with tables!'''
+description='''Add various unique enchantments and tables.'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.minsenchantments]] #optional
     # the modid of the dependency
@@ -60,6 +60,12 @@ description='''add various unique enchantments with tables!'''
     mandatory=true
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.minsenchantments]]
+    modId="tickrateapi"
+    mandatory=true
+    versionRange="[5.0.0,)"
     ordering="NONE"
     side="BOTH"
 

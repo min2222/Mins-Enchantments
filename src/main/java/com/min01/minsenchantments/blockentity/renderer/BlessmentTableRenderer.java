@@ -32,13 +32,13 @@ public class BlessmentTableRenderer implements BlockEntityRenderer<BlessmentTabl
 	private final ModelPart line2;
 	private final ModelPart line3;
 	
-	public BlessmentTableRenderer(BlockEntityRendererProvider.Context p_173613_) 
+	public BlessmentTableRenderer(BlockEntityRendererProvider.Context ctx) 
 	{
-		this.core = p_173613_.bakeLayer(LAYER_LOCATION).getChild("core");
-		this.out = p_173613_.bakeLayer(LAYER_LOCATION).getChild("out");
-		this.line = p_173613_.bakeLayer(LAYER_LOCATION).getChild("line");
-		this.line2 = p_173613_.bakeLayer(LAYER_LOCATION).getChild("line2");
-		this.line3 = p_173613_.bakeLayer(LAYER_LOCATION).getChild("line3");
+		this.core = ctx.bakeLayer(LAYER_LOCATION).getChild("core");
+		this.out = ctx.bakeLayer(LAYER_LOCATION).getChild("out");
+		this.line = ctx.bakeLayer(LAYER_LOCATION).getChild("line");
+		this.line2 = ctx.bakeLayer(LAYER_LOCATION).getChild("line2");
+		this.line3 = ctx.bakeLayer(LAYER_LOCATION).getChild("line3");
 	}
 	
 	public static LayerDefinition createBodyLayer() 
@@ -70,29 +70,29 @@ public class BlessmentTableRenderer implements BlockEntityRenderer<BlessmentTabl
 	}
 	
 	@Override
-	public void render(BlessmentTableBlockEntity p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_)
+	public void render(BlessmentTableBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay)
 	{
-		p_112309_.pushPose();
-		float f1 = ((float)p_112307_.time + p_112308_) * 3.0F;
-		VertexConsumer vertexConsumer = p_112310_.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "textures/block/bless_core.png")));
-		p_112309_.translate(0.5, 1.5D, 0.5);
-		p_112309_.scale(0.7F, 0.7F, 0.7F);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
-		this.core.render(p_112309_, vertexConsumer, p_112311_, p_112312_);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
-		this.out.render(p_112309_, vertexConsumer, p_112311_, p_112312_);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
-		this.line.render(p_112309_, vertexConsumer, p_112311_, p_112312_);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
-		this.line2.render(p_112309_, vertexConsumer, p_112311_, p_112312_);
-		p_112309_.scale(1.1F, 1.1F, 1.1F);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
-		this.line3.render(p_112309_, vertexConsumer, p_112311_, p_112312_);
-		p_112309_.popPose();
+		pPoseStack.pushPose();
+		float f1 = ((float)pBlockEntity.time + pPartialTick) * 3.0F;
+		VertexConsumer vertexConsumer = pBufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "textures/block/bless_core.png")));
+		pPoseStack.translate(0.5, 1.5D, 0.5);
+		pPoseStack.scale(0.7F, 0.7F, 0.7F);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.core.render(pPoseStack, vertexConsumer, pPackedLight, pPackedOverlay);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.out.render(pPoseStack, vertexConsumer, pPackedLight, pPackedOverlay);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.line.render(pPoseStack, vertexConsumer, pPackedLight, pPackedOverlay);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.line2.render(pPoseStack, vertexConsumer, pPackedLight, pPackedOverlay);
+		pPoseStack.scale(1.1F, 1.1F, 1.1F);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.line3.render(pPoseStack, vertexConsumer, pPackedLight, pPackedOverlay);
+		pPoseStack.popPose();
 	}
 }

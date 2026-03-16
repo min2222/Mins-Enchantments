@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -34,15 +34,15 @@ public class BlessmentSoulOfTerrarian extends AbstractBlessment implements IProj
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.soulOfTerrarianMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.soulOfTerrarianMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.soulOfTerrarianMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.soulOfTerrarianMaxCost.get();
+		return EnchantmentConfig.soulOfTerrarianMinCost.get() + (pLevel - 1) * EnchantmentConfig.soulOfTerrarianMaxCost.get();
 	}
 	
 	@Override
@@ -64,22 +64,22 @@ public class BlessmentSoulOfTerrarian extends AbstractBlessment implements IProj
 					int level = data.getEnchantLevel();
 					for(int i = 0; i < level * EnchantmentConfig.soulOfTerrarianProjAmountPerLevel.get(); i++)
 					{
-						Projectile extra = (Projectile) projectile.getType().create(projectile.level());
+						Projectile extra = (Projectile) projectile.getType().create(projectile.level);
 						double spawnRange = living.getBbWidth() + level;
-		                double x = (double)living.getX() + (projectile.level().getRandom().nextDouble() - projectile.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
-		                double y = (double)(living.getY() + living.getEyeHeight() + projectile.level().getRandom().nextInt(2) - 1);
-		                double z = (double)living.getZ() + (projectile.level().getRandom().nextDouble() - projectile.level().getRandom().nextDouble()) * (double)spawnRange + 0.5D;
+		                double x = (double)living.getX() + (projectile.level.random.nextDouble() - projectile.level.random.nextDouble()) * (double)spawnRange + 0.5D;
+		                double y = (double)(living.getY() + living.getEyeHeight() + projectile.level.getRandom().nextInt(2) - 1);
+		                double z = (double)living.getZ() + (projectile.level.random.nextDouble() - projectile.level.random.nextDouble()) * (double)spawnRange + 0.5D;
 		                extra.setPos(x, y, z);
 		                extra.setOwner(owner);
-		                Vec3 vec = EnchantmentUtil.fromToVector(extra.position(), living.position().add(0, living.getEyeHeight(), 0), 1);
+		                Vec3 vec = EnchantmentUtil.getVelocityTowards(extra.position(), living.position().add(0, living.getEyeHeight(), 0), 1);
 		                extra.setDeltaMovement(vec);
-		                extra.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		                extra.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 		                {
 		                	CompoundTag tag2 = new CompoundTag();
 		                	tag2.putBoolean(EnchantmentTags.SOUL_OF_TERRARIAN_SUMMONED, true);
 		                	t.setEnchantmentData(this, new EnchantmentData(level, tag2));
 		                });
-		                extra.hasImpulse = true;
+		                extra.hurtMarked = true;
 		                extra.setNoGravity(true);
 		                if(extra instanceof AbstractArrow arrow)
 		                {
@@ -97,7 +97,7 @@ public class BlessmentSoulOfTerrarian extends AbstractBlessment implements IProj
 						{
 							
 						}
-		                projectile.level().addFreshEntity(extra);
+		                projectile.level.addFreshEntity(extra);
 					}
 				}
 				

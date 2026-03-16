@@ -2,9 +2,8 @@ package com.min01.minsenchantments.enchantment.ocean;
 
 import java.util.List;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.mixin.AbstractArrowInvoker;
@@ -30,15 +29,15 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.aquaticAuraMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.aquaticAuraMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.aquaticAuraMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.aquaticAuraMaxCost.get();
+		return EnchantmentConfig.aquaticAuraMinCost.get() + (pLevel - 1) * EnchantmentConfig.aquaticAuraMaxCost.get();
 	}
 	
 	@Override
@@ -50,9 +49,9 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 	@Override
 	public boolean onLivingBreath(LivingEntity entity, boolean canBreathe, int consumeAirAmount, int refillAirAmount, boolean canRefillAir) 
 	{
-		if(entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).isPresent())
+		if(entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).isPresent())
 		{
-			IEnchantmentCapability cap = entity.getCapability(EnchantmentCapabilities.ENCHANTMENT).orElse(new EnchantmentCapabilityHandler());
+			IEnchantmentCapability cap = entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl());
 			if(cap.hasEnchantment(this))
 			{
 				EnchantmentData data = cap.getEnchantmentData(this);
@@ -60,7 +59,7 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 				CompoundTag tag = data.getData();
 				if(tag.contains("AuraOwnerUUID"))
 				{
-					Entity owner = EnchantmentUtil.getEntityByUUID(entity.level(), tag.getUUID("AuraOwnerUUID"));
+					Entity owner = EnchantmentUtil.getEntityByUUID(entity.level, tag.getUUID("AuraOwnerUUID"));
 					if(owner == null || entity.distanceTo(owner) >= level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get())
 					{
 						cap.removeEnchantment(this);
@@ -81,8 +80,7 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
 		if(level > 0)
 		{
-			List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
-			projList.removeIf((proj) -> (proj.getOwner() != null && proj.getOwner() == living) || proj instanceof ThrownTrident);
+			List<Projectile> projList = living.level.getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()), t -> t.getOwner() != living && !(t instanceof ThrownTrident));
 			projList.forEach((proj) -> 
 			{
 				if(proj instanceof AbstractArrow arrow)
@@ -108,15 +106,14 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 			         
 		            for(int j = 0; j < 4; ++j) 
 		            {
-		                proj.level().addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
+		                proj.level.addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
 		            }
 				}
 			});
-			List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()));
-			list.removeIf(t -> t == living || t.isAlliedTo(living));
+			List<LivingEntity> list = living.level.getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(level * EnchantmentConfig.aquaticAuraRadiusPerLevel.get()), t -> t != living && !t.isAlliedTo(living));
 			list.forEach(t -> 
 			{
-				t.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(cap -> 
+				t.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(cap -> 
 				{
 					CompoundTag tag = new CompoundTag();
 					tag.putUUID("AuraOwnerUUID", living.getUUID());

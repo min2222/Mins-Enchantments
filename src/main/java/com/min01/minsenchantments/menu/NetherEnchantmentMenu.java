@@ -13,14 +13,14 @@ import net.minecraft.world.level.block.Block;
 
 public class NetherEnchantmentMenu extends AbstractCustomEnchantmentMenu
 {
-	public NetherEnchantmentMenu(int p_39454_, Inventory p_39455_) 
+	public NetherEnchantmentMenu(int pId, Inventory pPlayerInventory) 
 	{
-		this(p_39454_, p_39455_, ContainerLevelAccess.NULL);
+		this(pId, pPlayerInventory, ContainerLevelAccess.NULL);
 	}
 	
-	public NetherEnchantmentMenu(int p_39457_, Inventory p_39458_, ContainerLevelAccess p_39459_) 
+	public NetherEnchantmentMenu(int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess pAccess) 
 	{
-		super(CustomMenuType.NETHER_ENCHANTMENT.get(), p_39457_, p_39458_, p_39459_);
+		super(CustomMenuType.NETHER_ENCHANTMENT.get(), pContainerId, pPlayerInventory, pAccess);
 	}
 
 	@Override

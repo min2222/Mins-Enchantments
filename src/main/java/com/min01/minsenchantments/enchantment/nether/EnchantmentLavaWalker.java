@@ -17,13 +17,13 @@ public class EnchantmentLavaWalker extends AbstractNetherEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
 		return EnchantmentConfig.lavaWalkerMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
 		return EnchantmentConfig.lavaWalkerMinCost.get();
 	}
@@ -35,7 +35,7 @@ public class EnchantmentLavaWalker extends AbstractNetherEnchantment
 		if(level > 0)
 		{
 			BlockPos pos = BlockPos.containing(living.getX(), Mth.floor(living.getBoundingBox().minY), living.getZ());
-	        if(living.level().getBlockState(pos).getBlock() == Blocks.LAVA) 
+	        if(living.level.getBlockState(pos).getBlock() == Blocks.LAVA) 
 	        {
 	            if(living.getDeltaMovement().y < 0) 
 	            {

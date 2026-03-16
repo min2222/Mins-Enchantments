@@ -26,15 +26,15 @@ public class BlessmentRage extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.rageMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.rageMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.rageMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.rageMaxCost.get();
+		return EnchantmentConfig.rageMinCost.get() + (pLevel - 1) * EnchantmentConfig.rageMaxCost.get();
 	}
 	
 	@Override
@@ -94,11 +94,10 @@ public class BlessmentRage extends AbstractBlessment
 	}
 	
 	@Override
-	public void onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount)
+	public boolean onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount)
 	{
 		Entity source = damageSource.getEntity();
-		
-		if(source != null && source instanceof LivingEntity attacker)
+		if(source instanceof LivingEntity attacker)
 		{
 			ItemStack stack = attacker.getMainHandItem();
 			int level = stack.getEnchantmentLevel(this);
@@ -125,5 +124,6 @@ public class BlessmentRage extends AbstractBlessment
 				}
 			}
 		}
+		return super.onLivingAttack(entity, damageSource, amount);
 	}
 }

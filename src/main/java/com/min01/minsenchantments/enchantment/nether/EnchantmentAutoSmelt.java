@@ -29,13 +29,13 @@ public class EnchantmentAutoSmelt extends AbstractNetherEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
 		return EnchantmentConfig.autoSmeltMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
 		return EnchantmentConfig.autoSmeltMinCost.get();
 	}
@@ -56,10 +56,10 @@ public class EnchantmentAutoSmelt extends AbstractNetherEnchantment
 			originalLoot.forEach((stack) -> 
 			{
 				Optional<SmeltingRecipe> optional = context.getLevel().getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), context.getLevel());
-				if (optional.isPresent()) 
+				if(optional.isPresent()) 
 				{
 					ItemStack smeltedItemStack = optional.get().getResultItem(context.getLevel().registryAccess());
-					if (!smeltedItemStack.isEmpty()) 
+					if(!smeltedItemStack.isEmpty()) 
 					{
 						ItemStack copy = ItemHandlerHelper.copyStackWithSize(smeltedItemStack, stack.getCount() * smeltedItemStack.getCount());
 						newLoot.add(copy);

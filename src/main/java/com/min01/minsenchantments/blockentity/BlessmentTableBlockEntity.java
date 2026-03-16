@@ -11,18 +11,18 @@ public class BlessmentTableBlockEntity extends AbstractCustomEnchantmentTableBlo
 {
 	public int time;
 	public RandomSource random = RandomSource.create();
-	public BlessmentTableBlockEntity(BlockPos p_155501_, BlockState p_155502_)
+	public BlessmentTableBlockEntity(BlockPos pPos, BlockState pState)
 	{
-		super(CustomBlocks.BLESSMENT_TABLE_BLOCK_ENTITY.get(), p_155501_, p_155502_);
+		super(CustomBlocks.BLESSMENT_TABLE_BLOCK_ENTITY.get(), pPos, pState);
 	}
 	
-	public static void clientTick(Level p_155404_, BlockPos p_155405_, BlockState p_155406_, BlessmentTableBlockEntity p_155407_)
+	public static void clientTick(Level pLevel, BlockPos pPos, BlockState pState, BlessmentTableBlockEntity pBlockEntity)
 	{
-		++p_155407_.time;
+		++pBlockEntity.time;
 	}
 	
-	public static void serverTick(Level p_155439_, BlockPos p_155440_, BlockState p_155441_, BlessmentTableBlockEntity p_155407_)
+	public static void serverTick(Level pLevel, BlockPos pPos, BlockState pState, BlessmentTableBlockEntity pBlockEntity)
 	{
-		++p_155407_.time;
+		++pBlockEntity.time;
 	}
 }

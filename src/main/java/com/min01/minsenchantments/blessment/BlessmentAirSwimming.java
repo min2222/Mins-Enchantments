@@ -15,15 +15,15 @@ public class BlessmentAirSwimming extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.airSwimmingMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.airSwimmingMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.airSwimmingMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.airSwimmingMaxCost.get();
+		return EnchantmentConfig.airSwimmingMinCost.get() + (pLevel - 1) * EnchantmentConfig.airSwimmingMaxCost.get();
 	}
 	
 	@Override

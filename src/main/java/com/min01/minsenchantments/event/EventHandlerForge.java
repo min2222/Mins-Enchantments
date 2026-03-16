@@ -6,8 +6,9 @@ import java.util.Map.Entry;
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.api.IMinsEnchantment;
 import com.min01.minsenchantments.api.IProjectileEnchantment;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
-import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.network.EnchantmentNetwork;
 import com.min01.minsenchantments.network.PlayerLeftClickPacket;
 import com.min01.minsenchantments.util.EnchantmentUtil;
@@ -41,6 +42,7 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -59,20 +61,20 @@ public class EventHandlerForge
 		Iterable<Entity> all = EnchantmentUtil.getAllEntities(event.level);
 		for(Entity entity : all)
 		{
-			if(!(entity instanceof LivingEntity) || !entity.getPersistentData().contains("ForceTickCount"))
+			if(!(entity instanceof LivingEntity) || !entity.getPersistentData().contains("ForceTickCountME"))
 			{
 				continue;
 			}
-			int time = entity.getPersistentData().getInt("ForceTickCount");
-			entity.getPersistentData().putInt("ForceTickCount", time - 1);
-			TickrateUtil.changeSubEntities(entity, false);
-			TickrateUtil.setTickrate(entity, entity.getPersistentData().getInt("TickrateME"));
-			if(time <= 0 || !entity.isAlive())
+			int time = entity.getPersistentData().getInt("ForceTickCountME");
+			entity.getPersistentData().putInt("ForceTickCountME", time - 1);
+			if(time > 0 && entity.isAlive())
 			{
-				entity.getPersistentData().remove("ForceTickCount");
+				TickrateUtil.setTickrate(entity, entity.getPersistentData().getInt("TickrateME"));
+			}
+			else
+			{
+				entity.getPersistentData().remove("ForceTickCountME");
 				entity.getPersistentData().remove("TickrateME");
-				TickrateUtil.changeSubEntities(entity, true);
-				TickrateUtil.resetTickrate(entity);
 			}
 		}
 	}
@@ -85,9 +87,21 @@ public class EventHandlerForge
 	}
 	
 	@SubscribeEvent
+	public static void onShieldBlock(ShieldBlockEvent event)
+	{
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
+		{
+			if(t instanceof IMinsEnchantment enchantment)
+			{
+				enchantment.onShieldBlock(event.getEntity(), event.getDamageSource(), event.getBlockedDamage());
+			}
+		});
+	}
+	
+	@SubscribeEvent
 	public static void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -104,7 +118,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -116,7 +130,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlaySoundAtEntity(PlayLevelSoundEvent.AtEntity event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -131,7 +145,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onBlockBreak(BlockEvent.BreakEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -144,7 +158,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onBreakSpeed(PlayerEvent.BreakSpeed event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -157,7 +171,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlayerClone(PlayerEvent.Clone event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -169,7 +183,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingDeath(LivingDeathEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -181,7 +195,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingEntityStartUseItem(LivingEntityUseItemEvent.Start event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -194,7 +208,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingEntityStopUseItem(LivingEntityUseItemEvent.Stop event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -212,7 +226,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingEntityUseItemTick(LivingEntityUseItemEvent.Tick event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -230,11 +244,14 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingAttack(LivingAttackEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
-				enchantment.onLivingAttack(event.getEntity(), event.getSource(), event.getAmount());
+				if(enchantment.onLivingAttack(event.getEntity(), event.getSource(), event.getAmount()))
+				{
+					event.setCanceled(true);
+				}
 			}
 		});
 	}
@@ -242,7 +259,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingFall(LivingFallEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -256,7 +273,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingBreath(LivingBreatheEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -271,7 +288,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -283,7 +300,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingTick(LivingTickEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -295,7 +312,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onEntityJoin(EntityJoinLevelEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -315,7 +332,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{ 
@@ -332,7 +349,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onProjectileImpact(ProjectileImpactEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -349,19 +366,21 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onEntityTick(EntityTickEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
 				enchantment.onEntityTick(event.getEntity());
 			}
 		});
+		
+		event.getEntity().getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(IEnchantmentCapability::tick);
 	}
 	
 	@SubscribeEvent
 	public static void onLivingHeal(LivingHealEvent event)
 	{
-		CustomEnchantments.LIST.forEach(t -> 
+		ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 		{
 			if(t instanceof IMinsEnchantment enchantment)
 			{
@@ -537,7 +556,7 @@ public class EventHandlerForge
                     book.getOrCreateTag().put("StoredEnchantments", newTags);
 
                     Player player = event.getEntity();
-                    Containers.dropItemStack(player.level(), player.getX(), player.getY(), player.getZ(), book);
+                    Containers.dropItemStack(player.level, player.getX(), player.getY(), player.getZ(), book);
                 }
             }
     	}

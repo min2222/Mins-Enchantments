@@ -3,8 +3,8 @@ package com.min01.minsenchantments.enchantment.ocean;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.misc.EnchantmentTags;
@@ -30,15 +30,15 @@ public class EnchantmentSharpWaves extends AbstractOceanEnchantment implements I
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.sharpWavesMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.sharpWavesMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.sharpWavesMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.sharpWavesMaxCost.get();
+		return EnchantmentConfig.sharpWavesMinCost.get() + (pLevel - 1) * EnchantmentConfig.sharpWavesMaxCost.get();
 	}
 	
 	@Override
@@ -58,7 +58,7 @@ public class EnchantmentSharpWaves extends AbstractOceanEnchantment implements I
 	{
 		if(entity instanceof Projectile projectile)
 		{
-			projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t ->
+			projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t ->
 			{
 				if(t.hasEnchantment(this))
 				{
@@ -91,25 +91,18 @@ public class EnchantmentSharpWaves extends AbstractOceanEnchantment implements I
 		if(damageSource.getDirectEntity() != null)
 		{
 			Entity entity = damageSource.getDirectEntity();
-			
 			if(entity instanceof Projectile projectile)
 			{
 				Entity owner = projectile.getOwner();
 				if(owner != null)
 				{
-					if(projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).isPresent())
+					IEnchantmentCapability t = projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl());
+					if(t.hasEnchantment(this))
 					{
-						IEnchantmentCapability t = projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).orElseGet(null);
-						if(t.hasEnchantment(this))
-						{
-							if(owner.isInWater())
-							{
-								EnchantmentData data = t.getEnchantmentData(this);
-								CompoundTag tag = data.getData();
-								float damage = tag.getFloat(EnchantmentTags.SHARP_WAVES_DMG);
-								return Pair.of(false, amount + damage);
-							}
-						}
+						EnchantmentData data = t.getEnchantmentData(this);
+						CompoundTag tag = data.getData();
+						float damage = tag.getFloat(EnchantmentTags.SHARP_WAVES_DMG);
+						return Pair.of(false, amount + damage);
 					}
 				}
 			}

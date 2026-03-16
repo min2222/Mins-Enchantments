@@ -1,8 +1,5 @@
 package com.min01.minsenchantments.init;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.blessment.BlessmentAccelerate;
 import com.min01.minsenchantments.blessment.BlessmentAirSwimming;
@@ -63,10 +60,10 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ProjectileWeaponItem;
-import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -77,12 +74,10 @@ public class CustomEnchantments
 	public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, MinsEnchantments.MODID);
 	public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MinsEnchantments.MODID);
 	
-	public static final List<Enchantment> LIST = new ArrayList<>();
-	
 	public static final EnchantmentCategory PROJECTILE_WEAPON = EnchantmentCategory.create("PROJECTILE_WEAPON", (item) -> item instanceof ProjectileWeaponItem);
-	public static final EnchantmentCategory SHIELD = EnchantmentCategory.create("SHIELD", (item) -> item instanceof ShieldItem);
+	public static final EnchantmentCategory SHIELD = EnchantmentCategory.create("SHIELD", (item) -> item.getDefaultInstance().canPerformAction(ToolActions.SHIELD_BLOCK));
 	public static final EnchantmentCategory ELYTRA = EnchantmentCategory.create("ELYTRA", (item) -> item instanceof ElytraItem);
-	public static final EnchantmentCategory WEAPONS = EnchantmentCategory.create("WEAPONS", (item) -> item instanceof ProjectileWeaponItem || item instanceof SwordItem || item instanceof ShieldItem);
+	public static final EnchantmentCategory WEAPONS = EnchantmentCategory.create("WEAPONS", (item) -> item instanceof ProjectileWeaponItem || item instanceof SwordItem || item.getDefaultInstance().canPerformAction(ToolActions.SHIELD_BLOCK));
 	
 	public static final RegistryObject<Codec<EnchantmentAutoSmeltModifier>> AUTO_SMELT_LOOT_MODIFIER = LOOT_MODIFIERS.register("auto_smelt", EnchantmentAutoSmeltModifier.CODEC);
 	

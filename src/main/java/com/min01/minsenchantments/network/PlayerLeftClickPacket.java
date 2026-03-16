@@ -4,12 +4,12 @@ import java.util.function.Supplier;
 
 import com.min01.minsenchantments.api.IMinsEnchantment;
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.init.CustomEnchantments;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class PlayerLeftClickPacket 
 {
@@ -18,41 +18,38 @@ public class PlayerLeftClickPacket
 		
 	}
 
-	public PlayerLeftClickPacket(FriendlyByteBuf buf)
+	public static PlayerLeftClickPacket read(FriendlyByteBuf buf)
 	{
-		
+		return new PlayerLeftClickPacket();
 	}
 
-	public void encode(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		
 	}
 	
-	public static class Handler 
+	public static boolean handle(PlayerLeftClickPacket message, Supplier<NetworkEvent.Context> ctx) 
 	{
-		public static boolean onMessage(PlayerLeftClickPacket message, Supplier<NetworkEvent.Context> ctx) 
+		ctx.get().enqueueWork(() ->
 		{
-			ctx.get().enqueueWork(() ->
+			ForgeRegistries.ENCHANTMENTS.getValues().forEach(t -> 
 			{
-				CustomEnchantments.LIST.forEach(t -> 
+				ServerPlayer player = ctx.get().getSender();
+				if(player != null)
 				{
-					ServerPlayer player = ctx.get().getSender();
-					if(player != null)
+					if(t instanceof IMinsEnchantment enchantment)
 					{
-						if(t instanceof IMinsEnchantment enchantment)
-						{
-							enchantment.onPlayerLeftClickEmpty(player, player.getMainHandItem(), InteractionHand.MAIN_HAND, player.blockPosition());
-						}
-						
-						if(t instanceof IProjectileEnchantment enchantment)
-						{
-							enchantment.onLeftClickEmpty(player, player.getMainHandItem(), InteractionHand.MAIN_HAND, player.blockPosition());
-						}
+						enchantment.onPlayerLeftClickEmpty(player, player.getMainHandItem(), InteractionHand.MAIN_HAND, player.blockPosition());
 					}
-				});
+					
+					if(t instanceof IProjectileEnchantment enchantment)
+					{
+						enchantment.onLeftClickEmpty(player, player.getMainHandItem(), InteractionHand.MAIN_HAND, player.blockPosition());
+					}
+				}
 			});
-			ctx.get().setPacketHandled(true);
-			return true;
-		}
+		});
+		ctx.get().setPacketHandled(true);
+		return true;
 	}
 }

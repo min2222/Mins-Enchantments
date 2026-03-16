@@ -32,7 +32,7 @@ public class EnchantmentUtil
 	
 	public static void setTickrateWithTime(Entity entity, int tickrate, int time)
 	{
-		entity.getPersistentData().putInt("ForceTickCount", time);
+		entity.getPersistentData().putInt("ForceTickCountME", time);
 		entity.getPersistentData().putInt("TickrateME", tickrate);
 	}
 	
@@ -66,27 +66,26 @@ public class EnchantmentUtil
 		return null;
 	}
 	
-	public static boolean isDamageSourceBlocked(LivingEntity living, DamageSource p_21276_) 
+	public static boolean isDamageSourceBlocked(LivingEntity living, DamageSource pDamageSource) 
 	{
-		Entity entity = p_21276_.getDirectEntity();
+		Entity entity = pDamageSource.getDirectEntity();
 		boolean flag = false;
-		if (entity instanceof AbstractArrow abstractarrow)
+		if(entity instanceof AbstractArrow abstractarrow) 
 		{
-			if (abstractarrow.getPierceLevel() > 0) 
+			if(abstractarrow.getPierceLevel() > 0) 
 			{
 				flag = true;
 			}
 		}
-
-		if (!p_21276_.is(DamageTypeTags.BYPASSES_SHIELD) && !flag)
+		if(!pDamageSource.is(DamageTypeTags.BYPASSES_SHIELD) && !flag)
 		{
-			Vec3 vec32 = p_21276_.getSourcePosition();
-			if (vec32 != null) 
+			Vec3 vec32 = pDamageSource.getSourcePosition();
+			if(vec32 != null)
 			{
 				Vec3 vec3 = living.getViewVector(1.0F);
 				Vec3 vec31 = vec32.vectorTo(living.position()).normalize();
 				vec31 = new Vec3(vec31.x, 0.0D, vec31.z);
-				if (vec31.dot(vec3) < 0.0D)
+				if(vec31.dot(vec3) < 0.0D)
 				{
 					return true;
 				}
@@ -97,72 +96,66 @@ public class EnchantmentUtil
 	
 	public static Vec3 getLookPos(float xRot, float yRot, float yPos, double distance)
 	{
-		float f = -Mth.sin(yRot * ((float)Math.PI / 180F)) * Mth.cos(xRot * ((float)Math.PI / 180F));
+		float f = -Mth.sin(yRot * ((float)Math.PI / 180.0F)) * Mth.cos(xRot * ((float)Math.PI / 180.0F));
 		float f1 = -Mth.sin((xRot + yPos) * ((float)Math.PI / 180F));
-		float f2 = Mth.cos(yRot * ((float)Math.PI / 180F)) * Mth.cos(xRot * ((float)Math.PI / 180F));
+		float f2 = Mth.cos(yRot * ((float)Math.PI / 180.0F)) * Mth.cos(xRot * ((float)Math.PI / 180.0F));
 		return new Vec3(f, f1, f2).scale(distance);
 	}
 	
-	public static Vec3 fromToVector(Vec3 from, Vec3 to, float speed)
+	public static Vec3 getVelocityTowards(Vec3 from, Vec3 to, float speed)
 	{
 		Vec3 motion = to.subtract(from).normalize();
 		return motion.scale(speed);
 	}
 	
-	public static double getAttackReachSqr(Entity attacker, Entity target)
+	public static boolean removeWaterBreadthFirstSearch(Level pLevel, BlockPos pPos, int radius)
 	{
-		return (double)(attacker.getBbWidth() * 2.0F * attacker.getBbWidth() * 2.0F + target.getBbWidth());
-	}
-	
-	public static boolean removeWaterBreadthFirstSearch(Level p_56808_, BlockPos p_56809_, int radius)
-	{
-		BlockState spongeState = p_56808_.getBlockState(p_56809_);
-		return BlockPos.breadthFirstTraversal(p_56809_, radius, 65, (p_277519_, p_277492_) -> 
+		BlockState spongeState = pLevel.getBlockState(pPos);
+		return BlockPos.breadthFirstTraversal(pPos, radius, 65, (pos, consumer) -> 
 		{
-			for(Direction direction : Direction.values())
+			for(Direction direction : Direction.values()) 
 			{
-				p_277492_.accept(p_277519_.relative(direction));
+				consumer.accept(pos.relative(direction));
 			}
-		},
-		(p_279054_) -> 
+		}, (pos) -> 
 		{
-			if (p_279054_.equals(p_56809_)) 
+			if(pos.equals(pPos)) 
 			{
 				return true;
 			} 
 			else 
 			{
-				BlockState blockstate = p_56808_.getBlockState(p_279054_);
-				FluidState fluidstate = p_56808_.getFluidState(p_279054_);
-				if (!spongeState.canBeHydrated(p_56808_, p_56809_, fluidstate, p_279054_))
+				BlockState blockstate = pLevel.getBlockState(pos);
+				FluidState fluidstate = pLevel.getFluidState(pos);
+				if(!spongeState.canBeHydrated(pLevel, pPos, fluidstate, pos)) 
 				{
 					return false;
-				} 
+				}
 				else 
 				{
 					Block block = blockstate.getBlock();
-					if (block instanceof BucketPickup)
+					if(block instanceof BucketPickup) 
 					{
 						BucketPickup bucketpickup = (BucketPickup)block;
-						if (!bucketpickup.pickupBlock(p_56808_, p_279054_, blockstate).isEmpty())
+						if(!bucketpickup.pickupBlock(pLevel, pos, blockstate).isEmpty()) 
 						{
 							return true;
 						}
 					}
-
-					if (blockstate.getBlock() instanceof LiquidBlock)
+					if(blockstate.getBlock() instanceof LiquidBlock) 
 					{
-						p_56808_.setBlock(p_279054_, Blocks.AIR.defaultBlockState(), 3);
-					} 
+						pLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+					}
 					else 
 					{
-						if (!blockstate.is(Blocks.KELP) && !blockstate.is(Blocks.KELP_PLANT) && !blockstate.is(Blocks.SEAGRASS) && !blockstate.is(Blocks.TALL_SEAGRASS)) {
+						if(!blockstate.is(Blocks.KELP) && !blockstate.is(Blocks.KELP_PLANT) && !blockstate.is(Blocks.SEAGRASS) && !blockstate.is(Blocks.TALL_SEAGRASS))
+						{
 							return false;
 						}
-
-						BlockEntity blockentity = blockstate.hasBlockEntity() ? p_56808_.getBlockEntity(p_279054_) : null;
-						Block.dropResources(blockstate, p_56808_, p_279054_, blockentity);
-						p_56808_.setBlock(p_279054_, Blocks.AIR.defaultBlockState(), 3);
+						
+						BlockEntity blockentity = blockstate.hasBlockEntity() ? pLevel.getBlockEntity(pos) : null;
+						Block.dropResources(blockstate, pLevel, pos, blockentity);
+						pLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 					}
 					return true;
 				}
@@ -170,21 +163,20 @@ public class EnchantmentUtil
 		}) > 1;
 	}
 	
-	public static void addChargedProjectile(ItemStack p_40929_, ItemStack p_40930_)
+	public static void addChargedProjectile(ItemStack pCrossbowStack, ItemStack pAmmoStack)
 	{
-		CompoundTag compoundtag = p_40929_.getOrCreateTag();
+		CompoundTag compoundtag = pCrossbowStack.getOrCreateTag();
 		ListTag listtag;
-		if (compoundtag.contains("ChargedProjectiles", 9))
+		if(compoundtag.contains("ChargedProjectiles", 9)) 
 		{
 			listtag = compoundtag.getList("ChargedProjectiles", 10);
 		} 
-		else
+		else 
 		{
 			listtag = new ListTag();
 		}
-
 		CompoundTag compoundtag1 = new CompoundTag();
-		p_40930_.save(compoundtag1);
+		pAmmoStack.save(compoundtag1);
 		listtag.add(compoundtag1);
 		compoundtag.put("ChargedProjectiles", listtag);
 	}

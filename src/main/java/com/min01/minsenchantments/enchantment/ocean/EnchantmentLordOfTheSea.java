@@ -6,7 +6,6 @@ import java.util.UUID;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.misc.EnchantmentTags;
-import com.min01.minsenchantments.util.EnchantmentUtil;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +13,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -27,15 +25,15 @@ public class EnchantmentLordOfTheSea extends AbstractOceanEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.lordoftheseaMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.lordoftheseaMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.lordoftheseaMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.lordoftheseaMaxCost.get();
+		return EnchantmentConfig.lordoftheseaMinCost.get() + (pLevel - 1) * EnchantmentConfig.lordoftheseaMaxCost.get();
 	}
 	
 	@Override
@@ -47,7 +45,7 @@ public class EnchantmentLordOfTheSea extends AbstractOceanEnchantment
 	@Override
 	public void onLivingTick(LivingEntity living) 
 	{
-		if(living.level() instanceof ServerLevel level)
+		if(living.level instanceof ServerLevel level)
 		{
 			if(living.getPersistentData().contains(EnchantmentTags.LORD_OF_THE_SEA) && living instanceof WaterAnimal waterAnimal)
 			{
@@ -58,18 +56,13 @@ public class EnchantmentLordOfTheSea extends AbstractOceanEnchantment
 				if(owner != null && waterAnimal.getTarget() != null)
 				{
 					Entity target = waterAnimal.getTarget();
-					waterAnimal.getLookControl().setLookAt(target, 30.0F, 30.0F);
-					double distance = waterAnimal.getPerceivedTargetDistanceSquareForMeleeAttack((LivingEntity) target);
-					if(distance <= EnchantmentUtil.getAttackReachSqr(waterAnimal, target))
+					if(waterAnimal.isWithinMeleeAttackRange((LivingEntity) target) && target.isAlive())
 					{
-						if(waterAnimal.getTarget().isAlive())
-						{
-							target.hurt(owner.damageSources().mobAttack(waterAnimal), damage);
-						}
+						target.hurt(waterAnimal.damageSources().mobAttack(waterAnimal), damage);
 					}
 					else
 					{
-						waterAnimal.getNavigation().moveTo(target, waterAnimal.getAttributeBaseValue(Attributes.MOVEMENT_SPEED));
+						waterAnimal.getNavigation().moveTo(target, 1.0F);
 					}
 				}
 				
@@ -88,7 +81,7 @@ public class EnchantmentLordOfTheSea extends AbstractOceanEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.LORD_OF_THE_SEA.get(), living);
 		if(level > 0 && damageSource.getEntity() instanceof LivingEntity source && living.isInWater())
 		{
-			List<WaterAnimal> list = living.level().getEntitiesOfClass(WaterAnimal.class, living.getBoundingBox().inflate(level * EnchantmentConfig.lordoftheseaRadiusPerLevel.get()));
+			List<WaterAnimal> list = living.level.getEntitiesOfClass(WaterAnimal.class, living.getBoundingBox().inflate(level * EnchantmentConfig.lordoftheseaRadiusPerLevel.get()));
 			if(list.size() <= level * EnchantmentConfig.lordoftheseaMaxAnimalsAmountPerLevel.get())
 			{
 				list.forEach((waterAnimal) ->

@@ -3,7 +3,7 @@ package com.min01.minsenchantments.enchantment.ocean;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.misc.EnchantmentTags;
@@ -25,13 +25,13 @@ public class EnchantmentWaterbolt extends AbstractOceanEnchantment implements IP
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
 		return EnchantmentConfig.waterboltMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
 		return EnchantmentConfig.waterboltMinCost.get();
 	}
@@ -41,7 +41,7 @@ public class EnchantmentWaterbolt extends AbstractOceanEnchantment implements IP
 	{
 		if(entity instanceof AbstractArrow arrow)
 		{
-			arrow.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+			arrow.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 			{
 				if(t.hasEnchantment(this) && arrow.isInWater())
 				{

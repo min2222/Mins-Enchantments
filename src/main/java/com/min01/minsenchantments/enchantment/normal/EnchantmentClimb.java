@@ -15,15 +15,15 @@ public class EnchantmentClimb extends AbstractMinsEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.climbMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.climbMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.climbMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.climbMaxCost.get();
+		return EnchantmentConfig.climbMinCost.get() + (pLevel - 1) * EnchantmentConfig.climbMaxCost.get();
 	}
 	
 	@Override

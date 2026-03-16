@@ -20,15 +20,15 @@ public class EnchantmentMagnet extends AbstractMinsEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.magnetMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.magnetMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.magnetMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.magnetMaxCost.get();
+		return EnchantmentConfig.magnetMinCost.get() + (pLevel - 1) * EnchantmentConfig.magnetMaxCost.get();
 	}
 	
 	@Override
@@ -43,16 +43,16 @@ public class EnchantmentMagnet extends AbstractMinsEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
 		if(level > 0 && living.isShiftKeyDown())
 		{
-			List<ItemEntity> itemList = living.level().getEntitiesOfClass(ItemEntity.class, living.getBoundingBox().inflate(level * EnchantmentConfig.magnetRadiusPerLevel.get()));
-			itemList.forEach((item) -> 
+			List<ItemEntity> itemList = living.level.getEntitiesOfClass(ItemEntity.class, living.getBoundingBox().inflate(level * EnchantmentConfig.magnetRadiusPerLevel.get()));
+			itemList.forEach(item -> 
 			{
-				item.setDeltaMovement(EnchantmentUtil.fromToVector(item.position(), living.position(), 0.05F));
+				item.setDeltaMovement(EnchantmentUtil.getVelocityTowards(item.position(), living.position(), 0.5F));
 			});
 			
-			List<ExperienceOrb> xpList = living.level().getEntitiesOfClass(ExperienceOrb.class, living.getBoundingBox().inflate(level * EnchantmentConfig.magnetRadiusPerLevel.get()));
-			xpList.forEach((xp) -> 
+			List<ExperienceOrb> xpList = living.level.getEntitiesOfClass(ExperienceOrb.class, living.getBoundingBox().inflate(level * EnchantmentConfig.magnetRadiusPerLevel.get()));
+			xpList.forEach(xp -> 
 			{
-				xp.setDeltaMovement(EnchantmentUtil.fromToVector(xp.position(), living.position(), 0.1F));
+				xp.setDeltaMovement(EnchantmentUtil.getVelocityTowards(xp.position(), living.position(), 0.5F));
 			});
 		}
 	}

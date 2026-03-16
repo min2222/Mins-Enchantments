@@ -20,13 +20,13 @@ public class EnchantmentWallbreak extends AbstractMinsEnchantment implements IPr
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
 		return EnchantmentConfig.wallbreakMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
 		return EnchantmentConfig.wallbreakMinCost.get();
 	}

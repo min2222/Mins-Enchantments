@@ -5,8 +5,8 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.misc.EnchantmentTags;
@@ -30,15 +30,15 @@ public class BlessmentHoming extends AbstractBlessment implements IProjectileEnc
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.homingMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.homingMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.homingMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.homingMaxCost.get();
+		return EnchantmentConfig.homingMinCost.get() + (pLevel - 1) * EnchantmentConfig.homingMaxCost.get();
 	}
 	
 	@Override
@@ -52,27 +52,25 @@ public class BlessmentHoming extends AbstractBlessment implements IProjectileEnc
 	{
 		if(entity instanceof Projectile projectile)
 		{
-			projectile.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t ->
+			projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(cap ->
 			{
-				if(t.hasEnchantment(this))
+				if(cap.hasEnchantment(this))
 				{
 					if(!projectile.onGround() && projectile.getOwner() != null)
 					{
 						Entity owner = projectile.getOwner();
-						EnchantmentData data = t.getEnchantmentData(this);
+						EnchantmentData data = cap.getEnchantmentData(this);
 						CompoundTag tag = data.getData();
 						int level = data.getEnchantLevel();
-						List<LivingEntity> list = projectile.level().getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(level));
-						list.removeIf((living) -> living == owner);
-						list.removeIf((living) -> living instanceof Player && EnchantmentConfig.disableHomingPlayers.get());
+						List<LivingEntity> list = projectile.level.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(level), t -> t != owner || (t instanceof Player && EnchantmentConfig.disableHomingPlayers.get()));
 						list.forEach((living) ->
 						{
 							int time = tag.getInt(EnchantmentTags.HOMING_TIME);
 							if(time < level * (EnchantmentConfig.homingMaxHomingTimePerLevel.get() * 20))
 							{
-								Vec3 vec = EnchantmentUtil.fromToVector(projectile.position(), living.position().add(0, 0.5F, 0), 0.5F * level);
+								Vec3 vec = EnchantmentUtil.getVelocityTowards(projectile.position(), living.position().add(0, 0.5F, 0), 0.5F * level);
 								projectile.setDeltaMovement(vec);
-								projectile.hasImpulse = true;
+								projectile.hurtMarked = true;
 								tag.putInt(EnchantmentTags.HOMING_TIME, time + 1);
 							}
 						});

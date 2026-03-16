@@ -13,38 +13,38 @@ public class OceanEnchantmentTableBlockEntity extends AbstractCustomEnchantmentT
 	private float activeRotation;
 	private boolean isActive;
 	   
-	public OceanEnchantmentTableBlockEntity(BlockPos p_155501_, BlockState p_155502_)
+	public OceanEnchantmentTableBlockEntity(BlockPos pPos, BlockState pState)
 	{
-		super(CustomBlocks.OCEAN_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), p_155501_, p_155502_);
+		super(CustomBlocks.OCEAN_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), pPos, pState);
 	}
 	
-	public static void clientTick(Level p_155404_, BlockPos p_155405_, BlockState p_155406_, OceanEnchantmentTableBlockEntity p_155407_)
+	public static void clientTick(Level pLevel, BlockPos pPos, BlockState pState, OceanEnchantmentTableBlockEntity pBlockEntity)
 	{
-		++p_155407_.tickCount;
-		long i = p_155404_.getGameTime();
-		if (i % 40L == 0L)
+		++pBlockEntity.tickCount;
+		long i = pLevel.getGameTime();
+		if(i % 40L == 0L)
 		{
 			for(BlockPos blockpos : EnchantmentTableBlock.BOOKSHELF_OFFSETS) 
 			{
-				p_155407_.isActive = EnchantmentTableBlock.isValidBookShelf(p_155404_, p_155405_, blockpos);
+				pBlockEntity.isActive = EnchantmentTableBlock.isValidBookShelf(pLevel, pPos, blockpos);
 			}
 		}
 		
-		if(p_155407_.isActive()) 
+		if(pBlockEntity.isActive()) 
 		{
-			++p_155407_.activeRotation;
+			++pBlockEntity.activeRotation;
 		}
 	}
 	
-	public static void serverTick(Level p_155439_, BlockPos p_155440_, BlockState p_155441_, OceanEnchantmentTableBlockEntity p_155407_)
+	public static void serverTick(Level pLevel, BlockPos pPos, BlockState pState, OceanEnchantmentTableBlockEntity pBlockEntity)
 	{
-		++p_155407_.tickCount;
-		long i = p_155439_.getGameTime();
-		if (i % 40L == 0L)
+		++pBlockEntity.tickCount;
+		long i = pLevel.getGameTime();
+		if(i % 40L == 0L)
 		{
 			for(BlockPos blockpos : EnchantmentTableBlock.BOOKSHELF_OFFSETS) 
 			{
-				p_155407_.isActive = EnchantmentTableBlock.isValidBookShelf(p_155439_, p_155440_, blockpos);
+				pBlockEntity.isActive = EnchantmentTableBlock.isValidBookShelf(pLevel, pPos, blockpos);
 			}
 		}
 	}

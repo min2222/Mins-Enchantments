@@ -17,15 +17,15 @@ public class EnchantmentInfection extends AbstractSculkEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.infectionMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.infectionMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.infectionMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.infectionMaxCost.get();
+		return EnchantmentConfig.infectionMinCost.get() + (pLevel - 1) * EnchantmentConfig.infectionMaxCost.get();
 	}
 	
 	@Override

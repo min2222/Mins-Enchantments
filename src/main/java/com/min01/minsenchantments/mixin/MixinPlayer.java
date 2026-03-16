@@ -21,15 +21,15 @@ import net.minecraftforge.event.entity.player.CriticalHitEvent;
 public class MixinPlayer 
 {
 	@Inject(at = @At("TAIL"), method = "getProjectile", cancellable = true)
-    private void getProjectile(ItemStack stack, CallbackInfoReturnable<ItemStack> ci)
+    private void getProjectile(ItemStack stack, CallbackInfoReturnable<ItemStack> cir)
     {
 		if(Player.class.cast(this).isEyeInFluidType(ForgeMod.WATER_TYPE.get()))
 		{
-			if(stack.getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0 && ci.getReturnValue().isEmpty())
+			if(stack.getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0 && cir.getReturnValue().isEmpty())
 			{
 				ItemStack arrow = new ItemStack(Items.ARROW);
 				arrow.getOrCreateTag().putBoolean(EnchantmentTags.WATER_JET, true);
-				ci.setReturnValue(arrow);
+				cir.setReturnValue(arrow);
 			}
 		}
     }
@@ -68,7 +68,7 @@ public class MixinPlayer
 				}
 				else
 				{
-					return 1F;
+					return 1.0F;
 				}
 			}
 		}

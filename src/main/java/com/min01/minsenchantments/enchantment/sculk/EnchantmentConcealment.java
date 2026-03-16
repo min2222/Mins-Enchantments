@@ -19,13 +19,13 @@ public class EnchantmentConcealment extends AbstractSculkEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
 		return EnchantmentConfig.concealmentMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
 		return EnchantmentConfig.concealmentMinCost.get();
 	}
@@ -40,7 +40,6 @@ public class EnchantmentConcealment extends AbstractSculkEnchantment
 				return true;
 			}
 		}
-		
 		return super.onPlaySoundAtEntity(entity, sound, source, volume, pitch);
 	}
 }

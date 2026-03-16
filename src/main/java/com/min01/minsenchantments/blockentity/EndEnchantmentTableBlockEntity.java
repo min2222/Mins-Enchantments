@@ -11,19 +11,19 @@ public class EndEnchantmentTableBlockEntity extends AbstractCustomEnchantmentTab
 {
 	public int time;
 	public RandomSource random = RandomSource.create();
-	public EndEnchantmentTableBlockEntity(BlockPos p_155501_, BlockState p_155502_)
+	public EndEnchantmentTableBlockEntity(BlockPos pPos, BlockState pState)
 	{
-		super(CustomBlocks.END_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), p_155501_, p_155502_);
+		super(CustomBlocks.END_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), pPos, pState);
 		this.time = this.random.nextInt(100000);
 	}
 	
-	public static void clientTick(Level p_155404_, BlockPos p_155405_, BlockState p_155406_, EndEnchantmentTableBlockEntity p_155407_)
+	public static void clientTick(Level pLevel, BlockPos pPos, BlockState pState, EndEnchantmentTableBlockEntity pBlockEntity)
 	{
-		++p_155407_.time;
+		++pBlockEntity.time;
 	}
 	
-	public static void serverTick(Level p_155439_, BlockPos p_155440_, BlockState p_155441_, EndEnchantmentTableBlockEntity p_155407_)
+	public static void serverTick(Level pLevel, BlockPos pPos, BlockState pState, EndEnchantmentTableBlockEntity pBlockEntity)
 	{
-		++p_155407_.time;
+		++pBlockEntity.time;
 	}
 }

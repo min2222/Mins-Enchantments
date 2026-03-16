@@ -2,8 +2,8 @@ package com.min01.minsenchantments.blessment;
 
 import java.lang.reflect.Method;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -19,7 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShieldItem;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class BlessmentAutoShielding extends AbstractBlessment
@@ -30,15 +30,15 @@ public class BlessmentAutoShielding extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.autoShieldingMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.autoShieldingMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.autoShieldingMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.autoShieldingMaxCost.get();
+		return EnchantmentConfig.autoShieldingMinCost.get() + (pLevel - 1) * EnchantmentConfig.autoShieldingMaxCost.get();
 	}
 	
 	@Override
@@ -50,23 +50,29 @@ public class BlessmentAutoShielding extends AbstractBlessment
 	@Override
 	public void onLivingTick(LivingEntity living)
 	{
-		living.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+		living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 		{
-			ItemStack stack = living.getItemBySlot(EquipmentSlot.OFFHAND);
+			ItemStack stack = living.getOffhandItem();
+			InteractionHand hand = InteractionHand.OFF_HAND;
+			if(stack.isEmpty())
+			{
+				stack = living.getMainHandItem();
+				hand = InteractionHand.MAIN_HAND;
+			}
 			int level = stack.getEnchantmentLevel(this);
-			if(level > 0)
+			if(level > 0 && stack.canPerformAction(ToolActions.SHIELD_BLOCK))
 			{
 				if(t.hasEnchantment(this))
 				{
 					EnchantmentData data = t.getEnchantmentData(this);
 					CompoundTag tag = data.getData();
-					if(stack.getItem() instanceof ShieldItem && tag.getBoolean(EnchantmentTags.IS_AUTO_SHIELDING))
+					if(tag.getBoolean(EnchantmentTags.IS_AUTO_SHIELDING))
 					{
 						int shielding = tag.getInt(EnchantmentTags.AUTO_SHIELDING);
 						if(shielding > 0)
 						{
 							tag.putInt(EnchantmentTags.AUTO_SHIELDING, shielding - 1);
-							living.startUsingItem(InteractionHand.OFF_HAND);
+							living.startUsingItem(hand);
 						}
 						else
 						{
@@ -87,14 +93,18 @@ public class BlessmentAutoShielding extends AbstractBlessment
 	@Override
 	public Pair<Boolean, Float> onLivingDamage(LivingEntity living, DamageSource source, float amount)
 	{
-		if(living.getCapability(EnchantmentCapabilities.ENCHANTMENT).isPresent())
+		if(living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).isPresent())
 		{
-			IEnchantmentCapability t = living.getCapability(EnchantmentCapabilities.ENCHANTMENT).orElse(null);
+			IEnchantmentCapability t = living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl());
 			if(t.hasEnchantment(this))
 			{
 				ItemStack offHandStack = living.getOffhandItem();
+				if(offHandStack.isEmpty())
+				{
+					offHandStack = living.getMainHandItem();
+				}
 				int level = offHandStack.getEnchantmentLevel(CustomEnchantments.AUTO_SHIELDING.get());
-				if(offHandStack.getItem() instanceof ShieldItem && level > 0)
+				if(offHandStack.canPerformAction(ToolActions.SHIELD_BLOCK) && level > 0)
 				{
 					if(EnchantmentUtil.isDamageSourceBlocked(living, source))
 					{
@@ -113,44 +123,42 @@ public class BlessmentAutoShielding extends AbstractBlessment
 									{
 										if(ev.shieldTakesDamage())
 										{
-											//FIXME crash with unable to find method, but method is exist in living entity. wtf
-											/*Method m = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "m_7909_", Float.class);
+											Method m = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "m_7909_", float.class);
+											m.setAccessible(true);
 											try 
 											{
 												m.invoke(living, amount);
 											}
 											catch (Exception e) 
 											{
-												
-											}*/
+												e.printStackTrace();
+											}
 										}
 										am -= ev.getBlockedDamage();
-										if (!source.is(DamageTypeTags.IS_PROJECTILE))
+										if(!source.is(DamageTypeTags.IS_PROJECTILE))
 										{
 											Entity entity = source.getDirectEntity();
-											if (entity instanceof LivingEntity) 
+											if(entity instanceof LivingEntity livingEntity) 
 											{
-												LivingEntity livingentity = (LivingEntity)entity;
 												Method m = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "m_6728_", LivingEntity.class);
 												try 
 												{
-													m.invoke(living, livingentity);
+													m.invoke(living, livingEntity);
 												}
-												catch (Exception e) 
+												catch(Exception e) 
 												{
-													
+													e.printStackTrace();
 												}
 											}
-										}
-										
-										if(amount <= 0)
-										{
-											living.level().broadcastEntityEvent(living, (byte)29);
 										}
 										tag.putInt(EnchantmentTags.AUTO_SHIELDING, 10);
 										tag.putBoolean(EnchantmentTags.IS_AUTO_SHIELDING, true);
 										t.setEnchantmentData(this, new EnchantmentData(level, tag));
-										return Pair.of(true, am);
+										if(am <= 0)
+										{
+											living.level.broadcastEntityEvent(living, (byte)29);
+											return Pair.of(true, am);
+										}
 									}
 								}
 							}
@@ -160,5 +168,11 @@ public class BlessmentAutoShielding extends AbstractBlessment
 			}
 		}
 		return super.onLivingDamage(living, source, amount);
+	}
+	
+	@Override
+	public boolean onLivingAttack(LivingEntity living, DamageSource source, float amount)
+	{
+		return this.onLivingDamage(living, source, amount).first();
 	}
 }

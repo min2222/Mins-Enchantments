@@ -17,15 +17,15 @@ public class EnchantmentFloatingCurse extends AbstractCurseEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.floatingCurseMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.floatingCurseMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.floatingCurseMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.floatingCurseMaxCost.get();
+		return EnchantmentConfig.floatingCurseMinCost.get() + (pLevel - 1) * EnchantmentConfig.floatingCurseMaxCost.get();
 	}
 	
 	@Override

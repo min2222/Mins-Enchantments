@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -33,9 +34,9 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 	private float activeRotation;
 	private boolean isActive;
 	
-	public OceanEnchantmentScreen(OceanEnchantmentMenu p_98754_, Inventory p_98755_, Component p_98756_)
+	public OceanEnchantmentScreen(OceanEnchantmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
-		super(p_98754_, p_98755_, p_98756_);
+		super(pMenu, pPlayerInventory, pTitle);
 		EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
 		this.eye = modelSet.bakeLayer(ModelLayers.CONDUIT_EYE);
 		this.shell = modelSet.bakeLayer(ModelLayers.CONDUIT_SHELL);
@@ -54,7 +55,7 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 		super.containerTick();
 		++this.tickCount;
 		
-		if (this.isActive()) 
+		if(this.isActive()) 
 		{
 			++this.activeRotation;
 		}
@@ -63,30 +64,30 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 	}
 	
 	@Override
-	public void renderCustom(PoseStack stack, float partialTick, MultiBufferSource.BufferSource multibuffersource$buffersource) 
+	public void renderCustom(PoseStack stack, float partialTick, MultiBufferSource.BufferSource buffersource) 
 	{
 		float f = (float)this.tickCount + partialTick;
-		if (!this.isActive())
+		if(!this.isActive())
 		{
 			float f5 = this.getActiveRotation(0.0F);
-			VertexConsumer vertexconsumer1 = multibuffersource$buffersource.getBuffer(RenderType.entitySolid(SHELL_TEXTURE));
+			VertexConsumer vertexconsumer1 = buffersource.getBuffer(RenderType.entitySolid(SHELL_TEXTURE));
 			stack.pushPose();
 			stack.translate(0, 0.8, 0);
-			stack.mulPose((new Quaternionf()).rotationY(f5 * ((float)Math.PI / 180F)));
+			stack.mulPose((new Quaternionf()).rotationY(f5 * ((float)Math.PI / 180.0F)));
 			this.shell.render(stack, vertexconsumer1, 15728880, OverlayTexture.NO_OVERLAY);
 			stack.popPose();
 		} 
 		else
 		{
-			float f1 = this.getActiveRotation(partialTick) * (180F / (float)Math.PI);
+			float f1 = this.getActiveRotation(partialTick) * (180.0F / (float)Math.PI);
 			float f2 = Mth.sin(f * 0.1F) / 2.0F + 0.5F;
 			f2 = f2 * f2 + f2;
 			stack.pushPose();
 			stack.translate(0, 0.25, 0);
 			stack.translate(0, (double)(0.1F + f2 * 0.2F), 0);
 			Vector3f vector3f = new Vector3f(0.5F, 1.0F, 0.5F);
-			stack.mulPose((new Quaternionf()).rotationAxis(f1 * ((float)Math.PI / 180F), vector3f));
-			this.cage.render(stack, multibuffersource$buffersource.getBuffer(RenderType.entityCutoutNoCull(ACTIVE_SHELL_TEXTURE)), 15728880, OverlayTexture.NO_OVERLAY);
+			stack.mulPose((new Quaternionf()).rotationAxis(f1 * ((float)Math.PI / 180.0F), vector3f));
+			this.cage.render(stack, buffersource.getBuffer(RenderType.entityCutoutNoCull(ACTIVE_SHELL_TEXTURE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 			stack.popPose();
 			
 			stack.pushPose();
@@ -94,7 +95,7 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 			stack.translate(0D, (double)(0.1F + f2 * 0.2F), 0D);
 			stack.scale(0.5F, 0.5F, 0.5F);
 			stack.scale(1.3333334F, 1.3333334F, 1.3333334F);
-			this.eye.render(stack, multibuffersource$buffersource.getBuffer(RenderType.entityCutoutNoCull(OPEN_EYE_TEXTURE)), 15728880, OverlayTexture.NO_OVERLAY);
+			this.eye.render(stack, buffersource.getBuffer(RenderType.entityCutoutNoCull(OPEN_EYE_TEXTURE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 			stack.popPose();
 		}
 	}
@@ -104,9 +105,9 @@ public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<Ocea
 		return this.isActive;
 	}
 
-	public float getActiveRotation(float p_59198_)
+	public float getActiveRotation(float pPartialTick)
 	{
-		return (this.activeRotation + p_59198_) * -0.0375F;
+		return (this.activeRotation + pPartialTick) * -0.0375F;
 	}
 	
 	@Override

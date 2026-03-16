@@ -13,41 +13,41 @@ public class SculkEnchantmentTableBlockEntity extends AbstractCustomEnchantmentT
 {
 	public int time;
 	private boolean isActive;
-	public SculkEnchantmentTableBlockEntity(BlockPos p_155501_, BlockState p_155502_)
+	public SculkEnchantmentTableBlockEntity(BlockPos pPos, BlockState pState)
 	{
-		super(CustomBlocks.SCULK_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), p_155501_, p_155502_);
+		super(CustomBlocks.SCULK_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), pPos, pState);
 	}
 	
-	public static void clientTick(Level p_155404_, BlockPos p_155405_, BlockState p_155406_, SculkEnchantmentTableBlockEntity p_155407_)
+	public static void clientTick(Level pLevel, BlockPos pPos, BlockState pState, SculkEnchantmentTableBlockEntity pBlockEntity)
 	{
-		++p_155407_.time;
-		long i = p_155404_.getGameTime();
-		if (i % 40L == 0L)
+		++pBlockEntity.time;
+		long i = pLevel.getGameTime();
+		if(i % 40L == 0L)
 		{
 			for(BlockPos blockpos : EnchantmentTableBlock.BOOKSHELF_OFFSETS) 
 			{
-				p_155407_.isActive = EnchantmentTableBlock.isValidBookShelf(p_155404_, p_155405_, blockpos);
+				pBlockEntity.isActive = EnchantmentTableBlock.isValidBookShelf(pLevel, pPos, blockpos);
 			}
 		}
 		
-		if(p_155407_.isActive() && p_155407_.time % 100 == 0)
+		if(pBlockEntity.isActive() && pBlockEntity.time % 100 == 0)
 		{
 			for(int j1 = 0; j1 < 10; ++j1) 
 			{
-				p_155404_.addParticle(new ShriekParticleOption(j1 * 5), false, (double)p_155405_.getX() + 0.5D, (double)p_155405_.getY() + SculkShriekerBlock.TOP_Y, (double)p_155405_.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
+				pLevel.addParticle(new ShriekParticleOption(j1 * 5), false, (double)pPos.getX() + 0.5D, (double)pPos.getY() + SculkShriekerBlock.TOP_Y, (double)pPos.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
 	
-	public static void serverTick(Level p_155439_, BlockPos p_155440_, BlockState p_155441_, SculkEnchantmentTableBlockEntity p_155407_)
+	public static void serverTick(Level pLevel, BlockPos pPos, BlockState pState, SculkEnchantmentTableBlockEntity pBlockEntity)
 	{
-		++p_155407_.time;
-		long i = p_155439_.getGameTime();
-		if (i % 40L == 0L)
+		++pBlockEntity.time;
+		long i = pLevel.getGameTime();
+		if(i % 40L == 0L)
 		{
 			for(BlockPos blockpos : EnchantmentTableBlock.BOOKSHELF_OFFSETS) 
 			{
-				p_155407_.isActive = EnchantmentTableBlock.isValidBookShelf(p_155439_, p_155440_, blockpos);
+				pBlockEntity.isActive = EnchantmentTableBlock.isValidBookShelf(pLevel, pPos, blockpos);
 			}
 		}
 	}

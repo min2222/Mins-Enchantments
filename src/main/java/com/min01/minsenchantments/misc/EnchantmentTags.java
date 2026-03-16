@@ -30,11 +30,13 @@ public class EnchantmentTags
 	public static final String SHARP_WAVES = "SharpWaves";
 	public static final String SHARP_WAVES_DMG = "SharpWavesDmg";
 	public static final String TIDE = "Tide";
+	public static final String TIDE_OLD_SPEED = "TideOldSpeed";
 	public static final String POSEIDONS_GRACE = "PoseidonsGrace";
 	public static final String POSEIDONS_GRACE_ITEM = "PoseidonsGraceItem";
 	public static final String POSEIDONS_GRACE_SUMMONED = "PoseidonsGraceSummoned";
 	public static final String POSEIDONS_GRACE_TARGET = "PoseidonsGraceTarget";
 	public static final String WAVES_PROTECTION = "WavesProtection";
+	public static final String WAVES_PROTECTION_OLD_SPEED = "WavesProtectionOldSpeed";
 	public static final String LORD_OF_THE_SEA = "LordOfTheSea";
 	public static final String LORD_OF_THE_SEA_DMG = "LordOfTheSeaDmg";
 	public static final String WATER_JET = "WaterJet";

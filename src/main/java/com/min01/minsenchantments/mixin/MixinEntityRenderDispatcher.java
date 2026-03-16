@@ -19,15 +19,15 @@ public class MixinEntityRenderDispatcher
 {
 	@SuppressWarnings("unchecked")
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(DDD)V", shift = At.Shift.AFTER))
-	private <E extends Entity> void translate(E p_114385_, double p_114386_, double p_114387_, double p_114388_, float p_114389_, float p_114390_, PoseStack p_114391_, MultiBufferSource p_114392_, int p_114393_, CallbackInfo ci)
+	private <E extends Entity> void beforeRender(E pEntity, double pX, double pY, double pZ, float pRotationYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci)
 	{
-		MinecraftForge.EVENT_BUS.post(new RenderEntityEvent.Pre<E>(p_114385_, (EntityRenderer<E>) EntityRenderDispatcher.class.cast(this).getRenderer(p_114385_), p_114390_, p_114391_, p_114392_, p_114393_));
+		MinecraftForge.EVENT_BUS.post(new RenderEntityEvent.Pre<E>(pEntity, (EntityRenderer<E>) EntityRenderDispatcher.class.cast(this).getRenderer(pEntity), pPartialTicks, pPoseStack, pBuffer, pPackedLight));
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V",shift = At.Shift.BEFORE))
-	private <E extends Entity> void popPose(E p_114385_, double p_114386_, double p_114387_, double p_114388_, float p_114389_, float p_114390_, PoseStack p_114391_, MultiBufferSource p_114392_, int p_114393_, CallbackInfo ci)
+	private <E extends Entity> void afterRender(E pEntity, double pX, double pY, double pZ, float pRotationYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci)
 	{
-		MinecraftForge.EVENT_BUS.post(new RenderEntityEvent.Post<E>(p_114385_, (EntityRenderer<E>) EntityRenderDispatcher.class.cast(this).getRenderer(p_114385_), p_114390_, p_114391_, p_114392_, p_114393_));
-	}
+		MinecraftForge.EVENT_BUS.post(new RenderEntityEvent.Post<E>(pEntity, (EntityRenderer<E>) EntityRenderDispatcher.class.cast(this).getRenderer(pEntity), pPartialTicks, pPoseStack, pBuffer, pPackedLight));
+	}	
 }

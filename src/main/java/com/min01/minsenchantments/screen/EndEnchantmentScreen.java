@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -24,14 +25,14 @@ public class EndEnchantmentScreen extends AbstractCustomEnchantmentScreen<EndEnc
 {
 	private static final ResourceLocation END_CRYSTAL_LOCATION = ResourceLocation.parse("textures/entity/end_crystal/end_crystal.png");
 	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(END_CRYSTAL_LOCATION);
-	private static final float SIN_45 = (float)Math.sin((Math.PI / 4D));
+	private static final float SIN_45 = (float)Math.sin((Math.PI / 4.0D));
 	private final ModelPart cube;
 	private final ModelPart glass;
 	public int time;
-	
-	public EndEnchantmentScreen(EndEnchantmentMenu p_98754_, Inventory p_98755_, Component p_98756_)
+
+	public EndEnchantmentScreen(EndEnchantmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
-		super(p_98754_, p_98755_, p_98756_);
+		super(pMenu, pPlayerInventory, pTitle);
 		EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
 		ModelPart modelpart = modelSet.bakeLayer(ModelLayers.END_CRYSTAL);
 		this.glass = modelpart.getChild("glass");
@@ -60,15 +61,15 @@ public class EndEnchantmentScreen extends AbstractCustomEnchantmentScreen<EndEnc
 		stack.mulPose(Axis.YP.rotationDegrees(f1));
 		stack.translate(0.0F, 1.5F + f / 2.0F, 0.0F);
 		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		this.glass.render(stack, vertexconsumer, 15728880, i);
+		this.glass.render(stack, vertexconsumer, LightTexture.FULL_BRIGHT, i);
 		stack.scale(0.875F, 0.875F, 0.875F);
 		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
 		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.glass.render(stack, vertexconsumer, 15728880, i);
+		this.glass.render(stack, vertexconsumer, LightTexture.FULL_BRIGHT, i);
 		stack.scale(0.875F, 0.875F, 0.875F);
 		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
 		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.cube.render(stack, vertexconsumer, 15728880, i);
+		this.cube.render(stack, vertexconsumer, LightTexture.FULL_BRIGHT, i);
 		stack.popPose();
 		stack.popPose();
 	}
@@ -80,9 +81,9 @@ public class EndEnchantmentScreen extends AbstractCustomEnchantmentScreen<EndEnc
 		++this.time;
 	}
 	
-	public static float getY(EndEnchantmentScreen p_114159_, float p_114160_)
+	public static float getY(EndEnchantmentScreen menu, float pPartialTick)
 	{
-		float f = (float)p_114159_.time + p_114160_;
+		float f = (float)menu.time + pPartialTick;
 		float f1 = Mth.sin(f * 0.2F) / 2.0F + 0.5F;
 		f1 = (f1 * f1 + f1) * 0.4F;
 		return f1 - 1.4F;

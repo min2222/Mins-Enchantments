@@ -5,8 +5,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
 import com.min01.minsenchantments.misc.EnchantmentTags;
@@ -22,24 +22,24 @@ import net.minecraft.world.phys.HitResult;
 public class MixinProjectile 
 {
 	@Inject(at = @At("HEAD"), method = "onHit", cancellable = true)
-    private void onHit(HitResult p_37260_, CallbackInfo ci)
+    private void onHit(HitResult hitResult, CallbackInfo ci)
     {
-		if(p_37260_.getType() == HitResult.Type.ENTITY)
+		if(hitResult.getType() == HitResult.Type.ENTITY)
 		{
-			EntityHitResult entityHit = (EntityHitResult) p_37260_;
+			EntityHitResult entityHit = (EntityHitResult) hitResult;
 			Entity entity = entityHit.getEntity();
 			if(entity instanceof LivingEntity living)
 			{
-				if(living.getOffhandItem().getEnchantmentLevel(CustomEnchantments.MIRROR.get()) > 0 && living.isBlocking())
+				if(living.isBlocking() && living.getUseItem().getEnchantmentLevel(CustomEnchantments.MIRROR.get()) > 0)
 				{
 					ci.cancel();
 				}
 			}
 		}
 		
-		if(p_37260_.getType() == HitResult.Type.BLOCK)
+		if(hitResult.getType() == HitResult.Type.BLOCK)
 		{
-			Projectile.class.cast(this).getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+			Projectile.class.cast(this).getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 			{
 				if(t.hasEnchantment(CustomEnchantments.RECOCHET.get()))
 				{

@@ -8,9 +8,9 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 public abstract class AbstractCurseEnchantment extends Enchantment implements IMinsEnchantment
 {
-	public AbstractCurseEnchantment(Rarity p_44676_, EnchantmentCategory p_44677_, EquipmentSlot[] p_44678_)
+	public AbstractCurseEnchantment(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot[] pApplicableSlots)
 	{
-		super(p_44676_, p_44677_, p_44678_);
+		super(pRarity, pCategory, pApplicableSlots);
 	}
 	
 	@Override

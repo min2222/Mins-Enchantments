@@ -13,15 +13,15 @@ public class BlessmentCriticalStrike extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.criticalStrikeMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.criticalStrikeMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.criticalStrikeMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.criticalStrikeMaxCost.get();
+		return EnchantmentConfig.criticalStrikeMinCost.get() + (pLevel - 1) * EnchantmentConfig.criticalStrikeMaxCost.get();
 	}
 	
 	@Override

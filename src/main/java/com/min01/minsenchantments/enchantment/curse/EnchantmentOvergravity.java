@@ -15,15 +15,15 @@ public class EnchantmentOvergravity extends AbstractCurseEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.overgravityMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.overgravityMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.overgravityMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.overgravityMaxCost.get();
+		return EnchantmentConfig.overgravityMinCost.get() + (pLevel - 1) * EnchantmentConfig.overgravityMaxCost.get();
 	}
 	
 	@Override
@@ -39,6 +39,7 @@ public class EnchantmentOvergravity extends AbstractCurseEnchantment
 		if(level > 0)
 		{
 			living.setDeltaMovement(living.getDeltaMovement().subtract(0, level * EnchantmentConfig.overgravityFallSpeedPerLevel.get(), 0));
+			living.hasImpulse = true;
 		}
 	}
 	

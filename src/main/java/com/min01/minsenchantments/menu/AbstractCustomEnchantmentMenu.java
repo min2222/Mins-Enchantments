@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
+import com.min01.minsenchantments.config.EnchantmentConfig;
 
 import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -54,22 +55,24 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 	public final int[] enchantClue = new int[] { -1, -1, -1 };
 	public final int[] levelClue = new int[] { -1, -1, -1 };
 
-	public AbstractCustomEnchantmentMenu(@Nullable MenuType<?> p_38851_, int p_39454_, Inventory p_39455_) 
+	public AbstractCustomEnchantmentMenu(@Nullable MenuType<?> pMenuType, int pContainerId, Inventory pPlayerInventory) 
 	{
-		this(p_38851_, p_39454_, p_39455_, ContainerLevelAccess.NULL);
+		this(pMenuType, pContainerId, pPlayerInventory, ContainerLevelAccess.NULL);
 	}
 
-	public AbstractCustomEnchantmentMenu(@Nullable MenuType<?> p_38851_, int p_39457_, Inventory p_39458_, ContainerLevelAccess p_39459_) 
+	public AbstractCustomEnchantmentMenu(@Nullable MenuType<?> pMenuType, int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess pAccess) 
 	{
-		super(p_38851_, p_39457_);
-		this.access = p_39459_;
+		super(pMenuType, pContainerId);
+		this.access = pAccess;
 		this.addSlot(new Slot(this.enchantSlots, 0, 15, 47) 
 		{
-			public boolean mayPlace(ItemStack p_39508_) 
+			@Override
+			public boolean mayPlace(ItemStack pStack) 
 			{
 				return true;
 			}
 
+			@Override
 			public int getMaxStackSize()
 			{
 				return 1;
@@ -77,29 +80,30 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 		});
 		this.addSlot(new Slot(this.enchantSlots, 1, 35, 47) 
 		{
-			public boolean mayPlace(ItemStack p_39517_)
+			@Override
+			public boolean mayPlace(ItemStack pStack)
 			{
-				return AbstractCustomEnchantmentMenu.this.is(p_39517_);
+				return AbstractCustomEnchantmentMenu.this.is(pStack);
 			}
 		});
 
-		for (int i = 0; i < 3; ++i) 
+		for(int i = 0; i < 3; ++i) 
 		{
-			for (int j = 0; j < 9; ++j) 
+			for(int j = 0; j < 9; ++j) 
 			{
-				this.addSlot(new Slot(p_39458_, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+				this.addSlot(new Slot(pPlayerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
 			}
 		}
 
-		for (int k = 0; k < 9; ++k) 
+		for(int k = 0; k < 9; ++k) 
 		{
-			this.addSlot(new Slot(p_39458_, k, 8 + k * 18, 142));
+			this.addSlot(new Slot(pPlayerInventory, k, 8 + k * 18, 142));
 		}
 
 		this.addDataSlot(DataSlot.shared(this.costs, 0));
 		this.addDataSlot(DataSlot.shared(this.costs, 1));
 		this.addDataSlot(DataSlot.shared(this.costs, 2));
-		this.addDataSlot(this.enchantmentSeed).set(p_39458_.player.getEnchantmentSeed());
+		this.addDataSlot(this.enchantmentSeed).set(pPlayerInventory.player.getEnchantmentSeed());
 		this.addDataSlot(DataSlot.shared(this.enchantClue, 0));
 		this.addDataSlot(DataSlot.shared(this.enchantClue, 1));
 		this.addDataSlot(DataSlot.shared(this.enchantClue, 2));
@@ -108,45 +112,44 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 		this.addDataSlot(DataSlot.shared(this.levelClue, 2));
 	}
 
-	public void slotsChanged(Container p_39461_)
+	public void slotsChanged(Container pInventory)
 	{
-		if (p_39461_ == this.enchantSlots) 
+		if(pInventory == this.enchantSlots) 
 		{
-			ItemStack itemstack = p_39461_.getItem(0);
-			if (!itemstack.isEmpty() && itemstack.isEnchantable()) 
+			ItemStack itemstack = pInventory.getItem(0);
+			if(!itemstack.isEmpty() && itemstack.isEnchantable()) 
 			{
-				this.access.execute((p_39485_, p_39486_) -> 
+				this.access.execute((pLevel, pPos) -> 
 				{
 					float j = 0;
-
-					for (BlockPos blockpos : EnchantmentTableBlock.BOOKSHELF_OFFSETS)
+					for(BlockPos blockpos : EnchantmentTableBlock.BOOKSHELF_OFFSETS)
 					{
-						if (EnchantmentTableBlock.isValidBookShelf(p_39485_, p_39486_, blockpos))
+						if(EnchantmentTableBlock.isValidBookShelf(pLevel, pPos, blockpos))
 						{
-							j += p_39485_.getBlockState(p_39486_.offset(blockpos)).getEnchantPowerBonus(p_39485_, p_39486_.offset(blockpos));
+							j += pLevel.getBlockState(pPos.offset(blockpos)).getEnchantPowerBonus(pLevel, pPos.offset(blockpos));
 						}
 					}
 
 					this.random.setSeed((long) this.enchantmentSeed.get());
 
-					for (int k = 0; k < 3; ++k) 
+					for(int k = 0; k < 3; ++k) 
 					{
 						this.costs[k] = EnchantmentHelper.getEnchantmentCost(this.random, k, (int) j, itemstack);
 						this.enchantClue[k] = -1;
 						this.levelClue[k] = -1;
-						if (this.costs[k] < k + 1)
+						if(this.costs[k] < k + 1)
 						{
 							this.costs[k] = 0;
 						}
-						this.costs[k] = net.minecraftforge.event.ForgeEventFactory.onEnchantmentLevelSet(p_39485_, p_39486_, k, (int) j, itemstack, costs[k]);
+						this.costs[k] = net.minecraftforge.event.ForgeEventFactory.onEnchantmentLevelSet(pLevel, pPos, k, (int) j, itemstack, costs[k]);
 					}
 
-					for (int l = 0; l < 3; ++l) 
+					for(int l = 0; l < 3; ++l) 
 					{
-						if (this.costs[l] > 0)
+						if(this.costs[l] > 0)
 						{
 							List<EnchantmentInstance> list = this.getEnchantmentList(itemstack, l, this.costs[l]);
-							if (list != null && !list.isEmpty())
+							if(list != null && !list.isEmpty())
 							{
 								EnchantmentInstance enchantmentinstance = list.get(this.random.nextInt(list.size()));
 								this.enchantClue[l] = ((ForgeRegistry<Enchantment>) ForgeRegistries.ENCHANTMENTS).getID(enchantmentinstance.enchantment);
@@ -154,13 +157,12 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 							}
 						}
 					}
-
 					this.broadcastChanges();
 				});
 			} 
 			else 
 			{
-				for (int i = 0; i < 3; ++i) 
+				for(int i = 0; i < 3; ++i) 
 				{
 					this.costs[i] = 0;
 					this.enchantClue[i] = -1;
@@ -171,36 +173,37 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 
 	}
 
-	public boolean clickMenuButton(Player p_39465_, int p_39466_)
+	@Override
+	public boolean clickMenuButton(Player pPlayer, int pId)
 	{
-		if (p_39466_ >= 0 && p_39466_ < this.costs.length)
+		if(pId >= 0 && pId < this.costs.length)
 		{
 			ItemStack itemstack = this.enchantSlots.getItem(0);
 			ItemStack itemstack1 = this.enchantSlots.getItem(1);
-			int i = p_39466_ + 1;
-			if ((itemstack1.isEmpty() || itemstack1.getCount() < i) && !p_39465_.getAbilities().instabuild) 
+			int i = pId + 1;
+			if((itemstack1.isEmpty() || itemstack1.getCount() < i) && !pPlayer.getAbilities().instabuild) 
 			{
 				return false;
 			} 
-			else if (this.costs[p_39466_] <= 0 || itemstack.isEmpty() || (p_39465_.experienceLevel < i || p_39465_.experienceLevel < this.costs[p_39466_]) && !p_39465_.getAbilities().instabuild) 
+			else if(this.costs[pId] <= 0 || itemstack.isEmpty() || (pPlayer.experienceLevel < i || pPlayer.experienceLevel < this.costs[pId]) && !pPlayer.getAbilities().instabuild) 
 			{
 				return false;
 			}
 			else
 			{
-				this.access.execute((p_39481_, p_39482_) ->
+				this.access.execute((pLevel, pPos) ->
 				{
 					ItemStack itemstack2 = itemstack;
-					List<EnchantmentInstance> list = this.getEnchantmentList(itemstack, p_39466_, this.costs[p_39466_]);
-					if (!list.isEmpty()) 
+					List<EnchantmentInstance> list = this.getEnchantmentList(itemstack, pId, this.costs[pId]);
+					if(!list.isEmpty()) 
 					{
-						p_39465_.onEnchantmentPerformed(itemstack, i);
+						pPlayer.onEnchantmentPerformed(itemstack, i);
 						boolean flag = itemstack.is(Items.BOOK);
-						if (flag) 
+						if(flag) 
 						{
 							itemstack2 = new ItemStack(Items.ENCHANTED_BOOK);
 							CompoundTag compoundtag = itemstack.getTag();
-							if (compoundtag != null) 
+							if(compoundtag != null) 
 							{
 								itemstack2.setTag(compoundtag.copy());
 							}
@@ -208,10 +211,10 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 							this.enchantSlots.setItem(0, itemstack2);
 						}
 
-						for (int j = 0; j < list.size(); ++j) 
+						for(int j = 0; j < list.size(); ++j) 
 						{
 							EnchantmentInstance enchantmentinstance = list.get(j);
-							if (flag) 
+							if(flag) 
 							{
 								EnchantedBookItem.addEnchantment(itemstack2, enchantmentinstance);
 							} 
@@ -221,25 +224,25 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 							}
 						}
 
-						if (!p_39465_.getAbilities().instabuild)
+						if(!pPlayer.getAbilities().instabuild)
 						{
 							itemstack1.shrink(i);
-							if (itemstack1.isEmpty())
+							if(itemstack1.isEmpty())
 							{
 								this.enchantSlots.setItem(1, ItemStack.EMPTY);
 							}
 						}
 
-						p_39465_.awardStat(Stats.ENCHANT_ITEM);
-						if (p_39465_ instanceof ServerPlayer)
+						pPlayer.awardStat(Stats.ENCHANT_ITEM);
+						if(pPlayer instanceof ServerPlayer)
 						{
-							CriteriaTriggers.ENCHANTED_ITEM.trigger((ServerPlayer) p_39465_, itemstack2, i);
+							CriteriaTriggers.ENCHANTED_ITEM.trigger((ServerPlayer) pPlayer, itemstack2, i);
 						}
 
 						this.enchantSlots.setChanged();
-						this.enchantmentSeed.set(p_39465_.getEnchantmentSeed());
+						this.enchantmentSeed.set(pPlayer.getEnchantmentSeed());
 						this.slotsChanged(this.enchantSlots);
-						p_39481_.playSound((Player) null, p_39482_, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, p_39481_.random.nextFloat() * 0.1F + 0.9F);
+						pLevel.playSound((Player) null, pPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, pLevel.random.nextFloat() * 0.1F + 0.9F);
 					}
 
 				});
@@ -248,75 +251,71 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 		}
 		else 
 		{
-			Util.logAndPauseIfInIde(p_39465_.getName() + " pressed invalid button id: " + p_39466_);
+			Util.logAndPauseIfInIde(pPlayer.getName() + " pressed invalid button id: " + pId);
 			return false;
 		}
 	}
 
-	private List<EnchantmentInstance> getEnchantmentList(ItemStack p_39472_, int p_39473_, int p_39474_)
+	private List<EnchantmentInstance> getEnchantmentList(ItemStack pStack, int pEnchantSlot, int pLevel)
 	{
-		this.random.setSeed((long) (this.enchantmentSeed.get() + p_39473_));
-		List<EnchantmentInstance> list = selectEnchantment(this.random, p_39472_, p_39474_, false);
-		if (p_39472_.is(Items.BOOK) && list.size() > 1) 
+		this.random.setSeed((long)(this.enchantmentSeed.get() + pEnchantSlot));
+		List<EnchantmentInstance> list = this.selectEnchantment(this.random, pStack, pLevel, false);
+		if(pStack.is(Items.BOOK) && list.size() > 1) 
 		{
 			list.remove(this.random.nextInt(list.size()));
 		}
-
 		return list;
 	}
 	
-	public List<EnchantmentInstance> selectEnchantment(RandomSource p_220298_, ItemStack p_220299_, int p_220300_, boolean p_220301_)
+	public List<EnchantmentInstance> selectEnchantment(RandomSource pRandom, ItemStack pItemStack, int pLevel, boolean pAllowTreasure) 
 	{
 		List<EnchantmentInstance> list = Lists.newArrayList();
-		int i = p_220299_.getEnchantmentValue();
-		if (i <= 0) 
+		int i = pItemStack.getEnchantmentValue();
+		if(i <= 0) 
 		{
 			return list;
-		} 
-		else
+		}
+		else 
 		{
-			p_220300_ += 1 + p_220298_.nextInt(i / 4 + 1) + p_220298_.nextInt(i / 4 + 1);
-			float f = (p_220298_.nextFloat() + p_220298_.nextFloat() - 1.0F) * 0.15F;
-			p_220300_ = Mth.clamp(Math.round((float)p_220300_ + (float)p_220300_ * f), 1, Integer.MAX_VALUE);
-			List<EnchantmentInstance> list1 = getAvailableEnchantmentResults(p_220300_, p_220299_, p_220301_);
-			if (!list1.isEmpty()) 
+			pLevel += 1 + pRandom.nextInt(i / 4 + 1) + pRandom.nextInt(i / 4 + 1);
+			float f = (pRandom.nextFloat() + pRandom.nextFloat() - 1.0F) * 0.15F;
+			pLevel = Mth.clamp(Math.round((float)pLevel + (float)pLevel * f), 1, Integer.MAX_VALUE);
+			List<EnchantmentInstance> list1 = this.getAvailableEnchantmentResults(pLevel, pItemStack, pAllowTreasure);
+			if(!list1.isEmpty()) 
 			{
-				WeightedRandom.getRandomItem(p_220298_, list1).ifPresent(list::add);
-
-				while(p_220298_.nextInt(50) <= p_220300_) 
+				WeightedRandom.getRandomItem(pRandom, list1).ifPresent(list::add);
+				while(pRandom.nextInt(50) <= pLevel) 
 				{
-					if (!list.isEmpty()) 
+					if(!list.isEmpty() && !EnchantmentConfig.noEnchantCap.get()) 
 					{
 						EnchantmentHelper.filterCompatibleEnchantments(list1, Util.lastOf(list));
 					}
-					
-					if (list1.isEmpty()) 
+
+					if(list1.isEmpty()) 
 					{
 						break;
 					}
-
-					WeightedRandom.getRandomItem(p_220298_, list1).ifPresent(list::add);
-					p_220300_ /= 2;
+					WeightedRandom.getRandomItem(pRandom, list1).ifPresent(list::add);
+					pLevel /= 2;
 				}
 			}
 			return list;
 		}
 	}
 	
-	public List<EnchantmentInstance> getAvailableEnchantmentResults(int p_44818_, ItemStack p_44819_, boolean p_44820_) 
+	public List<EnchantmentInstance> getAvailableEnchantmentResults(int pLevel, ItemStack pStack, boolean pAllowTreasure)
 	{
 		List<EnchantmentInstance> list = Lists.newArrayList();
-		boolean flag = p_44819_.is(Items.BOOK);
-		
+		boolean flag = pStack.is(Items.BOOK);
 		for(Enchantment enchantment : ForgeRegistries.ENCHANTMENTS)
 		{
 			if(this.isValidType(enchantment))
 			{
-				if ((!enchantment.isTreasureOnly() || p_44820_) && (enchantment.canApplyAtEnchantingTable(p_44819_) || (flag && enchantment.isAllowedOnBooks()))) 
+				if(enchantment.canApplyAtEnchantingTable(pStack) || (flag && enchantment.isAllowedOnBooks())) 
 				{
-					for(int i = enchantment.getMaxLevel(); i > enchantment.getMinLevel() - 1; --i) 
+					for(int i = enchantment.getMaxLevel(); i > enchantment.getMinLevel() - 1; --i)
 					{
-						if (p_44818_ >= enchantment.getMinCost(i) && p_44818_ <= enchantment.getMaxCost(i))
+						if(pLevel >= enchantment.getMinCost(i) && pLevel <= enchantment.getMaxCost(i)) 
 						{
 							list.add(new EnchantmentInstance(enchantment, i));
 							break;
@@ -339,52 +338,55 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 		return this.enchantmentSeed.get();
 	}
 
-	public void removed(Player p_39488_)
+	@Override
+	public void removed(Player pPlayer)
 	{
-		super.removed(p_39488_);
-		this.access.execute((p_39469_, p_39470_) ->
+		super.removed(pPlayer);
+		this.access.execute((pLevel, pPos) ->
 		{
-			this.clearContainer(p_39488_, this.enchantSlots);
+			this.clearContainer(pPlayer, this.enchantSlots);
 		});
 	}
 
-	public boolean stillValid(Player p_39463_) 
+	@Override
+	public boolean stillValid(Player pPlayer) 
 	{
-		return stillValid(this.access, p_39463_, this.getBlock());
+		return stillValid(this.access, pPlayer, this.getBlock());
 	}
 
-	public ItemStack quickMoveStack(Player p_39490_, int p_39491_)
+	@Override
+	public ItemStack quickMoveStack(Player pPlayer, int pId)
 	{
 		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = this.slots.get(p_39491_);
-		if (slot != null && slot.hasItem()) 
+		Slot slot = this.slots.get(pId);
+		if(slot != null && slot.hasItem()) 
 		{
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (p_39491_ == 0) 
+			if(pId == 0) 
 			{
-				if (!this.moveItemStackTo(itemstack1, 2, 38, true))
+				if(!this.moveItemStackTo(itemstack1, 2, 38, true))
 				{
 					return ItemStack.EMPTY;
 				}
 			} 
-			else if (p_39491_ == 1) 
+			else if(pId == 1) 
 			{
-				if (!this.moveItemStackTo(itemstack1, 2, 38, true))
+				if(!this.moveItemStackTo(itemstack1, 2, 38, true))
 				{
 					return ItemStack.EMPTY;
 				}
 			}
-			else if (this.is(itemstack1)) 
+			else if(this.is(itemstack1)) 
 			{
-				if (!this.moveItemStackTo(itemstack1, 1, 2, true))
+				if(!this.moveItemStackTo(itemstack1, 1, 2, true))
 				{
 					return ItemStack.EMPTY;
 				}
 			} 
 			else
 			{
-				if (this.slots.get(0).hasItem() || !this.slots.get(0).mayPlace(itemstack1))
+				if(this.slots.get(0).hasItem() || !this.slots.get(0).mayPlace(itemstack1))
 				{
 					return ItemStack.EMPTY;
 				}
@@ -395,21 +397,21 @@ public abstract class AbstractCustomEnchantmentMenu extends AbstractContainerMen
 				this.slots.get(0).set(itemstack2);
 			}
 
-			if (itemstack1.isEmpty())
+			if(itemstack1.isEmpty())
 			{
 				slot.set(ItemStack.EMPTY);
-			} 
+			}
 			else
 			{
 				slot.setChanged();
 			}
 
-			if (itemstack1.getCount() == itemstack.getCount())
+			if(itemstack1.getCount() == itemstack.getCount())
 			{
 				return ItemStack.EMPTY;
 			}
 
-			slot.onTake(p_39490_, itemstack1);
+			slot.onTake(pPlayer, itemstack1);
 		}
 
 		return itemstack;

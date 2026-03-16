@@ -20,9 +20,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class OceanEnchantmentTableBlock extends AbstractCustomEnchantmentTableBlock
 {
-	public OceanEnchantmentTableBlock(Properties p_52953_) 
+	public OceanEnchantmentTableBlock(Properties pProperties) 
 	{
-		super(p_52953_);
+		super(pProperties);
 	}
 
 	@Override
@@ -32,16 +32,16 @@ public class OceanEnchantmentTableBlock extends AbstractCustomEnchantmentTableBl
 	}
 	
 	@Override
-	public BlockEntity newBlockEntity(BlockPos p_153186_, BlockState p_153187_)
+	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState)
 	{
-		return new OceanEnchantmentTableBlockEntity(p_153186_, p_153187_);
+		return new OceanEnchantmentTableBlockEntity(pPos, pState);
 	}
 	
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153094_, BlockState p_153095_, BlockEntityType<T> p_153096_)
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pType)
 	{
-		return createTickerHelper(p_153096_, CustomBlocks.OCEAN_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), p_153094_.isClientSide ? OceanEnchantmentTableBlockEntity::clientTick : OceanEnchantmentTableBlockEntity::serverTick);
+		return createTickerHelper(pType, CustomBlocks.OCEAN_ENCHANTMENT_TABLE_BLOCK_ENTITY.get(), pLevel.isClientSide ? OceanEnchantmentTableBlockEntity::clientTick : OceanEnchantmentTableBlockEntity::serverTick);
 	}
 
 	@Override

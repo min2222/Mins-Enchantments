@@ -22,15 +22,15 @@ public class BlessmentReturning extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.returningMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.returningMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.returningMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.returningMaxCost.get();
+		return EnchantmentConfig.returningMinCost.get() + (pLevel - 1) * EnchantmentConfig.returningMaxCost.get();
 	}
 	
 	@Override

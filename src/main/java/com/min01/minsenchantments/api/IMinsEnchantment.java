@@ -80,9 +80,14 @@ public interface IMinsEnchantment
 		return duration;
 	}
 	
-	default void onLivingAttack(LivingEntity entity, DamageSource source, float amount)
+	default void onShieldBlock(LivingEntity entity, DamageSource source, float amount)
 	{
 		
+	}
+	
+	default boolean onLivingAttack(LivingEntity entity, DamageSource source, float amount)
+	{
+		return false;
 	}
 	
 	default Pair<Float, Float> onLivingFall(LivingEntity entity, float distance, float damageMultiplier)

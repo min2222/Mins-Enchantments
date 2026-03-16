@@ -16,15 +16,15 @@ public class BlessmentSolaria extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.solariaMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.solariaMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.solariaMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.solariaMaxCost.get();
+		return EnchantmentConfig.solariaMinCost.get() + (pLevel - 1) * EnchantmentConfig.solariaMaxCost.get();
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class BlessmentSolaria extends AbstractBlessment
 			ItemStack stack = living.getItemBySlot(slot);
 			int level = stack.getEnchantmentLevel(this);
 			BlockPos blockPos = BlockPos.containing(living.getX(), living.getEyeY(), living.getZ());
-			if(level > 0 && living.level().canSeeSky(blockPos))
+			if(level > 0 && living.level.canSeeSky(blockPos))
 			{
 				if(living.tickCount % (level * (EnchantmentConfig.solariaIntervalPerLevel.get() * 20)) == 0)
 				{

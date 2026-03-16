@@ -45,63 +45,65 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 	public float oOpen;
 	private ItemStack last = ItemStack.EMPTY;
 
-	public AbstractCustomEnchantmentScreen(T p_98754_, Inventory p_98755_, Component p_98756_) 
+	public AbstractCustomEnchantmentScreen(T pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
-		super(p_98754_, p_98755_, p_98756_);
+		super(pMenu, pPlayerInventory, pTitle);
 	}
 
-	protected void init()
+	@Override
+	protected void init() 
 	{
 		super.init();
 		this.bookModel = new BookModel(this.minecraft.getEntityModels().bakeLayer(ModelLayers.BOOK));
 	}
 
-	public void containerTick()
+	@Override
+	public void containerTick() 
 	{
 		super.containerTick();
 		this.tickBook();
 	}
 
-	public boolean mouseClicked(double p_98758_, double p_98759_, int p_98760_) 
+	@Override
+	public boolean mouseClicked(double pMouseX, double pMouseY, int pButton)
 	{
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
-
-		for (int k = 0; k < 3; ++k) 
+		for(int k = 0; k < 3; ++k) 
 		{
-			double d0 = p_98758_ - (double) (i + 60);
-			double d1 = p_98759_ - (double) (j + 14 + 19 * k);
-			if (d0 >= 0.0D && d1 >= 0.0D && d0 < 108.0D && d1 < 19.0D && this.menu.clickMenuButton(this.minecraft.player, k)) 
+			double d0 = pMouseX - (double) (i + 60);
+			double d1 = pMouseY - (double) (j + 14 + 19 * k);
+			if(d0 >= 0.0D && d1 >= 0.0D && d0 < 108.0D && d1 < 19.0D && this.menu.clickMenuButton(this.minecraft.player, k)) 
 			{
 				this.minecraft.gameMode.handleInventoryButtonClick((this.menu).containerId, k);
 				return true;
 			}
 		}
-
-		return super.mouseClicked(p_98758_, p_98759_, p_98760_);
+		return super.mouseClicked(pMouseX, pMouseY, pButton);
 	}
 
-	protected void renderBg(GuiGraphics p_282430_, float p_282530_, int p_281621_, int p_283333_) 
+	@Override
+	protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) 
 	{
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
-		p_282430_.blit(this.getBackgroundLocation(), i, j, 0, 0, this.imageWidth, this.imageHeight);
+		pGuiGraphics.blit(this.getBackgroundLocation(), i, j, 0, 0, this.imageWidth, this.imageHeight);
 		if(this.renderBookModel())
 		{
-			this.renderBook(p_282430_, i, j, p_282530_);
-		}
-		else
+			this.renderBook(pGuiGraphics, i, j, pPartialTick);
+		} 
+		else 
 		{
 			Lighting.setupForEntityInInventory();
-			p_282430_.pose().pushPose();
-			p_282430_.pose().translate((float)i + 33.0F, (float)j, 100.0F);
-			p_282430_.pose().scale(40.0F, 40.0F, 40.0F);
-			this.renderCustom(p_282430_.pose(), p_282530_, p_282430_.bufferSource());
-			p_282430_.flush();
-			p_282430_.pose().popPose();
+			pGuiGraphics.pose().pushPose();
+			pGuiGraphics.pose().translate((float) i + 33.0F, (float) j, 100.0F);
+			pGuiGraphics.pose().scale(40.0F, 40.0F, 40.0F);
+			this.renderCustom(pGuiGraphics.pose(), pPartialTick, pGuiGraphics.bufferSource());
+			pGuiGraphics.flush();
+			pGuiGraphics.pose().popPose();
 			Lighting.setupFor3DItems();
 		}
-		EnchantmentNames.getInstance().initSeed((long)this.menu.getEnchantmentSeed());
+		EnchantmentNames.getInstance().initSeed((long) this.menu.getEnchantmentSeed());
 		int k = this.menu.getGoldCount();
 
 		for(int l = 0; l < 3; ++l)
@@ -109,9 +111,9 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 			int i1 = i + 60;
 			int j1 = i1 + 20;
 			int k1 = (this.menu).costs[l];
-			if (k1 == 0)
+			if(k1 == 0)
 			{
-				p_282430_.blit(this.getBackgroundLocation(), i1, j + 14 + 19 * l, 0, 185, 108, 19);
+				pGuiGraphics.blit(this.getBackgroundLocation(), i1, j + 14 + 19 * l, 0, 185, 108, 19);
 			} 
 			else 
 			{
@@ -119,72 +121,71 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 				int l1 = 86 - this.font.width(s);
 				FormattedText formattedtext = EnchantmentNames.getInstance().getRandomName(this.font, l1);
 				int i2 = 6839882;
-				if (((k < l + 1 || this.minecraft.player.experienceLevel < k1) && !this.minecraft.player.getAbilities().instabuild) || this.menu.enchantClue[l] == -1)
-				{ 
-					// Forge: render buttons as disabled when enchantable but enchantability not met on lower levels
-					p_282430_.blit(this.getBackgroundLocation(), i1, j + 14 + 19 * l, 0, 185, 108, 19);
-					p_282430_.blit(this.getBackgroundLocation(), i1 + 1, j + 15 + 19 * l, 16 * l, 239, 16, 16);
-					p_282430_.drawWordWrap(this.font, formattedtext, j1, j + 16 + 19 * l, l1, (i2 & 16711422) >> 1);
+				if(((k < l + 1 || this.minecraft.player.experienceLevel < k1) && !this.minecraft.player.getAbilities().instabuild) || this.menu.enchantClue[l] == -1) 
+				{
+					pGuiGraphics.blit(this.getBackgroundLocation(), i1, j + 14 + 19 * l, 0, 185, 108, 19);
+					pGuiGraphics.blit(this.getBackgroundLocation(), i1 + 1, j + 15 + 19 * l, 16 * l, 239, 16, 16);
+					pGuiGraphics.drawWordWrap(this.font, formattedtext, j1, j + 16 + 19 * l, l1, (i2 & 16711422) >> 1);
 					i2 = 4226832;
-				}
+				} 
 				else 
 				{
-					int j2 = p_281621_ - (i + 60);
-					int k2 = p_283333_ - (j + 14 + 19 * l);
-					if (j2 >= 0 && k2 >= 0 && j2 < 108 && k2 < 19) 
+					int j2 = pMouseX - (i + 60);
+					int k2 = pMouseY - (j + 14 + 19 * l);
+					if(j2 >= 0 && k2 >= 0 && j2 < 108 && k2 < 19)
 					{
-						p_282430_.blit(this.getBackgroundLocation(), i1, j + 14 + 19 * l, 0, 204, 108, 19);
+						pGuiGraphics.blit(this.getBackgroundLocation(), i1, j + 14 + 19 * l, 0, 204, 108, 19);
 						i2 = 16777088;
 					} 
-					else
+					else 
 					{
-						p_282430_.blit(this.getBackgroundLocation(), i1, j + 14 + 19 * l, 0, 166, 108, 19);
+						pGuiGraphics.blit(this.getBackgroundLocation(), i1, j + 14 + 19 * l, 0, 166, 108, 19);
 					}
 
-					p_282430_.blit(this.getBackgroundLocation(), i1 + 1, j + 15 + 19 * l, 16 * l, 223, 16, 16);
-					p_282430_.drawWordWrap(this.font, formattedtext, j1, j + 16 + 19 * l, l1, i2);
+					pGuiGraphics.blit(this.getBackgroundLocation(), i1 + 1, j + 15 + 19 * l, 16 * l, 223, 16, 16);
+					pGuiGraphics.drawWordWrap(this.font, formattedtext, j1, j + 16 + 19 * l, l1, i2);
 					i2 = 8453920;
 				}
-				p_282430_.drawString(this.font, s, j1 + 86 - this.font.width(s), j + 16 + 19 * l + 7, i2);
+				pGuiGraphics.drawString(this.font, s, j1 + 86 - this.font.width(s), j + 16 + 19 * l + 7, i2);
 			}
 		}
 	}
 
-	public void render(GuiGraphics p_283462_, int p_282491_, int p_281953_, float p_282182_) 
+	@Override
+	public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick)
 	{
-		p_282182_ = this.minecraft.getFrameTime();
-		this.renderBackground(p_283462_);
-		super.render(p_283462_, p_282491_, p_281953_, p_282182_);
-		this.renderTooltip(p_283462_, p_282491_, p_281953_);
+		pPartialTick = this.minecraft.getFrameTime();
+		this.renderBackground(pGuiGraphics);
+		super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+		this.renderTooltip(pGuiGraphics, pMouseX, pMouseY);
 		boolean flag = this.minecraft.player.getAbilities().instabuild;
 		int i = this.menu.getGoldCount();
-
-		for(int j = 0; j < 3; ++j) 
+		for(int j = 0; j < 3; ++j)
 		{
 			int k = (this.menu).costs[j];
 			Enchantment enchantment = Enchantment.byId((this.menu).enchantClue[j]);
 			int l = (this.menu).levelClue[j];
 			int i1 = j + 1;
-			if (this.isHovering(60, 14 + 19 * j, 108, 17, (double)p_282491_, (double)p_281953_) && k > 0)
+			if(this.isHovering(60, 14 + 19 * j, 108, 17, (double) pMouseX, (double) pMouseY) && k > 0)
 			{
 				List<Component> list = Lists.newArrayList();
 				list.add((Component.translatable("container.enchant.clue", enchantment == null ? "" : enchantment.getFullname(l))).withStyle(ChatFormatting.WHITE));
-				if (enchantment == null) 
+				if(enchantment == null) 
 				{
 					list.add(Component.literal(""));
 					list.add(Component.translatable("forge.container.enchant.limitedEnchantability").withStyle(ChatFormatting.RED));
 				} 
-				else if (!flag) 
+				else if(!flag) 
 				{
 					list.add(CommonComponents.EMPTY);
-					if (this.minecraft.player.experienceLevel < k) 
+					if(this.minecraft.player.experienceLevel < k) 
 					{
 						list.add(Component.translatable("container.enchant.level.requirement", (this.menu).costs[j]).withStyle(ChatFormatting.RED));
-					}
+					} 
 					else 
 					{
 						MutableComponent mutablecomponent;
-						if (i1 == 1) 
+						if(i1 == 1) 
 						{
 							mutablecomponent = Component.translatable(this.getTransltateStringForRequiredItem(true));
 						} 
@@ -195,37 +196,35 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 
 						list.add(mutablecomponent.withStyle(i >= i1 ? ChatFormatting.GRAY : ChatFormatting.RED));
 						MutableComponent mutablecomponent1;
-						if (i1 == 1) 
+						if(i1 == 1) 
 						{
 							mutablecomponent1 = Component.translatable("container.enchant.level.one");
-						}
-						else 
+						} 
+						else
 						{
 							mutablecomponent1 = Component.translatable("container.enchant.level.many", i1);
 						}
-						
+
 						list.add(mutablecomponent1.withStyle(ChatFormatting.GRAY));
 					}
 				}
-
-				p_283462_.renderComponentTooltip(this.font, list, p_282491_, p_281953_);
+				pGuiGraphics.renderComponentTooltip(this.font, list, pMouseX, pMouseY);
 				break;
 			}
 		}
 	}
 
-	public void tickBook()
+	public void tickBook() 
 	{
 		ItemStack itemstack = this.menu.getSlot(0).getItem();
-		if (!ItemStack.matches(itemstack, this.last)) 
+		if(!ItemStack.matches(itemstack, this.last)) 
 		{
 			this.last = itemstack;
-
-			do
+			do 
 			{
 				this.flipT += (float) (this.random.nextInt(4) - this.random.nextInt(4));
 			} 
-			while (this.flip <= this.flipT + 1.0F && this.flip >= this.flipT - 1.0F);
+			while(this.flip <= this.flipT + 1.0F && this.flip >= this.flipT - 1.0F);
 		}
 
 		++this.time;
@@ -233,15 +232,15 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 		this.oOpen = this.open;
 		boolean flag = false;
 
-		for (int i = 0; i < 3; ++i) 
+		for(int i = 0; i < 3; ++i)
 		{
-			if ((this.menu).costs[i] != 0) 
+			if((this.menu).costs[i] != 0)
 			{
 				flag = true;
 			}
 		}
 
-		if (flag)
+		if(flag)
 		{
 			this.open += 0.2F;
 		} 
@@ -256,45 +255,45 @@ public abstract class AbstractCustomEnchantmentScreen<T extends AbstractCustomEn
 		this.flipA += (f1 - this.flipA) * 0.9F;
 		this.flip += this.flipA;
 	}
-	
+
 	public ResourceLocation getBackgroundLocation()
 	{
 		return ResourceLocation.parse("textures/gui/container/enchanting_table.png");
 	}
-	
-	private void renderBook(GuiGraphics p_289697_, int p_289667_, int p_289669_, float p_289670_) 
+
+	private void renderBook(GuiGraphics pGuiGraphics, int pX, int pY, float pPartialTick) 
 	{
-		float f = Mth.lerp(p_289670_, this.oOpen, this.open);
-		float f1 = Mth.lerp(p_289670_, this.oFlip, this.flip);
+		float f = Mth.lerp(pPartialTick, this.oOpen, this.open);
+		float f1 = Mth.lerp(pPartialTick, this.oFlip, this.flip);
 		Lighting.setupForEntityInInventory();
-		p_289697_.pose().pushPose();
-		p_289697_.pose().translate((float)p_289667_ + 33.0F, (float)p_289669_ + 31.0F, 100.0F);
-		p_289697_.pose().scale(-40.0F, 40.0F, 40.0F);
-		p_289697_.pose().mulPose(Axis.XP.rotationDegrees(25.0F));
-		p_289697_.pose().translate((1.0F - f) * 0.2F, (1.0F - f) * 0.1F, (1.0F - f) * 0.25F);
+		pGuiGraphics.pose().pushPose();
+		pGuiGraphics.pose().translate((float) pX + 33.0F, (float) pY + 31.0F, 100.0F);
+		pGuiGraphics.pose().scale(-40.0F, 40.0F, 40.0F);
+		pGuiGraphics.pose().mulPose(Axis.XP.rotationDegrees(25.0F));
+		pGuiGraphics.pose().translate((1.0F - f) * 0.2F, (1.0F - f) * 0.1F, (1.0F - f) * 0.25F);
 		float f3 = -(1.0F - f) * 90.0F - 90.0F;
-		p_289697_.pose().mulPose(Axis.YP.rotationDegrees(f3));
-		p_289697_.pose().mulPose(Axis.XP.rotationDegrees(180.0F));
+		pGuiGraphics.pose().mulPose(Axis.YP.rotationDegrees(f3));
+		pGuiGraphics.pose().mulPose(Axis.XP.rotationDegrees(180.0F));
 		float f4 = Mth.clamp(Mth.frac(f1 + 0.25F) * 1.6F - 0.3F, 0.0F, 1.0F);
 		float f5 = Mth.clamp(Mth.frac(f1 + 0.75F) * 1.6F - 0.3F, 0.0F, 1.0F);
 		this.bookModel.setupAnim(0.0F, f4, f5, f);
-		VertexConsumer vertexconsumer = p_289697_.bufferSource().getBuffer(this.bookModel.renderType(ENCHANTING_BOOK_LOCATION));
-		this.bookModel.renderToBuffer(p_289697_.pose(), vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-		p_289697_.flush();
-		p_289697_.pose().popPose();
+		VertexConsumer vertexconsumer = pGuiGraphics.bufferSource().getBuffer(this.bookModel.renderType(ENCHANTING_BOOK_LOCATION));
+		this.bookModel.renderToBuffer(pGuiGraphics.pose(), vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		pGuiGraphics.flush();
+		pGuiGraphics.pose().popPose();
 		Lighting.setupFor3DItems();
 	}
-	
+
 	public boolean renderBookModel()
 	{
 		return true;
 	}
-	
-	public void renderCustom(PoseStack stack, float partialTick, MultiBufferSource.BufferSource multibuffersource$buffersource)
+
+	public void renderCustom(PoseStack stack, float partialTick, MultiBufferSource.BufferSource buffersource) 
 	{
-		
+
 	}
-	
+
 	public String getTransltateStringForRequiredItem(boolean one)
 	{
 		return one ? "container.enchant.lapis.one" : "container.enchant.lapis.many";

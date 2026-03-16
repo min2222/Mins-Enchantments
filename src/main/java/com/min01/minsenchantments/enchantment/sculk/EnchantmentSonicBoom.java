@@ -30,15 +30,15 @@ public class EnchantmentSonicBoom extends AbstractSculkEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.sonicBoomMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.sonicBoomMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.sonicBoomMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.sonicBoomMaxCost.get();
+		return EnchantmentConfig.sonicBoomMinCost.get() + (pLevel - 1) * EnchantmentConfig.sonicBoomMaxCost.get();
 	}
 	
 	@Override
@@ -52,68 +52,52 @@ public class EnchantmentSonicBoom extends AbstractSculkEnchantment
 	{
 		if(entity instanceof Projectile projectile)
 		{
-			if(projectile.getOwner() != null)
+			if(projectile.getOwner() instanceof LivingEntity living)
 			{
-				Entity owner = projectile.getOwner();
+				ItemStack stack = living.getMainHandItem();
 				
-				if(owner instanceof LivingEntity living)
+				if(stack.isEmpty())
 				{
-					ItemStack stack = living.getUseItem();
-					
-					if(stack.isEmpty())
+					stack = living.getOffhandItem();
+				}
+				
+				if(projectile instanceof AbstractArrow)
+				{
+					int level = stack.getEnchantmentLevel(this);
+					if(level > 0)
 					{
-						if(living.getMainHandItem().isEmpty())
-						{
-							stack = living.getOffhandItem();
-						}
-						else
-						{
-							stack = living.getMainHandItem();
-						}
-					}
-					
-					if(projectile instanceof AbstractArrow)
-					{
-						int level = stack.getEnchantmentLevel(this);
-						if(level > 0)
-						{
-				            Vec3 vec3 = living.position().add(0, living.getEyeHeight(), 0);
-				            Vec3 lookPos = vec3.add(EnchantmentUtil.getLookPos(living.getXRot(), living.getYRot(), 0, 1));
-				            Vec3 vec31 = lookPos.subtract(vec3);
-				            Vec3 vec32 = vec31.normalize();
-							List<LivingEntity> arrayList = new ArrayList<>();
+			            Vec3 vec3 = living.position().add(0, living.getEyeHeight(), 0);
+			            Vec3 lookPos = vec3.add(EnchantmentUtil.getLookPos(living.getXRot(), living.getYRot(), 0, 1));
+			            Vec3 vec31 = lookPos.subtract(vec3);
+			            Vec3 vec32 = vec31.normalize();
+						List<LivingEntity> arrayList = new ArrayList<>();
 
-				            for(int i = 1; i < Mth.floor(vec31.length()) + (level * EnchantmentConfig.sonicBoomDistancePerLevel.get()); ++i)
-				            {
-				            	Vec3 vec33 = vec3.add(vec32.scale((double)i));				            	
-				            	if(living.level() instanceof ServerLevel serverLevel)
-				            	{
-				            		serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, vec33.x, vec33.y, vec33.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
-				            	}
-				            	AABB aabb = new AABB(vec3, vec33);
-				            	List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, aabb);
-				            	list.removeIf((entity1) -> entity1 == living);
-				            	list.forEach((entity1) ->
-				            	{
-				            		if(!arrayList.contains(entity1))
-				            		{
-				            			arrayList.add(entity1);
-				            		}
-				            	});
-				            }
-				            
-				            arrayList.forEach((entity1) -> 
-				            {
-			            		entity1.hurt(living.damageSources().sonicBoom(living), level * EnchantmentConfig.sonicBoomDamagePerLevel.get());
-					            double d1 = 0.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
-					            double d0 = 2.5D * (1.0D - entity1.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
-					            entity1.push(vec32.x() * d0, vec32.y() * d1, vec32.z() * d0);
-				            });
-
-
-				            living.playSound(SoundEvents.WARDEN_SONIC_BOOM, 3.0F, 1.0F);
-				            return true;
-						}
+			            for(int i = 1; i < Mth.floor(vec31.length()) + (level * EnchantmentConfig.sonicBoomDistancePerLevel.get()); ++i)
+			            {
+			            	Vec3 vec33 = vec3.add(vec32.scale((double)i));				            	
+			            	if(living.level instanceof ServerLevel serverLevel)
+			            	{
+			            		serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, vec33.x, vec33.y, vec33.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+			            	}
+			            	AABB aabb = new AABB(vec3, vec33);
+			            	List<LivingEntity> list = living.level.getEntitiesOfClass(LivingEntity.class, aabb, t -> t == living || t.isAlliedTo(living));
+		            		if(!arrayList.containsAll(list))
+		            		{
+		            			arrayList.addAll(list);
+		            		}
+			            }
+			            
+			            arrayList.forEach(t -> 
+			            {
+		            		if(t.hurt(living.damageSources().sonicBoom(living), level * EnchantmentConfig.sonicBoomDamagePerLevel.get()))
+		            		{
+					            double d1 = 0.5D * (1.0D - t.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+					            double d0 = 2.5D * (1.0D - t.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+					            t.push(vec32.x() * d0, vec32.y() * d1, vec32.z() * d0);
+		            		}
+			            });
+			            living.playSound(SoundEvents.WARDEN_SONIC_BOOM, 3.0F, 1.0F);
+			            return true;
 					}
 				}
 			}

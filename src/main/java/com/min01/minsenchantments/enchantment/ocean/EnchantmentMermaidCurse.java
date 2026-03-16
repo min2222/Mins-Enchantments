@@ -19,15 +19,15 @@ public class EnchantmentMermaidCurse extends AbstractCurseEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.mermaidsCurseMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.mermaidsCurseMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.mermaidsCurseMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.mermaidsCurseMaxCost.get();
+		return EnchantmentConfig.mermaidsCurseMinCost.get() + (pLevel - 1) * EnchantmentConfig.mermaidsCurseMaxCost.get();
 	}
 	
 	@Override
@@ -40,10 +40,10 @@ public class EnchantmentMermaidCurse extends AbstractCurseEnchantment
 	public void onLivingTick(LivingEntity living) 
 	{
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
-		if(level > 0)
+		if(level > 0 && living.isInWater())
 		{
-			List<Mob> list = living.level().getEntitiesOfClass(Mob.class, living.getBoundingBox().inflate(level * EnchantmentConfig.mermaidsCurseRadiusPerLevel.get()));
-			list.forEach((mob) ->
+			List<Mob> list = living.level.getEntitiesOfClass(Mob.class, living.getBoundingBox().inflate(level * EnchantmentConfig.mermaidsCurseRadiusPerLevel.get()));
+			list.forEach(mob ->
 			{
 				if(mob.getTarget() != living || mob.getTarget() == null)
 				{

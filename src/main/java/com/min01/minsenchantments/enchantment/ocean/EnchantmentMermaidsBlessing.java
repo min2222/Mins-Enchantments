@@ -19,15 +19,15 @@ public class EnchantmentMermaidsBlessing extends AbstractOceanEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.mermaidsBlessingMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.mermaidsBlessingMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.mermaidsBlessingMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.mermaidsBlessingMaxCost.get();
+		return EnchantmentConfig.mermaidsBlessingMinCost.get() + (pLevel - 1) * EnchantmentConfig.mermaidsBlessingMaxCost.get();
 	}
 	
 	@Override
@@ -39,7 +39,7 @@ public class EnchantmentMermaidsBlessing extends AbstractOceanEnchantment
 	@Override
 	public void onLivingTick(LivingEntity living) 
 	{
-		if(living instanceof Mob mob)
+		if(living instanceof Mob mob && living.isInWater())
 		{
 			if(mob.getTarget() != null)
 			{

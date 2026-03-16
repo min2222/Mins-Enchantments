@@ -16,15 +16,15 @@ public class EnchantmentEndermanCurse extends AbstractCurseEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.endermanCurseMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.endermanCurseMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.endermanCurseMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.endermanCurseMaxCost.get();
+		return EnchantmentConfig.endermanCurseMinCost.get() + (pLevel - 1) * EnchantmentConfig.endermanCurseMaxCost.get();
 	}
 	
 	@Override

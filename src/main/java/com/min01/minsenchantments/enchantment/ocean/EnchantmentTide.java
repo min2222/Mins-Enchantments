@@ -1,7 +1,7 @@
 package com.min01.minsenchantments.enchantment.ocean;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.misc.EnchantmentTags;
 
@@ -21,15 +21,15 @@ public class EnchantmentTide extends AbstractOceanEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.tideMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.tideMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.tideMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.tideMaxCost.get();
+		return EnchantmentConfig.tideMinCost.get() + (pLevel - 1) * EnchantmentConfig.tideMaxCost.get();
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class EnchantmentTide extends AbstractOceanEnchantment
 		int level = EnchantmentHelper.getEnchantmentLevel(this, player);
 		if(level > 0)
 		{
-			player.getCapability(EnchantmentCapabilities.ENCHANTMENT).ifPresent(t -> 
+			player.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(t -> 
 			{
 				if(t.hasEnchantment(this))
 				{
@@ -52,20 +52,24 @@ public class EnchantmentTide extends AbstractOceanEnchantment
 					CompoundTag tag = data.getData();
 					float tide = tag.getFloat(EnchantmentTags.TIDE);
 					double swimSpeed = player.getAttributeBaseValue(ForgeMod.SWIM_SPEED.get());
+					if(!tag.contains(EnchantmentTags.TIDE_OLD_SPEED))
+					{
+						 tag.putDouble(EnchantmentTags.TIDE_OLD_SPEED, swimSpeed);
+					}
 					float maxSpeed = (float) (swimSpeed + (level * EnchantmentConfig.tideMaxSpeedPerLevel.get()));
 					float speed = (level * EnchantmentConfig.tideSpeedPerLevel.get()) / 20;
-					if(player.isInWater() && player.isSwimming())
+					if(player.isSwimming())
 					{
 						if(swimSpeed + tide < maxSpeed)
 						{
-							 tag.putFloat(EnchantmentTags.TIDE, tide + speed);
+							tag.putFloat(EnchantmentTags.TIDE, tide + speed);
 						}
-						player.setDeltaMovement(player.getDeltaMovement().multiply(1 + tide, 1, 1 + tide));
-						player.hasImpulse = true;
+						player.getAttribute(ForgeMod.SWIM_SPEED.get()).setBaseValue(tag.getDouble(EnchantmentTags.TIDE_OLD_SPEED) + tide);
 					}
 					else
 					{
-						tag.putFloat(EnchantmentTags.TIDE, 0);
+						player.getAttribute(ForgeMod.SWIM_SPEED.get()).setBaseValue(tag.getDouble(EnchantmentTags.TIDE_OLD_SPEED));
+						t.removeEnchantment(this);
 					}
 				}
 				else

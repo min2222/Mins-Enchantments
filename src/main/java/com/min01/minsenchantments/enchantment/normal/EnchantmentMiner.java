@@ -3,7 +3,7 @@ package com.min01.minsenchantments.enchantment.normal;
 import org.jetbrains.annotations.NotNull;
 
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityHandler.EnchantmentData;
+import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl.EnchantmentData;
 import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.init.CustomEnchantments;
@@ -30,15 +30,15 @@ public class EnchantmentMiner extends AbstractMinsEnchantment implements IProjec
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.minerMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.minerMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.minerMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.minerMaxCost.get();
+		return EnchantmentConfig.minerMinCost.get() + (pLevel - 1) * EnchantmentConfig.minerMaxCost.get();
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class EnchantmentMiner extends AbstractMinsEnchantment implements IProjec
 	@Override
 	public void onImpact(Projectile projectile, Entity owner, HitResult ray, EnchantmentData data, IEnchantmentCapability cap) 
 	{
-		Level world = projectile.level();
+		Level world = projectile.level;
     	if(!world.isClientSide)
     	{
     		int level = data.getEnchantLevel();
@@ -66,10 +66,10 @@ public class EnchantmentMiner extends AbstractMinsEnchantment implements IProjec
     		if(count < level * EnchantmentConfig.minerMaxBlockPerLevel.get() && ray.getType() == HitResult.Type.BLOCK)
     		{
     			BlockPos pos = ((BlockHitResult) ray).getBlockPos();
-    			BlockState state = projectile.level().getBlockState(pos);
-    			if(state.getDestroySpeed(projectile.level(), pos) > -1.0F)
+    			BlockState state = projectile.level.getBlockState(pos);
+    			if(state.getDestroySpeed(projectile.level, pos) > -1.0F)
     			{
-    				if(projectile.level().destroyBlock(pos, true, owner))
+    				if(projectile.level.destroyBlock(pos, true, owner))
     				{
     					tag.putInt(EnchantmentTags.MINER_COUNT, count + 1);
     					cap.setEnchantmentData(this, new EnchantmentData(level, tag));

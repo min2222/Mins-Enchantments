@@ -17,15 +17,15 @@ public class EnchantmentRusty extends AbstractCurseEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.rustyMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.rustyMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.rustyMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.rustyMaxCost.get();
+		return EnchantmentConfig.rustyMinCost.get() + (pLevel - 1) * EnchantmentConfig.rustyMaxCost.get();
 	}
 	
 	@Override
@@ -47,7 +47,7 @@ public class EnchantmentRusty extends AbstractCurseEnchantment
 				{
 					if(player.tickCount % ((EnchantmentConfig.rustyDecreaseIntervalPerLevel.get() * 20) / level) == 0 && (itemstack.getDamageValue() > 1 || !itemstack.isDamaged()))
 					{
-						itemstack.hurtAndBreak(level, player, (t) -> 
+						itemstack.hurtAndBreak(level, player, t -> 
 						{
 							
 						});

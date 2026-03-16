@@ -18,15 +18,15 @@ public class BlessmentMalice extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.maliceMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.maliceMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.maliceMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.maliceMaxCost.get();
+		return EnchantmentConfig.maliceMinCost.get() + (pLevel - 1) * EnchantmentConfig.maliceMaxCost.get();
 	}
 	
 	@Override

@@ -18,15 +18,15 @@ public class EnchantmentDry extends AbstractNetherEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.dryMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.dryMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.dryMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.dryMaxCost.get();
+		return EnchantmentConfig.dryMinCost.get() + (pLevel - 1) * EnchantmentConfig.dryMaxCost.get();
 	}
 	
 	@Override
@@ -42,10 +42,9 @@ public class EnchantmentDry extends AbstractNetherEnchantment
 		if(level > 0)
 		{
 			int radius = level * EnchantmentConfig.dryRadiusPerLevel.get();
-			
-			if(EnchantmentUtil.removeWaterBreadthFirstSearch(living.level(), living.blockPosition(), radius))
+			if(EnchantmentUtil.removeWaterBreadthFirstSearch(living.level, living.blockPosition(), radius))
 			{
-				living.level().levelEvent(2001, living.blockPosition(), Block.getId(Blocks.WATER.defaultBlockState()));
+				living.level.levelEvent(2001, living.blockPosition(), Block.getId(Blocks.WATER.defaultBlockState()));
 			}
 		}
 	}

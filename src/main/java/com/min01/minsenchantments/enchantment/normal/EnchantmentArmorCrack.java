@@ -19,15 +19,15 @@ public class EnchantmentArmorCrack extends AbstractMinsEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.armorCrackMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.armorCrackMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.armorCrackMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.armorCrackMaxCost.get();
+		return EnchantmentConfig.armorCrackMinCost.get() + (pLevel - 1) * EnchantmentConfig.armorCrackMaxCost.get();
 	}
 	
 	@Override

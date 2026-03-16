@@ -27,19 +27,19 @@ public class MixinEntity
     }
 	
 	@Inject(at = @At("HEAD"), method = "dampensVibrations", cancellable = true)
-    private void dampensVibrations(CallbackInfoReturnable<Boolean> ci)
+    private void dampensVibrations(CallbackInfoReturnable<Boolean> cir)
     {
 		if(Entity.class.cast(this) instanceof LivingEntity living)
 		{
 			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CONCEALMENT.get(), living) > 0)
 			{
-				ci.setReturnValue(true);
+				cir.setReturnValue(true);
 			}
 		}
     }
 
 	@Inject(at = @At("HEAD"), method = "playSound", cancellable = true)
-	private void playSound(SoundEvent p_19938_, float p_19939_, float p_19940_, CallbackInfo ci)
+	private void playSound(SoundEvent pSound, float pVolume, float pPitc, CallbackInfo ci)
 	{
 		if(Entity.class.cast(this) instanceof LivingEntity living)
 		{

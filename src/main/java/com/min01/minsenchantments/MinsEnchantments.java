@@ -31,7 +31,7 @@ public class MinsEnchantments
 		CustomEnchantments.LOOT_MODIFIERS.register(bus);
 		EnchantmentNetwork.registerMessages();
 
-		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EnchantmentCapabilities::attachEntityCapability);
+		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EnchantmentCapabilities::onAttachEntityCapability);
 		ctx.registerConfig(Type.COMMON, EnchantmentConfig.CONFIG_SPEC, "mins-enchantments.toml");
 	}
 }

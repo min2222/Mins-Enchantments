@@ -25,34 +25,34 @@ public class MixinServerItemCooldowns extends ItemCooldowns
 	private ServerPlayer player;
 	
 	@Override
-	public void addCooldown(Item p_41525_, int p_41526_)
+	public void addCooldown(Item pItem, int pTicks)
 	{
 		if(BlessmentGodHand.ITEM_MAP.containsKey(this.player.getUUID()))
 		{
 			Pair<ItemStack, Integer> pair = BlessmentGodHand.ITEM_MAP.get(this.player.getUUID());
 			int level = pair.getRight();
 			ItemStack stack = pair.getLeft();
-			if(stack.is(p_41525_))
+			if(stack.is(pItem))
 			{
-				int cooldown = p_41526_ - (level * (EnchantmentConfig.godHandCooldownPerLevel.get() * 20));
+				int cooldown = pTicks - (level * (EnchantmentConfig.godHandCooldownPerLevel.get() * 20));
 				cooldown = Math.max(cooldown, 0);
-				super.addCooldown(p_41525_, cooldown);
+				super.addCooldown(pItem, cooldown);
 			}
 		}
 		else
 		{
-			super.addCooldown(p_41525_, p_41526_);
+			super.addCooldown(pItem, pTicks);
 		}
 	}
 	
 	@Inject(at = @At("HEAD"), method = "onCooldownEnded", cancellable = true)
-	private void onCooldownEnded(Item p_43072_, CallbackInfo ci)
+	private void onCooldownEnded(Item pItem, CallbackInfo ci)
 	{
 		if(BlessmentGodHand.ITEM_MAP.containsKey(this.player.getUUID()))
 		{
 			Pair<ItemStack, Integer> pair = BlessmentGodHand.ITEM_MAP.get(this.player.getUUID());
 			ItemStack stack = pair.getLeft();
-			if(stack.is(p_43072_))
+			if(stack.is(pItem))
 			{
 				BlessmentGodHand.ITEM_MAP.remove(this.player.getUUID());
 			}

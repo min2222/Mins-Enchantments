@@ -25,44 +25,44 @@ public class EndEnchantmentTableRenderer implements BlockEntityRenderer<EndEncha
 	private final ModelPart cube;
 	private final ModelPart glass;
 	   
-	public EndEnchantmentTableRenderer(BlockEntityRendererProvider.Context p_173613_) 
+	public EndEnchantmentTableRenderer(BlockEntityRendererProvider.Context ctx) 
 	{
-		ModelPart modelpart = p_173613_.bakeLayer(ModelLayers.END_CRYSTAL);
+		ModelPart modelpart = ctx.bakeLayer(ModelLayers.END_CRYSTAL);
 		this.glass = modelpart.getChild("glass");
 		this.cube = modelpart.getChild("cube");
 	}
 	
 	@Override
-	public void render(EndEnchantmentTableBlockEntity p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_)
+	public void render(EndEnchantmentTableBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay)
 	{
-		p_112309_.pushPose();
-		float f = getY(p_112307_, p_112308_);
-		float f1 = ((float)p_112307_.time + p_112308_) * 3.0F;
-		VertexConsumer vertexconsumer = p_112310_.getBuffer(RENDER_TYPE);
-		p_112309_.pushPose();
-		p_112309_.scale(0.875F, 0.875F, 0.875F);
-		p_112309_.translate(0.5F, 0.5F, 0.5F);
+		pPoseStack.pushPose();
+		float f = getY(pBlockEntity, pPartialTick);
+		float f1 = ((float)pBlockEntity.time + pPartialTick) * 3.0F;
+		VertexConsumer vertexconsumer = pBufferSource.getBuffer(RENDER_TYPE);
+		pPoseStack.pushPose();
+		pPoseStack.scale(0.875F, 0.875F, 0.875F);
+		pPoseStack.translate(0.5F, 0.5F, 0.5F);
 		int i = OverlayTexture.NO_OVERLAY;
 
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
-		p_112309_.translate(0.0F, 1.5F + f / 2.0F, 0.0F);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		this.glass.render(p_112309_, vertexconsumer, p_112311_, i);
-		p_112309_.scale(0.875F, 0.875F, 0.875F);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
-		this.glass.render(p_112309_, vertexconsumer, p_112311_, i);
-		p_112309_.scale(0.875F, 0.875F, 0.875F);
-		p_112309_.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		p_112309_.mulPose(Axis.YP.rotationDegrees(f1));
-		this.cube.render(p_112309_, vertexconsumer, p_112311_, i);
-		p_112309_.popPose();
-		p_112309_.popPose();
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		pPoseStack.translate(0.0F, 1.5F + f / 2.0F, 0.0F);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
+		this.glass.render(pPoseStack, vertexconsumer, pPackedLight, i);
+		pPoseStack.scale(0.875F, 0.875F, 0.875F);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.glass.render(pPoseStack, vertexconsumer, pPackedLight, i);
+		pPoseStack.scale(0.875F, 0.875F, 0.875F);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.cube.render(pPoseStack, vertexconsumer, pPackedLight, i);
+		pPoseStack.popPose();
+		pPoseStack.popPose();
 	}
 	
-	public static float getY(EndEnchantmentTableBlockEntity p_114159_, float p_114160_)
+	public static float getY(EndEnchantmentTableBlockEntity pBlockEntity, float pPartialTick)
 	{
-		float f = (float)p_114159_.time + p_114160_;
+		float f = (float)pBlockEntity.time + pPartialTick;
 		float f1 = Mth.sin(f * 0.2F) / 3.0F + 0.5F;
 		f1 = (f1 * f1 + f1) * 0.4F;
 		return f1 - 1.4F;

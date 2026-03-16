@@ -22,15 +22,15 @@ public class BlessmentBarrier extends AbstractBlessment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.barrierMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.barrierMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.barrierMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.barrierMaxCost.get();
+		return EnchantmentConfig.barrierMinCost.get() + (pLevel - 1) * EnchantmentConfig.barrierMaxCost.get();
 	}
 	
 	@Override
@@ -55,20 +55,19 @@ public class BlessmentBarrier extends AbstractBlessment
 				float f2 = living.getRandom().nextFloat() * ((float)Math.PI * 2F);
 				float f3 = Mth.sqrt(living.getRandom().nextFloat()) * radius;
 				
-	            List<LivingEntity> list = living.level().getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3));
-	            List<Projectile> projList = living.level().getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3));
-	            projList.removeIf((proj) -> proj.getOwner() != null && proj.getOwner() == living);
+	            List<LivingEntity> list = living.level.getEntitiesOfClass(LivingEntity.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3), t -> t != living && (!t.isAlliedTo(living) || (t instanceof Player && EnchantmentConfig.disableBarrierPushingPlayer.get())));
+	            List<Projectile> projList = living.level.getEntitiesOfClass(Projectile.class, living.getBoundingBox().inflate(Mth.cos(f2) * f3, radius, Mth.sin(f2) * f3), t -> t.getOwner() != living);
 	            projList.forEach((entity) ->
 	            {
-	            	Vec3 vec = EnchantmentUtil.fromToVector(living.position(), entity.position(), level * EnchantmentConfig.barrierPushPowerPerLevel.get());
-	            	entity.setDeltaMovement(vec.x, entity.getDeltaMovement().y, vec.z);
+	            	Vec3 vec3 = EnchantmentUtil.getVelocityTowards(living.position(), entity.position(), level * EnchantmentConfig.barrierPushPowerPerLevel.get());
+	            	entity.setDeltaMovement(vec3.x, entity.getDeltaMovement().y, vec3.z);
+	            	entity.hurtMarked = true;
 	            });
-	            list.removeIf((entity) -> entity == living);
-	            list.removeIf((entity) -> entity instanceof Player && EnchantmentConfig.disableBarrierPushingPlayer.get());
 	            list.forEach((entity) ->
 	            {
-	            	Vec3 vec = EnchantmentUtil.fromToVector(living.position(), entity.position(), level * EnchantmentConfig.barrierPushPowerPerLevel.get());
-	            	entity.setDeltaMovement(vec.x, entity.getDeltaMovement().y, vec.z);
+	            	Vec3 vec3 = EnchantmentUtil.getVelocityTowards(living.position(), entity.position(), level * EnchantmentConfig.barrierPushPowerPerLevel.get());
+	            	entity.setDeltaMovement(vec3.x, entity.getDeltaMovement().y, vec3.z);
+	            	entity.hurtMarked = true;
 	            });
 			}
 		}

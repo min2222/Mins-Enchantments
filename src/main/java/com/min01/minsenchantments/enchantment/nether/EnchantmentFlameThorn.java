@@ -19,15 +19,15 @@ public class EnchantmentFlameThorn extends AbstractNetherEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.flameThornMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.flameThornMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.flameThornMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.flameThornMaxCost.get();
+		return EnchantmentConfig.flameThornMinCost.get() + (pLevel - 1) * EnchantmentConfig.flameThornMaxCost.get();
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class EnchantmentFlameThorn extends AbstractNetherEnchantment
 	}
 	
 	@Override
-	public void onLivingAttack(LivingEntity living, DamageSource damageSource, float amount) 
+	public boolean onLivingAttack(LivingEntity living, DamageSource damageSource, float amount) 
 	{
 		int level = EnchantmentHelper.getEnchantmentLevel(this, living);
 		Entity source = damageSource.getEntity();
@@ -48,9 +48,12 @@ public class EnchantmentFlameThorn extends AbstractNetherEnchantment
 			boolean flag = directSource instanceof Projectile proj ? proj.getOwner() != null && proj.getOwner() == living : directSource == living;
 			if(attacker != living && !flag && !(damageSource.getMsgId().equals("thorns")) && ForgeRegistries.ENTITY_TYPES.getKey(attacker.getType()).toString() != "friendsandfoes:wildfire")
 			{
-				attacker.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get());
-				attacker.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);
+				if(attacker.hurt(living.damageSources().thorns(living), level * EnchantmentConfig.flameThornDamagePerLevel.get()))
+				{
+					attacker.setSecondsOnFire((level * EnchantmentConfig.flameThornFireDurationPerLevel.get()) * 20);
+				}
 			}
 		}
+		return super.onLivingAttack(living, damageSource, amount);
 	}
 }

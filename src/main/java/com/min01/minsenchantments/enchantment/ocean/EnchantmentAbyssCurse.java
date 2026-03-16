@@ -14,15 +14,15 @@ public class EnchantmentAbyssCurse extends AbstractCurseEnchantment
 	}
 	
 	@Override
-	public int getMaxCost(int p_44691_) 
+	public int getMaxCost(int pLevel) 
 	{
-		return this.getMinCost(p_44691_) + EnchantmentConfig.abyssCurseMaxCost.get();
+		return this.getMinCost(pLevel) + EnchantmentConfig.abyssCurseMaxCost.get();
 	}
 	
 	@Override
-	public int getMinCost(int p_44679_) 
+	public int getMinCost(int pLevel) 
 	{
-		return EnchantmentConfig.abyssCurseMinCost.get() + (p_44679_ - 1) * EnchantmentConfig.abyssCurseMaxCost.get();
+		return EnchantmentConfig.abyssCurseMinCost.get() + (pLevel - 1) * EnchantmentConfig.abyssCurseMaxCost.get();
 	}
 	
 	@Override

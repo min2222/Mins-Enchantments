@@ -6,8 +6,6 @@ import java.util.Map.Entry;
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.api.IMinsEnchantment;
 import com.min01.minsenchantments.api.IProjectileEnchantment;
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilityImpl;
-import com.min01.minsenchantments.capabilities.IEnchantmentCapability;
 import com.min01.minsenchantments.config.EnchantmentConfig;
 import com.min01.minsenchantments.network.EnchantmentNetwork;
 import com.min01.minsenchantments.network.PlayerLeftClickPacket;
@@ -373,8 +371,6 @@ public class EventHandlerForge
 				enchantment.onEntityTick(event.getEntity());
 			}
 		});
-		
-		event.getEntity().getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).ifPresent(IEnchantmentCapability::tick);
 	}
 	
 	@SubscribeEvent

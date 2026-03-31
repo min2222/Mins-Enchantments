@@ -16,8 +16,6 @@ public interface IEnchantmentCapability extends ICapabilitySerializable<Compound
 	ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "mins_enchantment");
 
 	void setEntity(Entity entity);
-
-	void tick();
 	
 	boolean hasEnchantment(Enchantment enchantment);
 	

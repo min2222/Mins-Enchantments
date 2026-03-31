@@ -57,12 +57,6 @@ public class EnchantmentCapabilityImpl implements IEnchantmentCapability
 	}
 	
 	@Override
-	public void tick() 
-	{
-		this.sendUpdatePacket();
-	}
-	
-	@Override
 	public boolean hasEnchantment(Enchantment enchantment)
 	{
 		return this.enchantMap.containsKey(enchantment);
@@ -78,12 +72,14 @@ public class EnchantmentCapabilityImpl implements IEnchantmentCapability
 	public void setEnchantmentData(Enchantment enchantment, EnchantmentData data)
 	{
 		this.enchantMap.put(enchantment, data);
+		this.sendUpdatePacket();
 	}
 	
 	@Override
 	public void removeEnchantment(Enchantment enchantment)
 	{
 		this.enchantMap.remove(enchantment);
+		this.sendUpdatePacket();
 	}
 	
 	public static class EnchantmentData

@@ -26,8 +26,13 @@ public class EnchantmentCapabilityImpl implements IEnchantmentCapability
 {
 	public static final Capability<IEnchantmentCapability> ENCHANTMENT = CapabilityManager.get(new CapabilityToken<>() {});
 	
-	private Entity entity;
+	private final Entity entity;
 	private final Map<Enchantment, EnchantmentData> enchantMap = new HashMap<>();
+
+	public EnchantmentCapabilityImpl(Entity entity) 
+	{
+		this.entity = entity;
+	}
 	
 	@Override
 	public CompoundTag serializeNBT() 
@@ -48,12 +53,6 @@ public class EnchantmentCapabilityImpl implements IEnchantmentCapability
 	public void deserializeNBT(CompoundTag nbt)
 	{
 		this.enchantMap.put(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.parse(nbt.getString("Enchantment"))), EnchantmentData.read(nbt));
-	}
-
-	@Override
-	public void setEntity(Entity entity) 
-	{
-		this.entity = entity;
 	}
 	
 	@Override

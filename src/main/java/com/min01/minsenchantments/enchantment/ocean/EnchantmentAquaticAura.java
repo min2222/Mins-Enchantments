@@ -51,7 +51,7 @@ public class EnchantmentAquaticAura extends AbstractOceanEnchantment
 	{
 		if(entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).isPresent())
 		{
-			IEnchantmentCapability cap = entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl());
+			IEnchantmentCapability cap = entity.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl(entity));
 			if(cap.hasEnchantment(this))
 			{
 				EnchantmentData data = cap.getEnchantmentData(this);

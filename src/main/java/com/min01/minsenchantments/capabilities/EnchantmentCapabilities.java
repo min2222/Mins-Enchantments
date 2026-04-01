@@ -7,9 +7,7 @@ public class EnchantmentCapabilities
 {
 	public static void onAttachEntityCapability(AttachCapabilitiesEvent<Entity> event)
 	{
-		EnchantmentCapabilityImpl cap = new EnchantmentCapabilityImpl();
     	Entity entity = event.getObject();
-    	cap.setEntity(entity);
-		event.addCapability(EnchantmentCapabilityImpl.ID, cap);
+		event.addCapability(EnchantmentCapabilityImpl.ID, new EnchantmentCapabilityImpl(entity));
 	}
 }

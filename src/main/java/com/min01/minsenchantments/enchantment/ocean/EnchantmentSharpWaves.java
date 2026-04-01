@@ -96,7 +96,7 @@ public class EnchantmentSharpWaves extends AbstractOceanEnchantment implements I
 				Entity owner = projectile.getOwner();
 				if(owner != null)
 				{
-					IEnchantmentCapability t = projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl());
+					IEnchantmentCapability t = projectile.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl(entity));
 					if(t.hasEnchantment(this))
 					{
 						EnchantmentData data = t.getEnchantmentData(this);

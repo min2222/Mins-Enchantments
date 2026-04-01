@@ -84,7 +84,7 @@ public class BlessmentHealingCutter extends AbstractBlessment
 	{
 		if(living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).isPresent())
 		{
-			IEnchantmentCapability t = living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl());
+			IEnchantmentCapability t = living.getCapability(EnchantmentCapabilityImpl.ENCHANTMENT).orElse(new EnchantmentCapabilityImpl(living));
 			if(t.hasEnchantment(this))
 			{
 				EnchantmentData data = t.getEnchantmentData(this);

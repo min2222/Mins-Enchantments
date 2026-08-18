@@ -67,7 +67,7 @@ A simple mod that adds new enchanting tables, each with its own unique enchantme
 [[dependencies.minsenchantments]]
     modId="tickrateapi"
     mandatory=true
-    versionRange="[6.0.0,)"
+    versionRange="[6.0.4,)"
     ordering="NONE"
     side="BOTH"
 

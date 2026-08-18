@@ -1,83 +1,49 @@
 package com.min01.minsenchantments.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.min01.minsenchantments.config.EnchantmentConfig;
-import com.min01.minsenchantments.init.CustomEnchantments;
-import com.min01.minsenchantments.misc.EnchantmentTags;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.min01.minsenchantments.api.EnchantmentData;
+import com.min01.minsenchantments.enchantment.MEnchantments;
+import com.min01.minsenchantments.misc.MEnchantmentNbtTagKeys;
+import com.min01.minsenchantments.util.MEUtil;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.entity.player.CriticalHitEvent;
 
 @Mixin(Player.class)
-public class MixinPlayer 
+public class MixinPlayer
 {
-	@Inject(at = @At("TAIL"), method = "getProjectile", cancellable = true)
-    private void getProjectile(ItemStack stack, CallbackInfoReturnable<ItemStack> cir)
-    {
-		if(Player.class.cast(this).isEyeInFluidType(ForgeMod.WATER_TYPE.get()))
+	//prevent dupe exploit of trident or other similar items;
+	@WrapMethod(method = "touch")
+	private void minsenchantments$touch(Entity pEntity, Operation<Void> original)
+	{
+		if(pEntity instanceof ItemEntity itemEntity)
 		{
-			if(stack.getEnchantmentLevel(CustomEnchantments.WATER_JET.get()) > 0 && cir.getReturnValue().isEmpty())
+			ItemStack stack = itemEntity.getItem();
+			if(stack.hasTag() && stack.getTag().contains(MEnchantmentNbtTagKeys.TERRARIAN_SOUL_SUMMONED))
 			{
-				ItemStack arrow = new ItemStack(Items.ARROW);
-				arrow.getOrCreateTag().putBoolean(EnchantmentTags.WATER_JET, true);
-				cir.setReturnValue(arrow);
+				itemEntity.discard();
+				return;
 			}
 		}
-    }
-	
-	@ModifyVariable(method = "attack", at = @At("STORE"), ordinal = 2)
-	private boolean attack(boolean flag2) 
-	{
-		if(Player.class.cast(this).getMainHandItem().getEnchantmentLevel(CustomEnchantments.CRITICAL_STRIKE.get()) > 0)
+		else
 		{
-			if(this.isCrit())
+			EnchantmentData data = MEUtil.getEnchantmentData(pEntity, MEnchantments.TERRARIAN_SOUL.get());
+			if(data != null)
 			{
-				return true;
-			}
-			else
-			{
-				return flag2;
-			}
-		}
-		return flag2;
-	}
-	
-	@Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/entity/player/CriticalHitEvent;getDamageModifier()F"), remap = false)
-	private float getDamageModifier(CriticalHitEvent event) 
-	{
-		if(Player.class.cast(this).getMainHandItem().getEnchantmentLevel(CustomEnchantments.CRITICAL_STRIKE.get()) > 0)
-		{
-			if(this.isCrit())
-			{
-				return 1.5F;
-			}
-			else
-			{
-				if(event != null)
+				CompoundTag tag = data.tag();
+				if(tag.contains(MEnchantmentNbtTagKeys.TERRARIAN_SOUL_SUMMONED))
 				{
-					return event.getDamageModifier();
-				}
-				else
-				{
-					return 1.0F;
+					pEntity.discard();
+					return;
 				}
 			}
 		}
-		return event.getDamageModifier();
-	}
-	
-	private boolean isCrit()
-	{
-		int level = Player.class.cast(this).getMainHandItem().getEnchantmentLevel(CustomEnchantments.CRITICAL_STRIKE.get());
-		return Math.random() <= (level * EnchantmentConfig.criticalStrikeChancePerLevel.get()) / 100;
+		original.call(pEntity);
 	}
 }

@@ -1,0 +1,28 @@
+{
+	"_comment": "all game events that iteracting with item or block.",
+	"values": [
+		"minecraft:block_activate",
+		"minecraft:block_attach",
+		"minecraft:block_change",
+		"minecraft:block_close",
+		"minecraft:block_deactivate",
+		"minecraft:block_destroy",
+		"minecraft:block_detach",
+		"minecraft:block_open",
+		"minecraft:block_place",
+		"minecraft:container_close",
+		"minecraft:container_open",
+		"minecraft:drink",
+		"minecraft:eat",
+		"minecraft:equip",
+		"minecraft:fluid_pickup",
+		"minecraft:fluid_place",
+		"minecraft:instrument_play",
+		"minecraft:item_interact_finish",
+		"minecraft:item_interact_start",
+		"minecraft:note_block_play",
+		"minecraft:prime_fuse",
+		"minecraft:projectile_shoot",
+		"minecraft:shear"
+	]
+}

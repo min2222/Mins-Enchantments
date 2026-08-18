@@ -2,24 +2,42 @@
 	"required": true,
 	"minVersion": "0.8",
 	"package": "com.min01.minsenchantments.mixin",
-	"plugin": "com.min01.minsenchantments.misc.EnchantmentMixinPlugin",
+	"plugin": "com.min01.minsenchantments.misc.MEMixinPlugin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"AbstractArrowInvoker",
-		"MixinEnchantment",
-		"MixinPlayer",
+		"MixinEnchantmentMenu",
+		"MixinEnchantmentHelper",
+		"MixinAnvilMenu",
+		"MixinServerLevel",
+		"MixinItemCooldowns",
 		"MixinLivingEntity",
-		"MixinProjectile",
 		"MixinItemStack",
+		"MixinAbstractArrow",
+		"MixinPlayer",
+		"MixinProjectile",
+		"MixinProjectileUtil",
+		"MixinInventory",
+		"MixinFishingHook",
+		"MixinPiglinAi",
 		"MixinEntity",
-		"MixinServerItemCooldowns"
+		"MixinVibrationSystemListener",
+		"MixinSlime",
+		"MixinMobEffectInstance",
+		"ProjectileInvoker"
 	],
 	"client": [
+		"MixinEnchantmentScreen",
+		"MixinLightTexture",
+		"MixinDarknessFogFunction",
 		"MixinEntityRenderDispatcher"
 	],
-	"server": [],
+	"server": [
+	],
 	"injectors": {
 		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
 	},
 	"refmap": "minsenchantments.refmap.json"
 }

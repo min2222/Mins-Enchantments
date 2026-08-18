@@ -2,32 +2,40 @@ package com.min01.minsenchantments.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.min01.minsenchantments.event.RenderEntityEvent;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.min01.minsenchantments.enchantment.MEnchantments;
+import com.min01.minsenchantments.util.MEClientUtil;
+import com.min01.minsenchantments.util.MEUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(EntityRenderDispatcher.class)
 public class MixinEntityRenderDispatcher 
 {
-	@SuppressWarnings("unchecked")
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(DDD)V", shift = At.Shift.AFTER))
-	private <E extends Entity> void beforeRender(E pEntity, double pX, double pY, double pZ, float pRotationYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci)
+	@WrapOperation(method = "renderFlame", at = @At(value = "INVOKE", target ="Lnet/minecraft/client/resources/model/Material;sprite()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", ordinal = 0))
+	private TextureAtlasSprite minsenchantments$renderFlame0(Material instance, Operation<TextureAtlasSprite> original, PoseStack pPoseStack, MultiBufferSource pBuffer, Entity pEntity)
 	{
-		MinecraftForge.EVENT_BUS.post(new RenderEntityEvent.Pre<E>(pEntity, (EntityRenderer<E>) EntityRenderDispatcher.class.cast(this).getRenderer(pEntity), pPartialTicks, pPoseStack, pBuffer, pPackedLight));
+		if(MEUtil.hasEnchantmentData(pEntity, MEnchantments.SOUL_FIRE_ASPECT.get()))
+		{
+			instance = MEClientUtil.SOUL_FIRE_0;
+		}
+		return original.call(instance);
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V",shift = At.Shift.BEFORE))
-	private <E extends Entity> void afterRender(E pEntity, double pX, double pY, double pZ, float pRotationYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci)
+	@WrapOperation(method = "renderFlame", at = @At(value = "INVOKE", target ="Lnet/minecraft/client/resources/model/Material;sprite()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", ordinal = 1))
+	private TextureAtlasSprite minsenchantments$renderFlame1(Material instance, Operation<TextureAtlasSprite> original, PoseStack pPoseStack, MultiBufferSource pBuffer, Entity pEntity)
 	{
-		MinecraftForge.EVENT_BUS.post(new RenderEntityEvent.Post<E>(pEntity, (EntityRenderer<E>) EntityRenderDispatcher.class.cast(this).getRenderer(pEntity), pPartialTicks, pPoseStack, pBuffer, pPackedLight));
-	}	
+		if(MEUtil.hasEnchantmentData(pEntity, MEnchantments.SOUL_FIRE_ASPECT.get()))
+		{
+			instance = MEClientUtil.SOUL_FIRE_1;
+		}
+		return original.call(instance);
+	}
 }

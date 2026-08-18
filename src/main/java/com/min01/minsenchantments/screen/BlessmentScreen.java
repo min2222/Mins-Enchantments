@@ -1,89 +1,42 @@
 package com.min01.minsenchantments.screen;
 
-import org.joml.Quaternionf;
-
 import com.min01.minsenchantments.MinsEnchantments;
 import com.min01.minsenchantments.blockentity.renderer.BlessmentTableRenderer;
-import com.min01.minsenchantments.menu.BlessmentMenu;
+import com.min01.minsenchantments.util.MEClientUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.EnchantmentMenu;
 
-public class BlessmentScreen extends AbstractCustomEnchantmentScreen<BlessmentMenu>
-{	
-	public int time;
-	private static final float SIN_45 = (float)Math.sin((Math.PI / 4.0D));
-	private final ModelPart core;
-	private final ModelPart out;
-	private final ModelPart line;
-	private final ModelPart line2;
-	private final ModelPart line3;
+public class BlessmentScreen extends MEnchantmentScreen
+{
+	public static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "textures/block/cross.png");
+
+	private final ModelPart cross;
 	
-	public BlessmentScreen(BlessmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
+	public BlessmentScreen(EnchantmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
 		super(pMenu, pPlayerInventory, pTitle);
-		EntityModelSet entityModelSet = Minecraft.getInstance().getEntityModels();
-		this.core = entityModelSet.bakeLayer(BlessmentTableRenderer.LAYER_LOCATION).getChild("core");
-		this.out = entityModelSet.bakeLayer(BlessmentTableRenderer.LAYER_LOCATION).getChild("out");
-		this.line = entityModelSet.bakeLayer(BlessmentTableRenderer.LAYER_LOCATION).getChild("line");
-		this.line2 = entityModelSet.bakeLayer(BlessmentTableRenderer.LAYER_LOCATION).getChild("line2");
-		this.line3 = entityModelSet.bakeLayer(BlessmentTableRenderer.LAYER_LOCATION).getChild("line3");
+		this.cross = MEClientUtil.MC.getEntityModels().bakeLayer(BlessmentTableRenderer.LAYER_LOCATION);
 	}
 	
 	@Override
-	public boolean renderBookModel() 
+	public void render(PoseStack pPoseStack, float pPartialTick, MultiBufferSource pBuffer)
 	{
-		return false;
-	}
-	
-	@Override
-	public void renderCustom(PoseStack stack, float partialTick, BufferSource buffersource)
-	{
-		stack.pushPose();
-		float f1 = ((float)this.time + partialTick) * 3.0F;
-		VertexConsumer vertexConsumer = buffersource.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(MinsEnchantments.MODID, "textures/block/bless_core.png")));
-		stack.translate(0, 0.6D, 0);
-		stack.scale(0.7F, 0.7F, 0.7F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.core.render(stack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.out.render(stack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.line.render(stack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.line2.render(stack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-		stack.scale(1.1F, 1.1F, 1.1F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3.0F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.line3.render(stack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-		stack.popPose();
-	}
-	
-	@Override
-	public void containerTick() 
-	{
-		super.containerTick();
-		++this.time;
-	}
-	
-	@Override
-	public String getTransltateStringForRequiredItem(boolean one)
-	{
-		return one ? "container.bless.holy_emblem.one" : "container.bless.holy_emblem.many";
+		float y = this.getY(pPartialTick, 0.1F);
+		pPoseStack.pushPose();
+		pPoseStack.translate(0.0F, -2.0F, 0.0F);
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(this.tickCount + pPartialTick));
+		pPoseStack.translate(0.0F, 1.5F + y / 2.0F, 0.0F);
+		this.cross.render(pPoseStack, pBuffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE_LOCATION)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+		pPoseStack.popPose();
 	}
 }

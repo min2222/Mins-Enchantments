@@ -1,7 +1,7 @@
 {
   "pack": {
     "description": {
-      "text": "min's enchantments resources"
+      "text": "${mod_id} resources"
     },
     "pack_format": 15
   }

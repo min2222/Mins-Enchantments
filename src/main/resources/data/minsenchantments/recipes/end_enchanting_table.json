@@ -1,19 +1,19 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        " # ",
-        "SPS",
-        "PPP"
+        " C ",
+        "OEO",
+        "EEE"
     ],
     "key": {
-        "#": {
+        "C": {
             "item": "minecraft:end_crystal"
         },
-        "S": {
-            "item": "minecraft:ender_eye"
-        },
-        "P": {
+        "O": {
             "item": "minecraft:obsidian"
+        },
+        "E": {
+            "item": "minecraft:end_stone"
         }
     },
     "result": {

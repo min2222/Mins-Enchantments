@@ -1,12 +1,12 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        " # ",
+        " C ",
         "SPS",
         "PPP"
     ],
     "key": {
-        "#": {
+        "C": {
             "item": "minecraft:conduit"
         },
         "S": {

@@ -1,18 +1,18 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        " # ",
-        "SPS",
-        "PPP"
+        " W ",
+        "GNG",
+        "NNN"
     ],
     "key": {
-        "#": {
+        "W": {
             "item": "minecraft:wither_skeleton_skull"
         },
-        "S": {
-            "item": "minecraft:netherite_scrap"
+        "G": {
+            "item": "minecraft:gold_ingot"
         },
-        "P": {
+        "N": {
             "item": "minecraft:nether_bricks"
         }
     },

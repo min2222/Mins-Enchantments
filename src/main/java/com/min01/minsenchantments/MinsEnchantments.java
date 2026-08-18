@@ -1,14 +1,15 @@
 package com.min01.minsenchantments;
 
-import com.min01.minsenchantments.capabilities.EnchantmentCapabilities;
-import com.min01.minsenchantments.config.EnchantmentConfig;
-import com.min01.minsenchantments.init.CustomBlocks;
-import com.min01.minsenchantments.init.CustomEnchantments;
-import com.min01.minsenchantments.init.CustomItems;
-import com.min01.minsenchantments.init.CustomMenuType;
-import com.min01.minsenchantments.network.EnchantmentNetwork;
+import com.min01.minsenchantments.block.MEBlocks;
+import com.min01.minsenchantments.capabilities.MECapabilities;
+import com.min01.minsenchantments.config.MEConfig;
+import com.min01.minsenchantments.enchantment.MEnchantments;
+import com.min01.minsenchantments.item.MEItems;
+import com.min01.minsenchantments.menu.MEMenuTypes;
+import com.min01.minsenchantments.network.MENetwork;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -23,15 +24,16 @@ public class MinsEnchantments
 	public MinsEnchantments(FMLJavaModLoadingContext ctx) 
 	{
 		IEventBus bus = ctx.getModEventBus();
-		CustomBlocks.BLOCKS.register(bus);
-		CustomBlocks.BLOCK_ENTITIES.register(bus);
-		CustomItems.ITEMS.register(bus);
-		CustomMenuType.MENUS.register(bus);
-		CustomEnchantments.ENCHANTMENTS.register(bus);
-		CustomEnchantments.LOOT_MODIFIERS.register(bus);
-		EnchantmentNetwork.registerMessages();
 
-		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, EnchantmentCapabilities::onAttachEntityCapability);
-		ctx.registerConfig(Type.COMMON, EnchantmentConfig.CONFIG_SPEC, "mins-enchantments.toml");
+		MEItems.ITEMS.register(bus);
+		MEBlocks.BLOCKS.register(bus);
+		MEBlocks.BLOCK_ENTITIES.register(bus);
+		MEnchantments.ENCHANTMENTS.register(bus);
+		MEMenuTypes.MENU_TYPES.register(bus);
+		MENetwork.registerMessages();
+		
+		ctx.registerConfig(Type.COMMON, MEConfig.CONFIG_SPEC, "minsenchantments.toml");
+		MinecraftForge.EVENT_BUS.addGenericListener(ItemStack.class, MECapabilities::onAttachItemStackCapabilities);
+		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, MECapabilities::onAttachEntityCapabilities);
 	}
 }

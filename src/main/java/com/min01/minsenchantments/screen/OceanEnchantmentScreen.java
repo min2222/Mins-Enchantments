@@ -3,11 +3,10 @@ package com.min01.minsenchantments.screen;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import com.min01.minsenchantments.menu.OceanEnchantmentMenu;
+import com.min01.minsenchantments.util.MEClientUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
@@ -15,104 +14,67 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.EnchantmentMenu;
+import net.minecraft.world.inventory.InventoryMenu;
 
-public class OceanEnchantmentScreen extends AbstractCustomEnchantmentScreen<OceanEnchantmentMenu>
+public class OceanEnchantmentScreen extends MEnchantmentScreen
 {
-	public static final ResourceLocation SHELL_TEXTURE = ResourceLocation.parse("textures/entity/conduit/base.png");
-	public static final ResourceLocation ACTIVE_SHELL_TEXTURE = ResourceLocation.parse("textures/entity/conduit/cage.png");
-	public static final ResourceLocation OPEN_EYE_TEXTURE = ResourceLocation.parse("textures/entity/conduit/open_eye.png");
-	
+	public static final Material SHELL_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/base"));
+	public static final Material ACTIVE_SHELL_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/cage"));
+	public static final Material WIND_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/wind"));
+	public static final Material VERTICAL_WIND_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/wind_vertical"));
+	public static final Material OPEN_EYE_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("entity/conduit/open_eye"));
+
 	private final ModelPart eye;
 	private final ModelPart shell;
 	private final ModelPart cage;
 	
-	public int tickCount;
-	private float activeRotation;
-	private boolean isActive;
-	
-	public OceanEnchantmentScreen(OceanEnchantmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
+	public OceanEnchantmentScreen(EnchantmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
 		super(pMenu, pPlayerInventory, pTitle);
-		EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
+		EntityModelSet modelSet = MEClientUtil.MC.getEntityModels();
 		this.eye = modelSet.bakeLayer(ModelLayers.CONDUIT_EYE);
 		this.shell = modelSet.bakeLayer(ModelLayers.CONDUIT_SHELL);
 		this.cage = modelSet.bakeLayer(ModelLayers.CONDUIT_CAGE);
 	}
 	
 	@Override
-	public boolean renderBookModel() 
+	public void render(PoseStack pPoseStack, float pPartialTick, MultiBufferSource pBuffer)
 	{
-		return false;
-	}
-	
-	@Override
-	public void containerTick() 
-	{
-		super.containerTick();
-		++this.tickCount;
-		
-		if(this.isActive()) 
-		{
-			++this.activeRotation;
-		}
-		
-		this.isActive = this.menu.is(this.menu.getSlot(1).getItem()) && !this.menu.getSlot(0).getItem().isEmpty();
-	}
-	
-	@Override
-	public void renderCustom(PoseStack stack, float partialTick, MultiBufferSource.BufferSource buffersource) 
-	{
-		float f = (float)this.tickCount + partialTick;
-		if(!this.isActive())
+		float f = this.tickCount + pPartialTick;
+		if(!this.isActive) 
 		{
 			float f5 = this.getActiveRotation(0.0F);
-			VertexConsumer vertexconsumer1 = buffersource.getBuffer(RenderType.entitySolid(SHELL_TEXTURE));
-			stack.pushPose();
-			stack.translate(0, 0.8, 0);
-			stack.mulPose((new Quaternionf()).rotationY(f5 * ((float)Math.PI / 180.0F)));
-			this.shell.render(stack, vertexconsumer1, 15728880, OverlayTexture.NO_OVERLAY);
-			stack.popPose();
-		} 
-		else
+			VertexConsumer vertexConsumer1 = SHELL_TEXTURE.buffer(pBuffer, RenderType::entitySolid);
+			pPoseStack.pushPose();
+			pPoseStack.mulPose((new Quaternionf()).rotationY(f5 * ((float)Math.PI / 180.0F)));
+			this.shell.render(pPoseStack, vertexConsumer1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+			pPoseStack.popPose();
+		}
+		else 
 		{
-			float f1 = this.getActiveRotation(partialTick) * (180.0F / (float)Math.PI);
+			float f1 = this.getActiveRotation(pPartialTick) * (180.0F / (float)Math.PI);
 			float f2 = Mth.sin(f * 0.1F) / 2.0F + 0.5F;
 			f2 = f2 * f2 + f2;
-			stack.pushPose();
-			stack.translate(0, 0.25, 0);
-			stack.translate(0, (double)(0.1F + f2 * 0.2F), 0);
-			Vector3f vector3f = new Vector3f(0.5F, 1.0F, 0.5F);
-			stack.mulPose((new Quaternionf()).rotationAxis(f1 * ((float)Math.PI / 180.0F), vector3f));
-			this.cage.render(stack, buffersource.getBuffer(RenderType.entityCutoutNoCull(ACTIVE_SHELL_TEXTURE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-			stack.popPose();
 			
-			stack.pushPose();
-			stack.translate(0, 0.25, 0);
-			stack.translate(0D, (double)(0.1F + f2 * 0.2F), 0D);
-			stack.scale(0.5F, 0.5F, 0.5F);
-			stack.scale(1.3333334F, 1.3333334F, 1.3333334F);
-			this.eye.render(stack, buffersource.getBuffer(RenderType.entityCutoutNoCull(OPEN_EYE_TEXTURE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-			stack.popPose();
+			pPoseStack.pushPose();
+			pPoseStack.translate(0.0F, -0.15F + f2 * 0.1F, 0.0F);
+			Vector3f vector3f = (new Vector3f(0.5F, 1.0F, 0.5F)).normalize();
+			pPoseStack.mulPose((new Quaternionf()).rotationAxis(f1 * ((float)Math.PI / 180.0F), vector3f));
+			this.cage.render(pPoseStack, ACTIVE_SHELL_TEXTURE.buffer(pBuffer, RenderType::entityCutoutNoCull), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+			pPoseStack.popPose();
+			
+			pPoseStack.pushPose();
+			pPoseStack.translate(0.0F, -0.15F + f2 * 0.1F, 0.0F);
+			pPoseStack.scale(0.5F, 0.5F, 0.5F);
+			pPoseStack.scale(1.3333334F, 1.3333334F, 1.3333334F);
+			this.eye.render(pPoseStack, OPEN_EYE_TEXTURE.buffer(pBuffer, RenderType::entityCutoutNoCull), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+			pPoseStack.popPose();
 		}
-	}
-	
-	public boolean isActive()
-	{
-		return this.isActive;
-	}
-
-	public float getActiveRotation(float pPartialTick)
-	{
-		return (this.activeRotation + pPartialTick) * -0.0375F;
-	}
-	
-	@Override
-	public String getTransltateStringForRequiredItem(boolean one) 
-	{
-		return one ? "container.enchant.prismarine_crystals.one" : "container.enchant.prismarine_crystals.many";
 	}
 }

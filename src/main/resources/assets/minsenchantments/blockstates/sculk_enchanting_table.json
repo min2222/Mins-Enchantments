@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "minsenchantments:block/sculk_enchanting_table"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "minsenchantments:block/sculk_enchanting_table"
+		}
+	}
 }

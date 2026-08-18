@@ -2,96 +2,61 @@ package com.min01.minsenchantments.screen;
 
 import org.joml.Quaternionf;
 
-import com.min01.minsenchantments.event.ClientEventHandlerForge;
-import com.min01.minsenchantments.menu.EndEnchantmentMenu;
+import com.min01.minsenchantments.util.MEClientUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.EnchantmentMenu;
 
-public class EndEnchantmentScreen extends AbstractCustomEnchantmentScreen<EndEnchantmentMenu>
+public class EndEnchantmentScreen extends MEnchantmentScreen
 {
 	private static final ResourceLocation END_CRYSTAL_LOCATION = ResourceLocation.parse("textures/entity/end_crystal/end_crystal.png");
 	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(END_CRYSTAL_LOCATION);
 	private static final float SIN_45 = (float)Math.sin((Math.PI / 4.0D));
 	private final ModelPart cube;
 	private final ModelPart glass;
-	public int time;
-
-	public EndEnchantmentScreen(EndEnchantmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
+	
+	public EndEnchantmentScreen(EnchantmentMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
 		super(pMenu, pPlayerInventory, pTitle);
-		EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
-		ModelPart modelpart = modelSet.bakeLayer(ModelLayers.END_CRYSTAL);
-		this.glass = modelpart.getChild("glass");
-		this.cube = modelpart.getChild("cube");
-		this.time = ClientEventHandlerForge.MC.level.random.nextInt(100000);
+		ModelPart modelPart = MEClientUtil.MC.getEntityModels().bakeLayer(ModelLayers.END_CRYSTAL);
+		this.glass = modelPart.getChild("glass");
+		this.cube = modelPart.getChild("cube");
 	}
 	
 	@Override
-	public boolean renderBookModel() 
+	public void render(PoseStack pPoseStack, float pPartialTick, MultiBufferSource pBuffer)
 	{
-		return false;
-	}
-	
-	@Override
-	public void renderCustom(PoseStack stack, float partialTick, BufferSource multibuffersource$buffersource)
-	{
-		stack.pushPose();
-		float f = getY(this, partialTick);
-		float f1 = ((float)this.time + partialTick) * 3.0F;
-		VertexConsumer vertexconsumer = multibuffersource$buffersource.getBuffer(RENDER_TYPE);
-		stack.pushPose();
-		stack.scale(0.875F, 0.875F, 0.875F);
-		stack.translate(0.0F, -0.5F, 0.0F);
-		int i = OverlayTexture.NO_OVERLAY;
-
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		stack.translate(0.0F, 1.5F + f / 2.0F, 0.0F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		this.glass.render(stack, vertexconsumer, LightTexture.FULL_BRIGHT, i);
-		stack.scale(0.875F, 0.875F, 0.875F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.glass.render(stack, vertexconsumer, LightTexture.FULL_BRIGHT, i);
-		stack.scale(0.875F, 0.875F, 0.875F);
-		stack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
-		stack.mulPose(Axis.YP.rotationDegrees(f1));
-		this.cube.render(stack, vertexconsumer, LightTexture.FULL_BRIGHT, i);
-		stack.popPose();
-		stack.popPose();
-	}
-	
-	@Override
-	public void containerTick() 
-	{
-		super.containerTick();
-		++this.time;
-	}
-	
-	public static float getY(EndEnchantmentScreen menu, float pPartialTick)
-	{
-		float f = (float)menu.time + pPartialTick;
-		float f1 = Mth.sin(f * 0.2F) / 2.0F + 0.5F;
-		f1 = (f1 * f1 + f1) * 0.4F;
-		return f1 - 1.4F;
-	}
-	
-	@Override
-	public String getTransltateStringForRequiredItem(boolean one)
-	{
-		return one ? "container.enchant.ender_eye.one" : "container.enchant.ender_eye.many";
+		float y = this.getY(pPartialTick, 0.2F);
+		float f1 = (this.time + pPartialTick) * 3.0F;
+		pPoseStack.pushPose();
+		VertexConsumer vertexConsumer = pBuffer.getBuffer(RENDER_TYPE);
+		pPoseStack.pushPose();
+		pPoseStack.scale(0.875F, 0.875F, 0.875F);
+		pPoseStack.translate(0.0F, -1.0F, 0.0F);
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		pPoseStack.translate(0.0F, 1.5F + y / 2.0F, 0.0F);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(Math.PI / 3.0F, SIN_45, 0.0F, SIN_45));
+		this.glass.render(pPoseStack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+		pPoseStack.scale(0.875F, 0.875F, 0.875F);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(Math.PI / 3.0F, SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.glass.render(pPoseStack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+		pPoseStack.scale(0.875F, 0.875F, 0.875F);
+		pPoseStack.mulPose((new Quaternionf()).setAngleAxis(Math.PI / 3.0F, SIN_45, 0.0F, SIN_45));
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+		this.cube.render(pPoseStack, vertexConsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+		pPoseStack.popPose();
+		pPoseStack.popPose();
 	}
 }

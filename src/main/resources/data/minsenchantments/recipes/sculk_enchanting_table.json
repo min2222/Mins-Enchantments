@@ -1,19 +1,19 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        " # ",
-        "SPS",
-        "PPP"
+        " H ",
+        "CSC",
+        "SSS"
     ],
     "key": {
-        "#": {
+        "H": {
             "item": "minecraft:sculk_shrieker"
         },
-        "S": {
-            "item": "minecraft:echo_shard"
-        },
-        "P": {
+        "C": {
             "item": "minecraft:sculk_catalyst"
+        },
+        "S": {
+            "item": "minecraft:sculk"
         }
     },
     "result": {

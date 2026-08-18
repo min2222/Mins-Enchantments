@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "minsenchantments:block/blessing_table"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "minsenchantments:block/blessing_table"
+		}
+	}
 }

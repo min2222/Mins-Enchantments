@@ -2,77 +2,55 @@ package com.min01.minsenchantments.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.min01.minsenchantments.event.EntityTickEvent;
-import com.min01.minsenchantments.init.CustomEnchantments;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.min01.minsenchantments.api.event.EntityTeleportToEvent;
+import com.min01.minsenchantments.enchantment.MEnchantments;
+import com.min01.minsenchantments.util.MEUtil;
 
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidType;
 
 @Mixin(Entity.class)
 public class MixinEntity
-{	
-	@Inject(at = @At("TAIL"), method = "tick", cancellable = true)
-    private void tick(CallbackInfo ci)
-    {
-		MinecraftForge.EVENT_BUS.post(new EntityTickEvent(Entity.class.cast(this)));
-    }
-	
-	@Inject(at = @At("HEAD"), method = "dampensVibrations", cancellable = true)
-    private void dampensVibrations(CallbackInfoReturnable<Boolean> cir)
-    {
-		if(Entity.class.cast(this) instanceof LivingEntity living)
-		{
-			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CONCEALMENT.get(), living) > 0)
-			{
-				cir.setReturnValue(true);
-			}
-		}
-    }
-
-	@Inject(at = @At("HEAD"), method = "playSound", cancellable = true)
-	private void playSound(SoundEvent pSound, float pVolume, float pPitc, CallbackInfo ci)
+{
+	@WrapMethod(method = "teleportTo(DDD)V")
+	private void minsenchantments$teleportTo(double pX, double pY, double pZ, Operation<Void> original)
 	{
-		if(Entity.class.cast(this) instanceof LivingEntity living)
+		Entity entity = (Entity) (Object) this;
+		if(MinecraftForge.EVENT_BUS.post(new EntityTeleportToEvent(entity)))
 		{
-			if(EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.CONCEALMENT.get(), living) > 0)
-			{
-				ci.cancel();
-			}
+			return;
 		}
+		original.call(pX, pY, pZ);
 	}
 	
-    @Inject(method = "isInWater", at = @At("TAIL"), cancellable = true)
-    private void isInWater(CallbackInfoReturnable<Boolean> cir)
-    {
-    	if(Entity.class.cast(this) instanceof LivingEntity living)
-    	{
-    		int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.AIR_SWIMMING.get(), living);
-    		if(level > 0)
-    		{
-    			cir.setReturnValue(true);
-    		}
-    	}
-    }
-    
-    @Inject(method = "getEyeInFluidType", at = @At("TAIL"), cancellable = true, remap = false)
-    private void getEyeInFluidType(CallbackInfoReturnable<FluidType> cir)
-    {
-    	if(Entity.class.cast(this) instanceof LivingEntity living)
-    	{
-    		int level = EnchantmentHelper.getEnchantmentLevel(CustomEnchantments.AIR_SWIMMING.get(), living);
-    		if(level > 0)
-    		{
-    			cir.setReturnValue(ForgeMod.WATER_TYPE.get());
-    		}
-    	}
-    }
+	@WrapOperation(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+	private boolean minsenchantments$hurt(Entity instance, DamageSource pSource, float pAmount, Operation<Boolean> original)
+	{
+		if(MEUtil.hasEnchantmentData(instance, MEnchantments.SOUL_FIRE_ASPECT.get()))
+		{
+			pAmount *= 2.0F;
+		}
+		return original.call(instance, pSource, pAmount);
+	}
+	
+	@WrapOperation(method = "updateFluidHeightAndDoFluidPushing(Ljava/util/function/Predicate;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;isPushedByFluid(Lnet/minecraftforge/fluids/FluidType;)Z"), remap = false)
+	private boolean minsenchantments$isPushedByFluid(Entity instance, FluidType fluidType, Operation<Boolean> original)
+	{
+		if(instance instanceof LivingEntity living)
+		{
+			if(EnchantmentHelper.getEnchantmentLevel(MEnchantments.UPSTREAM.get(), living) > 0)
+			{
+				return false;
+			}
+		}
+		return original.call(instance, fluidType);
+	}
 }

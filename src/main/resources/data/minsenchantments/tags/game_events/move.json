@@ -1,0 +1,9 @@
+{
+	"_comment": "all game events that considered as a moving.",
+	"values": [
+		"minecraft:splash",
+		"minecraft:step",
+		"minecraft:swim",
+		"minecraft:teleport"
+	]
+}

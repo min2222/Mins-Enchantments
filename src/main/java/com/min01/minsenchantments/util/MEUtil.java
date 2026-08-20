@@ -10,6 +10,7 @@ import com.min01.minsenchantments.api.context.CooldownContext;
 import com.min01.minsenchantments.api.context.SummonContext;
 import com.min01.minsenchantments.capabilities.IMEnchantmentCapability;
 import com.min01.minsenchantments.capabilities.MEnchantmentCapabilityImpl;
+import com.min01.minsenchantments.mixin.LevelInvoker;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LogicalSidedProvider;
@@ -42,15 +44,15 @@ public class MEUtil
 		});
 	}
 	
-	public static Iterable<Entity> getAllEntities(Level level)
+	public static LevelEntityGetter<Entity> getEntityGetter(Level level)
 	{
-		return level.getEntities().getAll();
+		return ((LevelInvoker) level).minsenchantments$invoke_getEntities();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <T extends Entity> T getEntityByUUID(Level level, UUID uuid)
+	public static Entity getEntityByUUID(Level level, UUID uuid)
 	{
-		return (T) level.getEntities().get(uuid);
+		LevelEntityGetter<Entity> getter = getEntityGetter(level);
+		return getter.get(uuid);
 	}
 	
 	public static void getMEnchantment(Consumer<IMEnchantment> consumer)

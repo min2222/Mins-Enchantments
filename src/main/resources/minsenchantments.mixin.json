@@ -23,7 +23,8 @@
 		"MixinVibrationSystemListener",
 		"MixinSlime",
 		"MixinMobEffectInstance",
-		"ProjectileInvoker"
+		"ProjectileInvoker",
+		"LevelInvoker"
 	],
 	"client": [
 		"MixinEnchantmentScreen",

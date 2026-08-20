@@ -9,7 +9,6 @@ import com.min01.minsenchantments.capabilities.IMEnchantmentCapability;
 import com.min01.minsenchantments.capabilities.MEnchantmentCapabilityImpl;
 import com.min01.minsenchantments.util.MEUtil;
 import com.min01.tickrateapi.api.event.EntityTickEvent;
-import com.min01.tickrateapi.api.event.TickrateSetEvent;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -128,11 +127,5 @@ public class EventHandlerForge
 	public static void onEntityJoinLevel(EntityJoinLevelEvent event)
 	{
 		MEUtil.getMEnchantment(t -> t.onEntityJoinLevel(event));
-	}
-	
-	@SubscribeEvent
-	public static void onTickrateSet(TickrateSetEvent event)
-	{
-		MEUtil.getMEnchantment(t -> t.onTickrateSet(event));
 	}
 }

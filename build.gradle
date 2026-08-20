@@ -138,9 +138,9 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-    // flatDir {
-    //     dir 'libs'
-    // }
+    flatDir {
+    	dir 'libs'
+    }
 	
 	maven {
         url "https://cursemaven.com"
@@ -165,7 +165,10 @@ dependencies {
 	annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
 	
 	//dependency;
-	implementation fg.deobf("curse.maven:tickrate-api-969702:8675366")
+	implementation fg.deobf("curse.maven:tickrate-api-969702:8689613")
+	
+	//test before actual release;
+	//implementation fg.deobf("com.min01.tickrateapi:tickrateapi:6.0.5")
 	
 	//descriptions test purpose;
 	runtimeOnly fg.deobf("curse.maven:enchantment-descriptions-250419:7612607")

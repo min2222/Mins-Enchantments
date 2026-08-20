@@ -4,7 +4,6 @@ import com.min01.minsenchantments.api.event.EntityTeleportToEvent;
 import com.min01.minsenchantments.api.event.ItemAttributeModifyEvent;
 import com.min01.minsenchantments.api.event.ProjectileHitEvent;
 import com.min01.tickrateapi.api.event.EntityTickEvent;
-import com.min01.tickrateapi.api.event.TickrateSetEvent;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -98,11 +97,6 @@ public interface IMEnchantment
 	}
 	
 	default void onEntityJoinLevel(EntityJoinLevelEvent event)
-	{
-		
-	}
-	
-	default void onTickrateSet(TickrateSetEvent event)
 	{
 		
 	}

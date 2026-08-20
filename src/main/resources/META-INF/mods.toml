@@ -17,7 +17,7 @@ license="GPLv3 License"
 # The modid of the mod
 modId="minsenchantments" #mandatory
 # The version number of the mod
-version="2.0.0" #mandatory
+version="2.0.1" #mandatory
 # A display name for the mod
 displayName="Min's Enchantments" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
@@ -67,7 +67,7 @@ A simple mod that adds new enchanting tables, each with its own unique enchantme
 [[dependencies.minsenchantments]]
     modId="tickrateapi"
     mandatory=true
-    versionRange="[6.0.4,)"
+    versionRange="[6.0.5,)"
     ordering="NONE"
     side="BOTH"
 

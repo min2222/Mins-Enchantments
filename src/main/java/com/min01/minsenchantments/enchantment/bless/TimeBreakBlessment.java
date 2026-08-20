@@ -7,7 +7,6 @@ import com.min01.minsenchantments.enchantment.MEnchantment;
 import com.min01.minsenchantments.misc.MEnchantmentNbtTagKeys;
 import com.min01.minsenchantments.util.MEUtil;
 import com.min01.tickrateapi.api.event.EntityTickEvent;
-import com.min01.tickrateapi.api.event.TickrateSetEvent;
 import com.min01.tickrateapi.util.TickrateUtil;
 
 import net.minecraft.nbt.CompoundTag;
@@ -61,19 +60,10 @@ public class TimeBreakBlessment extends MEnchantment
 				}
 				else
 				{
+					TickrateUtil.setTickrate(entity, 0.0F);
 					tag.putInt(MEnchantmentNbtTagKeys.TIME_BREAK_DURATION, duration - 1);
 				}
 			}
-		}
-	}
-	
-	@Override
-	public void onTickrateSet(TickrateSetEvent event) 
-	{
-		Entity entity = event.getEntity();
-		if(MEUtil.hasEnchantmentData(entity, this))
-		{
-			TickrateUtil.setTickrate(entity, 0.0F);
 		}
 	}
 	

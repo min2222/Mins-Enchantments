@@ -52,6 +52,10 @@ public class TimeBreakBlessment extends MEnchantment
 			EnchantmentData data = MEUtil.getEnchantmentData(living, this);
 			if(data != null)
 			{
+				if(!living.isAlive())
+				{
+					MEUtil.removeEnchantmentData(living, this);
+				}
 				CompoundTag tag = data.tag();
 				int duration = tag.getInt(MEnchantmentNbtTagKeys.TIME_BREAK_DURATION);
 				if(duration <= 0)
@@ -83,7 +87,7 @@ public class TimeBreakBlessment extends MEnchantment
 				{
 					CompoundTag tag = new CompoundTag();
 					tag.putInt(MEnchantmentNbtTagKeys.TIME_BREAK_DURATION, level * MEConfig.timeBreakDurationPerLevel.get());
-					MEUtil.addEnchantmentData(living, tag, this);
+					MEUtil.addEnchantmentData(living, level, tag, this);
 				}
 			}
 		}

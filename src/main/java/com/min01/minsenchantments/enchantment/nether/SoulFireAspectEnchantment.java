@@ -76,7 +76,7 @@ public class SoulFireAspectEnchantment extends MEnchantment
 				int duration = level * MEConfig.soulFireAspectDurationPerLevel.get();
 				CompoundTag tag = new CompoundTag();
 				tag.putInt(MEnchantmentNbtTagKeys.SOUL_FIRE_ASPECT_DURATION, duration);
-				MEUtil.addEnchantmentData(living, tag, this);
+				MEUtil.addEnchantmentData(living, level, tag, this);
 				living.setSecondsOnFire(duration / 20);
 			}
 		}

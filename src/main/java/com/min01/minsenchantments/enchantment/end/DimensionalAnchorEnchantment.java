@@ -89,7 +89,7 @@ public class DimensionalAnchorEnchantment extends MEnchantment
 				{
 					CompoundTag tag = new CompoundTag();
 					tag.putInt(MEnchantmentNbtTagKeys.DIMENSIONAL_ANCHOR_DURATION, level * MEConfig.dimensionalAnchorDurationPerLevel.get());
-					MEUtil.addEnchantmentData(living, tag, this);
+					MEUtil.addEnchantmentData(living, level, tag, this);
 				}
 			}
 		}

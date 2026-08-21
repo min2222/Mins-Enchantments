@@ -1,5 +1,6 @@
 package com.min01.minsenchantments.api;
 
+import com.min01.minsenchantments.api.event.EntityAddedToWorldEvent;
 import com.min01.minsenchantments.api.event.EntityTeleportToEvent;
 import com.min01.minsenchantments.api.event.ItemAttributeModifyEvent;
 import com.min01.minsenchantments.api.event.ProjectileHitEvent;
@@ -7,7 +8,6 @@ import com.min01.tickrateapi.api.event.EntityTickEvent;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.EnderManAngerEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
@@ -96,7 +96,7 @@ public interface IMEnchantment
 		
 	}
 	
-	default void onEntityJoinLevel(EntityJoinLevelEvent event)
+	default void onEntityAddedToWorld(EntityAddedToWorldEvent event)
 	{
 		
 	}

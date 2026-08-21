@@ -2,6 +2,7 @@ package com.min01.minsenchantments.event;
 
 import com.google.common.collect.Iterables;
 import com.min01.minsenchantments.MinsEnchantments;
+import com.min01.minsenchantments.api.event.EntityAddedToWorldEvent;
 import com.min01.minsenchantments.api.event.EntityTeleportToEvent;
 import com.min01.minsenchantments.api.event.ItemAttributeModifyEvent;
 import com.min01.minsenchantments.api.event.ProjectileHitEvent;
@@ -14,7 +15,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.EnderManAngerEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
@@ -124,8 +124,8 @@ public class EventHandlerForge
 	}
 	
 	@SubscribeEvent
-	public static void onEntityJoinLevel(EntityJoinLevelEvent event)
+	public static void onEntityAddedToWorld(EntityAddedToWorldEvent event)
 	{
-		MEUtil.getMEnchantment(t -> t.onEntityJoinLevel(event));
+		MEUtil.getMEnchantment(t -> t.onEntityAddedToWorld(event));
 	}
 }

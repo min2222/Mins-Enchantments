@@ -69,32 +69,21 @@ public class MEUtil
 	
 	public static void addEnchantmentData(Entity entity, ItemStack stack, Enchantment enchantment)
 	{
-		addEnchantmentData(entity, stack, new CompoundTag(), enchantment);
+		addEnchantmentData(entity, stack, stack.getEnchantmentLevel(enchantment), new CompoundTag(), enchantment);
 	}
 	
-	public static void addEnchantmentData(Entity entity, CompoundTag tag, Enchantment enchantment)
+	public static void addEnchantmentData(Entity entity, int level, CompoundTag tag, Enchantment enchantment)
 	{
-		addEnchantmentData(entity, ItemStack.EMPTY, tag, enchantment);
-	}
-	
-	public static void addEnchantmentData(Entity entity, ItemStack stack, CompoundTag tag, Enchantment enchantment)
-	{
-		if(entity instanceof LivingEntity living)
-		{
-			int level = EnchantmentHelper.getEnchantmentLevel(enchantment, living);
-			if(!stack.isEmpty())
-			{
-				level = stack.getEnchantmentLevel(enchantment);
-			}
-			addEnchantmentData(entity, stack, level, tag, enchantment);
-		}
+		addEnchantmentData(entity, ItemStack.EMPTY, level, tag, enchantment);
 	}
 	
 	public static void addEnchantmentData(Entity entity, ItemStack stack, int level, CompoundTag tag, Enchantment enchantment)
 	{
 		EnchantmentInstance instance = new EnchantmentInstance(enchantment, level);
 		boolean flag = !hasEnchantmentData(entity, enchantment);
-		if(!stack.isEmpty())
+		//non-living entities can't have enchantment data on stack
+		//if input entity is non-living entity, we must check data from entity itself;
+		if(entity instanceof LivingEntity && !stack.isEmpty())
 		{
 			flag = !hasEnchantmentData(stack, enchantment);
 		}
@@ -107,7 +96,9 @@ public class MEUtil
 	public static void addEnchantmentData(Entity entity, ItemStack stack, EnchantmentData data)
 	{
 		IMEnchantmentCapability cap = entity.getCapability(MEnchantmentCapabilityImpl.MENCHANTMENTS).orElse(new MEnchantmentCapabilityImpl());
-		if(!stack.isEmpty())
+		//non-living entities can't have enchantment data on stack
+		//if input entity is non-living entity, we must add data to entity itself;
+		if(entity instanceof LivingEntity && !stack.isEmpty())
 		{
 			cap = stack.getCapability(MEnchantmentCapabilityImpl.MENCHANTMENTS).orElse(new MEnchantmentCapabilityImpl());
 		}
@@ -122,7 +113,9 @@ public class MEUtil
 	public static void removeEnchantmentData(Entity entity, ItemStack stack, Enchantment enchantment)
 	{
 		IMEnchantmentCapability cap = entity.getCapability(MEnchantmentCapabilityImpl.MENCHANTMENTS).orElse(new MEnchantmentCapabilityImpl());
-		if(!stack.isEmpty())
+		//non-living entities can't have enchantment data on stack
+		//if input entity is non-living entity, we must remove data from entity itself;
+		if(entity instanceof LivingEntity && !stack.isEmpty())
 		{
 			cap = stack.getCapability(MEnchantmentCapabilityImpl.MENCHANTMENTS).orElse(new MEnchantmentCapabilityImpl());
 		}
@@ -171,17 +164,23 @@ public class MEUtil
 		{
 			return false;
 		}
-		//Projectile#getOwner is only return owner on server side, which cause visual desync sometimes;
+		Entity owner = getOwner(projectile);
+		if(owner != null)
+		{
+			return owner != target && !target.isAlliedTo(owner);
+		}
+		return true;
+	}
+
+	//Projectile#getOwner is only return owner on server side, which cause visual desync sometimes;
+	public static Entity getOwner(Projectile projectile)
+	{
 		UUID ownerUUID = projectile.ownerUUID;
 		if(ownerUUID != null)
 		{
-			Entity owner = MEUtil.getEntityByUUID(projectile.level, ownerUUID);
-			if(owner != null)
-			{
-				return owner != target && !target.isAlliedTo(owner);
-			}
+			return getEntityByUUID(projectile.level, ownerUUID);
 		}
-		return true;
+		return null;
 	}
 	
 	//copied from MobEffect;

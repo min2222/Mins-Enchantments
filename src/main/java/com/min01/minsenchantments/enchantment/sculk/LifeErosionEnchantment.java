@@ -95,7 +95,7 @@ public class LifeErosionEnchantment extends MEnchantment
 				{
 					CompoundTag tag = new CompoundTag();
 					tag.putInt(MEnchantmentNbtTagKeys.LIFE_EROSION_DURATION, level * MEConfig.lifeErosionDurationPerLevel.get());
-					MEUtil.addEnchantmentData(living, tag, this);
+					MEUtil.addEnchantmentData(living, level, tag, this);
 				}
 			}
 		}

@@ -117,7 +117,7 @@ public class HellfireEnchantment extends MEnchantment
 	        			CompoundTag tag = new CompoundTag();
 	        			tag.putFloat(MEnchantmentNbtTagKeys.HELLFIRE_ATTACK_DAMAGE, amount);
 	        			tag.putInt(MEnchantmentNbtTagKeys.HELLFIRE_INTERVAL, interval);
-	        			MEUtil.addEnchantmentData(attacker, stack, tag, this);
+	        			MEUtil.addEnchantmentData(attacker, stack, level, tag, this);
 	        		}
 	        		else
 	        		{

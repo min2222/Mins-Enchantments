@@ -106,7 +106,7 @@ public class InfernalBarrageEnchantment extends MEnchantment
 					tag.putInt(MEnchantmentNbtTagKeys.INFERNAL_BARRAGE_COUNT, level * MEConfig.infernalBarrageCountPerLevel.get());
 					tag.putFloat(MEnchantmentNbtTagKeys.INFERNAL_BARRAGE_DAMAGE, amount);
 					tag.putUUID(MEnchantmentNbtTagKeys.INFERNAL_BARRAGE_UUID, attacker.getUUID());
-					MEUtil.addEnchantmentData(living, tag, this);
+					MEUtil.addEnchantmentData(living, level, tag, this);
 				}
 			}
 		}

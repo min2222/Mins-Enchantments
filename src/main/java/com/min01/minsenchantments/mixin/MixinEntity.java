@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.min01.minsenchantments.api.event.EntityAddedToWorldEvent;
 import com.min01.minsenchantments.api.event.EntityTeleportToEvent;
 import com.min01.minsenchantments.enchantment.MEnchantments;
 import com.min01.minsenchantments.util.MEUtil;
@@ -29,6 +30,14 @@ public class MixinEntity
 			return;
 		}
 		original.call(pX, pY, pZ);
+	}
+	
+	@WrapMethod(method = "onAddedToWorld", remap = false)
+	private void minsenchantments$onAddedToWorld(Operation<Void> original)
+	{
+		Entity entity = (Entity) (Object) this;
+		original.call();
+		MinecraftForge.EVENT_BUS.post(new EntityAddedToWorldEvent(entity));
 	}
 	
 	@WrapOperation(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))

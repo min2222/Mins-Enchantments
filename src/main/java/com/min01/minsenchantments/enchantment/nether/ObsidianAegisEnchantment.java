@@ -112,7 +112,7 @@ public class ObsidianAegisEnchantment extends MEnchantment
         			CompoundTag tag = new CompoundTag();
         			tag.putFloat(MEnchantmentNbtTagKeys.OBSIDIAN_AEGIS_ARMOR_POINT, amount);
         			tag.putInt(MEnchantmentNbtTagKeys.OBSIDIAN_AEGIS_INTERVAL, interval);
-        			MEUtil.addEnchantmentData(entity, stack, tag, this);
+        			MEUtil.addEnchantmentData(entity, stack, level, tag, this);
         		}
         		else
         		{
